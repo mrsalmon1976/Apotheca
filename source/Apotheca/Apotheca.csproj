@@ -71,12 +71,12 @@
     <Compile Include="ApothecaService.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
     <Compile Include="Content\Views\Views.cs" />
-    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\SetupController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Modules\Actions.cs" />
     <Compile Include="Modules\ApothecaModule.cs" />
-    <Compile Include="Modules\UserModule.cs" />
+    <Compile Include="Modules\SetupModule.cs" />
     <Compile Include="Modules\DashboardModule.cs" />
     <Compile Include="Modules\LoginModule.cs" />
     <Compile Include="Modules\ApothecaSecureFormModule.cs" />
@@ -88,6 +88,9 @@
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
+    <Compile Include="Web\Results\ViewResult.cs" />
+    <Compile Include="Web\Results\IControllerResult.cs" />
+    <Compile Include="Web\Results\RedirectResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -115,7 +118,7 @@
     <None Include="Content\Views\User\_UserForm.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Views\User\SetupView.cshtml">
+    <None Include="Content\Views\Setup\SetupView.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NLog.config">
@@ -163,9 +166,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Apotheca.BLL\Apotheca.BLL.csproj">
       <Project>{71496e8d-984d-4be0-a366-05f7d14ef99c}</Project>

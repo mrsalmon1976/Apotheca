@@ -25,11 +25,11 @@ namespace Apotheca.BLL.Data
         {
             _connectionString = connectionString;
             this.Schema = schema;
-            this.Id = Guid.NewGuid().ToString();
         }
 
-        public virtual string Id { get; private set; }
-
+        /// <summary>
+        /// Gets/sets the schema used in the database (configurable app setting)
+        /// </summary>
         public virtual string Schema { get; set; }
 
         public virtual IDbConnection GetConnection()

@@ -4,6 +4,7 @@ using Apotheca.Content.Views;
 using Apotheca.Modules;
 using Apotheca.ViewModels.Login;
 using Apotheca.ViewModels.User;
+using Apotheca.Web.Results;
 using Nancy;
 using Nancy.ModelBinding;
 using System;
@@ -14,41 +15,41 @@ using System.Threading.Tasks;
 
 namespace Apotheca.Controllers
 {
-    public interface IUserController
+    public interface ISetupController
     {
-        object HandleSetupGet(UserModule module);
+        IControllerResult DefaultGet();
 
-        object HandleSetupPost(UserModule module);
+        IControllerResult DefaultPost(INancyModule module);
 
     }
 
-    public class UserController : IUserController
+    public class SetupController : ISetupController
     {
         private IUserRepository _userRepo;
 
-        public UserController(IUserRepository userRepo)
+        public SetupController(IUserRepository userRepo)
         {
             _userRepo = userRepo;
         }
 
-        public object HandleSetupGet(UserModule module)
+        public IControllerResult DefaultGet()
         {
             if (_userRepo.UsersExist())
             {
-                return module.Response.AsRedirect(Actions.Login.Default);
+                return new RedirectResult(Actions.Login.Default);
             }
 
             UserViewModel model = new UserViewModel();
-            model.FormAction = Actions.User.Setup;
-            return module.View[Views.User.Setup, model];
+            model.FormAction = Actions.Setup.Default;
+            return new ViewResult(Views.Setup.Default, model);
 
         }
 
-        public object HandleSetupPost(UserModule module)
+        public IControllerResult DefaultPost(INancyModule module)
         {
             UserViewModel model = module.Bind<UserViewModel>();
             model.Role = Roles.Admin;
-            return module.View[Views.User.Setup, model];
+            return new ViewResult(Views.Setup.Default, model);
         }
     }
 }

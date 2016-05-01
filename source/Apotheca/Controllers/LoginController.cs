@@ -1,6 +1,8 @@
 ﻿using Apotheca.BLL.Repositories;
+using Apotheca.Content.Views;
 using Apotheca.Modules;
 using Apotheca.ViewModels.Login;
+using Apotheca.Web.Results;
 using Nancy;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,7 @@ namespace Apotheca.Controllers
 {
     public interface ILoginController
     {
-        object HandleLoginGet(LoginModule module);
+        IControllerResult LoginGet();
     }
 
     public class LoginController : ILoginController
@@ -24,16 +26,15 @@ namespace Apotheca.Controllers
             _userRepo = userRepo;
         }
 
-        public object HandleLoginGet(LoginModule module)
+        public IControllerResult LoginGet()
         {
             if (!_userRepo.UsersExist())
             {
-                return module.Response.AsRedirect(Actions.User.Setup);
+                return new RedirectResult(Actions.Setup.Default);
             }
 
             LoginViewModel model = new LoginViewModel();
-            return module.View["Content/Views/LoginView.cshtml", model];
-
+            return new ViewResult(Views.Login.Default, model);
         }
     }
 }

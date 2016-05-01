@@ -10,6 +10,9 @@ namespace Apotheca.ViewModels.User
     {
         public string ConfirmPassword { get; set; }
 
+        /// <summary>
+        /// Gets/sets the form action for the user form.
+        /// </summary>
         public string FormAction { get; set; }
 
         /// <summary>

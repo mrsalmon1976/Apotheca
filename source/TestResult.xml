@@ -1,34 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" total="3" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2016-05-01" time="13:42:53">
+<test-results name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" total="7" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2016-05-01" time="21:43:40">
   <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.8689" os-version="Microsoft Windows NT 6.2.9200.0" platform="Win32NT" cwd="C:\Program Files (x86)\NUnit 2.6.3\bin" machine-name="ACC2S" user="Matt" user-domain="ACC2S" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="Project" name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" executed="True" result="Success" success="True" time="0.938" asserts="0">
+  <test-suite type="Project" name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" executed="True" result="Success" success="True" time="0.905" asserts="0">
     <results>
-      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca\bin\Debug\Test.Apotheca.dll" executed="True" result="Inconclusive" success="False" time="0.002" asserts="0" />
-      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca.BLL\bin\Debug\Test.Apotheca.BLL.dll" executed="True" result="Success" success="True" time="0.919" asserts="0">
+      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca\bin\Debug\Test.Apotheca.dll" executed="True" result="Success" success="True" time="0.445" asserts="0">
         <results>
-          <test-suite type="Namespace" name="Test" executed="True" result="Success" success="True" time="0.919" asserts="0">
+          <test-suite type="Namespace" name="Test" executed="True" result="Success" success="True" time="0.445" asserts="0">
             <results>
-              <test-suite type="Namespace" name="Apotheca" executed="True" result="Success" success="True" time="0.918" asserts="0">
+              <test-suite type="Namespace" name="Apotheca" executed="True" result="Success" success="True" time="0.444" asserts="0">
                 <results>
-                  <test-suite type="Namespace" name="BLL" executed="True" result="Success" success="True" time="0.918" asserts="0">
+                  <test-suite type="Namespace" name="Controllers" executed="True" result="Success" success="True" time="0.444" asserts="0">
                     <results>
-                      <test-suite type="Namespace" name="Data" executed="True" result="Success" success="True" time="0.881" asserts="0">
+                      <test-suite type="TestFixture" name="LoginControllerTest" executed="True" result="Success" success="True" time="0.429" asserts="0">
                         <results>
-                          <test-suite type="TestFixture" name="DbMigratorTest" executed="True" result="Success" success="True" time="0.880" asserts="0">
+                          <test-case name="Test.Apotheca.Controllers.LoginControllerTest.HandleLoginGet_NoUsers_RedirectsToSetup" executed="True" result="Success" success="True" time="0.408" asserts="0" />
+                          <test-case name="Test.Apotheca.Controllers.LoginControllerTest.HandleLoginGet_UsersExist_ReturnsView" executed="True" result="Success" success="True" time="0.004" asserts="0" />
+                        </results>
+                      </test-suite>
+                      <test-suite type="TestFixture" name="SetupControllerTest" executed="True" result="Success" success="True" time="0.008" asserts="0">
+                        <results>
+                          <test-case name="Test.Apotheca.Controllers.SetupControllerTest.DefaultGet_NoUsersExist_DisplaysView" executed="True" result="Success" success="True" time="0.002" asserts="0" />
+                          <test-case name="Test.Apotheca.Controllers.SetupControllerTest.DefaultGet_UsersExist_Redirects" executed="True" result="Success" success="True" time="0.001" asserts="0" />
+                        </results>
+                      </test-suite>
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca.BLL\bin\Debug\Test.Apotheca.BLL.dll" executed="True" result="Success" success="True" time="0.384" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="Test" executed="True" result="Success" success="True" time="0.383" asserts="0">
+            <results>
+              <test-suite type="Namespace" name="Apotheca" executed="True" result="Success" success="True" time="0.382" asserts="0">
+                <results>
+                  <test-suite type="Namespace" name="BLL" executed="True" result="Success" success="True" time="0.381" asserts="0">
+                    <results>
+                      <test-suite type="Namespace" name="Data" executed="True" result="Success" success="True" time="0.349" asserts="0">
+                        <results>
+                          <test-suite type="TestFixture" name="DbMigratorTest" executed="True" result="Success" success="True" time="0.347" asserts="0">
                             <results>
-                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ExecutesAllScripts" executed="True" result="Success" success="True" time="0.829" asserts="0" />
-                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ReplacesSchema" executed="True" result="Success" success="True" time="0.039" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ExecutesAllScripts" executed="True" result="Success" success="True" time="0.333" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ReplacesSchema" executed="True" result="Success" success="True" time="0.008" asserts="0" />
                             </results>
                           </test-suite>
                         </results>
                       </test-suite>
-                      <test-suite type="Namespace" name="Resources" executed="True" result="Success" success="True" time="0.029" asserts="0">
+                      <test-suite type="Namespace" name="Resources" executed="True" result="Success" success="True" time="0.026" asserts="0">
                         <results>
-                          <test-suite type="TestFixture" name="DbScriptResourceProviderTest" executed="True" result="Success" success="True" time="0.028" asserts="0">
+                          <test-suite type="TestFixture" name="DbScriptResourceProviderTest" executed="True" result="Success" success="True" time="0.025" asserts="0">
                             <results>
-                              <test-case name="Test.Apotheca.BLL.Resources.DbScriptResourceProviderTest.GetDbMigrationScripts_WhenExecuted_ReturnsScripts" executed="True" result="Success" success="True" time="0.026" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Resources.DbScriptResourceProviderTest.GetDbMigrationScripts_WhenExecuted_ReturnsScripts" executed="True" result="Success" success="True" time="0.023" asserts="0" />
                             </results>
                           </test-suite>
                         </results>

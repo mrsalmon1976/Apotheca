@@ -8,9 +8,14 @@ namespace Apotheca.Content.Views
 {
     public class Views
     {
-        public class User
+        public class Login
         {
-            public const string Setup = "Content/Views/User/SetupView.cshtml";
+            public const string Default = "Content/Views/LoginView.cshtml";
+        }
+
+        public class Setup
+        {
+            public const string Default = "Content/Views/Setup/SetupView.cshtml";
         }
     }
 }

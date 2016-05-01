@@ -18,8 +18,7 @@ namespace Apotheca.BLL.Repositories
 
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IDbContext dbContext)
-            : base(dbContext)
+        public UserRepository(IDbContext dbContext) : base(dbContext)
         {
         }
 

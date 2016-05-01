@@ -30,7 +30,7 @@ namespace Apotheca
         public NancyContext Context
         {
             get { return _context; }
-            set { _context = value; } //do something here if you want to prevent repeated sets
+            set { _context = value; } //do sometSetupControllerou want to prevent repeated sets
         }
     }
 
@@ -59,12 +59,11 @@ namespace Apotheca
             
             IAppSettings settings = container.Resolve<IAppSettings>();
 
-
             // Apotheca classes and controllers
             container.Register<IUserMapper, UserMapper>();
             container.Register<IDashboardController, DashboardController>();
             container.Register<ILoginController, LoginController>();
-            container.Register<IUserController, UserController>();
+            container.Register<ISetupController, SetupController>();
 
             // BLL repositories
             container.Register<IUserRepository, UserRepository>();
@@ -75,22 +74,8 @@ namespace Apotheca
 
         protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
         {
-            //// a db context for every request
-            //container.Register<IDbContext>((c, p) => {
-            //    IDbContext dbContext = context.Items["DbContext"] as IDbContext;
-            //    if (dbContext == null)
-            //    {
-            //        IAppSettings settings = container.Resolve<IAppSettings>();
-            //        dbContext = new DbContext(settings.ConnectionString, settings.DbSchema);
-            //        dbContext.GetConnection().ChangeDatabase("xyz");
-            //        context.Items["DbContext"] = dbContext;
-            //    }
-            //    return dbContext;
-            //});
-
             // set shared ViewBag details here
             context.ViewBag.AppVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
-
         }
 
     }

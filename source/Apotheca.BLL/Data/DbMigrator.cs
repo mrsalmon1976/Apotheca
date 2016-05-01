@@ -9,6 +9,10 @@ using Apotheca.BLL.Data;
 
 namespace Apotheca.BLL.Database
 {
+    /// <summary>
+    /// Class used for migrating scripts to the database on application startup.  Useful for new versions of the 
+    /// application requiring changes to the database.
+    /// </summary>
     public class DbMigrator
     {
 

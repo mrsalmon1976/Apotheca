@@ -10,7 +10,7 @@ using Apotheca.ViewModels.Login;
 
 namespace Apotheca.Modules
 {
-    public class LoginModule : NancyModule
+    public class LoginModule : ApothecaModule
     {
         public LoginModule(ILoginController loginController)
         {
@@ -22,7 +22,7 @@ namespace Apotheca.Modules
             Get["/login"] = x =>
             {
 
-                return loginController.HandleLoginGet(this);
+                return this.HandleResult(loginController.LoginGet());
             };
 
             Post["/login"] = x =>

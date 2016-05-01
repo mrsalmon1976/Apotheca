@@ -18,9 +18,9 @@ namespace Apotheca.Modules
             public const string Default = "/login";
         }
 
-        public class User
+        public class Setup
         {
-            public const string Setup = "/user/setup";
+            public const string Default = "/setup";
         }
     }
 }

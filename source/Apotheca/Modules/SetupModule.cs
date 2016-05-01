@@ -11,18 +11,18 @@ using Nancy.ModelBinding;
 
 namespace Apotheca.Modules
 {
-    public class UserModule : NancyModule
+    public class SetupModule : ApothecaModule
     {
-        public UserModule(IUserController userController)
+        public SetupModule(ISetupController setupController)
         {
-            Get[Actions.User.Setup] = x =>
+            Get[Actions.Setup.Default] = x =>
             {
-                return userController.HandleSetupGet(this);
+                return base.HandleResult(setupController.DefaultGet());
             };
 
-            Post[Actions.User.Setup] = x =>
+            Post[Actions.Setup.Default] = x =>
             {
-                return userController.HandleSetupPost(this);
+                return base.HandleResult(setupController.DefaultPost(this));
             };
 
         }
