@@ -16,30 +16,24 @@ namespace Apotheca.Modules
         {
             Get["/"] = x =>
             {
-                return this.Response.AsRedirect("/login");
+                return this.Response.AsRedirect(Actions.Login.Default);
             };
 
             Get["/login"] = x =>
             {
 
-                LoginViewModel model = null;// loginController.GetLoginViewData();
-                //if (model.UsersExist)
-                //{
-                    //return View["Content/Views/LoginView.cshtml", model];
-                //}
                 return loginController.HandleLoginGet(this);
             };
 
             Post["/login"] = x =>
             {
                 // TODO: Complete authentication
-                return this.LoginAndRedirect(Guid.NewGuid(), DateTime.Now.AddDays(1), "/dashboard");
-                //return this.Response.AsRedirect("/dashboard");
+                return this.LoginAndRedirect(Guid.NewGuid(), DateTime.Now.AddDays(1), Actions.Dashboard.Default);
             };
 
             Get["/logout"] = x =>
             {
-                return this.Logout("/login");
+                return this.Logout(Actions.Login.Default);
             };
 
         }

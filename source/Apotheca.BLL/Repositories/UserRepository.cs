@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Apotheca.BLL.Data;
 
 namespace Apotheca.BLL.Repositories
 {
@@ -17,24 +18,22 @@ namespace Apotheca.BLL.Repositories
 
     public class UserRepository : BaseRepository, IUserRepository
     {
-        private IDbConnection _conn;
-
-        public UserRepository(string schema, IDbConnection conn) : base(schema)
+        public UserRepository(IDbContext dbContext)
+            : base(dbContext)
         {
-            _conn = conn;
         }
 
         public async Task<int> GetUserCountAsync()
         {
             string sql = this.ReplaceSchemaPlaceholders("SELECT COUNT(*) FROM [{SCHEMA}].[Users]");
-            Task<int> count = _conn.ExecuteScalarAsync<int>(sql);
+            Task<int> count = this.DbContext.GetConnection().ExecuteScalarAsync<int>(sql);
             return await count;
         }
 
         public bool UsersExist()
         {
             string sql = this.ReplaceSchemaPlaceholders("SELECT TOP 1 Id FROM [{SCHEMA}].[Users]");
-            Guid? id = _conn.ExecuteScalar<Guid?>(sql);
+            Guid? id = this.DbContext.GetConnection().ExecuteScalar<Guid?>(sql);
             return id.HasValue;
         }
     }

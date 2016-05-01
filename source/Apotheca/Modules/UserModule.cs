@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Nancy.Authentication.Forms;
 using Apotheca.Controllers;
 using Apotheca.ViewModels.Login;
+using Nancy.ModelBinding;
 
 namespace Apotheca.Modules
 {
@@ -14,9 +15,14 @@ namespace Apotheca.Modules
     {
         public UserModule(IUserController userController)
         {
-            Get["/users/seed"] = x =>
+            Get[Actions.User.Setup] = x =>
             {
-                return userController.HandleSeedGet(this);
+                return userController.HandleSetupGet(this);
+            };
+
+            Post[Actions.User.Setup] = x =>
+            {
+                return userController.HandleSetupPost(this);
             };
 
         }

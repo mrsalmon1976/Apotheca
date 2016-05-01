@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Apotheca.BLL.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,18 +10,19 @@ namespace Apotheca.BLL.Repositories
 {
     public class BaseRepository
     {
-        private string _schema;
+        private IDbContext _dbContext;
 
-        public BaseRepository(string schema)
+        public BaseRepository(IDbContext dbContext)
         {
-            _schema = CleanseSchema(schema);
+            _dbContext = dbContext;
+            _dbContext.Schema = CleanseSchema(_dbContext.Schema);
         }
 
-        protected virtual string Schema
+        protected virtual IDbContext DbContext
         {
             get
             {
-                return _schema;
+                return _dbContext;
             }
 
         }
@@ -33,7 +35,7 @@ namespace Apotheca.BLL.Repositories
 
         protected virtual string ReplaceSchemaPlaceholders(string sql)
         {
-            return sql.Replace("{SCHEMA}", this.Schema);
+            return sql.Replace("{SCHEMA}", this.DbContext.Schema);
         }
     }
 }

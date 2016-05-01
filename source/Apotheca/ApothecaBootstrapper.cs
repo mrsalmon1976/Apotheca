@@ -14,9 +14,25 @@ using Apotheca.BLL.Repositories;
 using Apotheca.Controllers;
 using Apotheca.ViewModels;
 using System.Reflection;
+using Apotheca.BLL.Data;
 
 namespace Apotheca
 {
+
+    public interface INancyContextWrapper
+    {
+        NancyContext Context { get; set; }
+    }
+
+    public class NancyContextWrapper : INancyContextWrapper
+    {
+        private NancyContext _context;
+        public NancyContext Context
+        {
+            get { return _context; }
+            set { _context = value; } //do something here if you want to prevent repeated sets
+        }
+    }
 
     public class ApothecaBootstrapper : DefaultNancyBootstrapper
     {
@@ -26,36 +42,56 @@ namespace Apotheca
             IAppSettings settings = new AppSettings();
             container.Register<IAppSettings>(settings);
 
-            // Apotheca class
-            container.Register<IUserMapper, UserMapper>();
-            container.Register<IDashboardController, DashboardController>().AsMultiInstance();
-            container.Register<ILoginController, LoginController>().AsMultiInstance();
-            container.Register<IUserController, UserController>().AsMultiInstance();
+            // make sure we migrate database changes if there are any
+            container.Register<IDbScriptResourceProvider, DbScriptResourceProvider>();
 
-            // BLL classes
-            container.Register<IDbScriptResourceProvider, DbScriptResourceProvider>().AsMultiInstance();
-            container.Register<IDbMigrator, DbMigrator>();
-            container.Register<IUserRepository>((c, p) => new UserRepository(settings.DbSchema, container.Resolve<IDbConnection>()));
-
-            // database connection next!
-            container.Register<IDbConnection>((c, p) =>
+            // at this point, run in any database changes if there are any
+            using (IDbContext dbContext = new DbContext(settings.ConnectionString, settings.DbSchema))
             {
-                SqlConnection conn = new SqlConnection();
-                conn.ConnectionString = settings.ConnectionString;
-                conn.Open();
-                return conn;
-            });
-
-            // the first thing to do is run database changes if there are any
-            IDbScriptResourceProvider resourceProvider = container.Resolve<IDbScriptResourceProvider>();
-            container.Resolve<IDbMigrator>().Migrate(settings.DbSchema, resourceProvider.GetDbMigrationScripts());
+                IDbScriptResourceProvider resourceProvider = container.Resolve<IDbScriptResourceProvider>();
+                new DbMigrator().Migrate(dbContext, resourceProvider.GetDbMigrationScripts());
+            }
         }
 
-        protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
+        protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
-            // register all global data here
+            base.ConfigureRequestContainer(container, context);
+            
+            IAppSettings settings = container.Resolve<IAppSettings>();
+
+
+            // Apotheca classes and controllers
+            container.Register<IUserMapper, UserMapper>();
+            container.Register<IDashboardController, DashboardController>();
+            container.Register<ILoginController, LoginController>();
+            container.Register<IUserController, UserController>();
+
+            // BLL repositories
+            container.Register<IUserRepository, UserRepository>();
+
+            // register a DB context
+            container.Register<IDbContext>(new DbContext(settings.ConnectionString, settings.DbSchema));
+        }
+
+        protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
+        {
+            //// a db context for every request
+            //container.Register<IDbContext>((c, p) => {
+            //    IDbContext dbContext = context.Items["DbContext"] as IDbContext;
+            //    if (dbContext == null)
+            //    {
+            //        IAppSettings settings = container.Resolve<IAppSettings>();
+            //        dbContext = new DbContext(settings.ConnectionString, settings.DbSchema);
+            //        dbContext.GetConnection().ChangeDatabase("xyz");
+            //        context.Items["DbContext"] = dbContext;
+            //    }
+            //    return dbContext;
+            //});
+
+            // set shared ViewBag details here
             context.ViewBag.AppVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
         }
+
     }
 }

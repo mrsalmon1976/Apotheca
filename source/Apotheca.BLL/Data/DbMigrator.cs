@@ -5,33 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Apotheca.BLL.Data;
 
 namespace Apotheca.BLL.Database
 {
-    public interface IDbMigrator
+    public class DbMigrator
     {
-        void Migrate(string schemaName, string[] scripts);
-    }
 
-    public class DbMigrator : IDbMigrator
-    {
-        private IDbConnection _conn;
-
-        public DbMigrator(IDbConnection connection)
+        public void Migrate(IDbContext dbContext, string[] scripts)
         {
-            _conn = connection;
-        }
-
-        public void Migrate(string schemaName, string[] scripts)
-        {
-            using (IDbTransaction tran = _conn.BeginTransaction())
+            IDbConnection conn = dbContext.GetConnection();
+            using (IDbTransaction tran = conn.BeginTransaction())
             {
                 try
                 {
                     foreach (string script in scripts)
                     {
-                        string sql = script.Replace("{SCHEMA}", schemaName);
-                        _conn.Execute(sql, null, tran, 0, null);
+                        string sql = script.Replace("{SCHEMA}", dbContext.Schema);
+                        conn.Execute(sql, null, tran, 0, null);
                     }
                     tran.Commit();
                 }

@@ -11,6 +11,8 @@ BEGIN
 		[Salt] [varchar](100) NOT NULL,
 		[FirstName] [varchar](100) NOT NULL,
 		[Surname] [varchar](100) NOT NULL,
+		[Role] [varchar](50) NOT NULL,
+		[ApiKey] [varchar](100) NOT NULL,
 		[CreatedOn] [datetime] NOT NULL,
 	 CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
 	(

@@ -1,7 +1,11 @@
-﻿using Apotheca.BLL.Repositories;
+﻿using Apotheca.BLL.Models;
+using Apotheca.BLL.Repositories;
+using Apotheca.Content.Views;
 using Apotheca.Modules;
 using Apotheca.ViewModels.Login;
+using Apotheca.ViewModels.User;
 using Nancy;
+using Nancy.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +16,10 @@ namespace Apotheca.Controllers
 {
     public interface IUserController
     {
-        object HandleSeedGet(UserModule module);
+        object HandleSetupGet(UserModule module);
+
+        object HandleSetupPost(UserModule module);
+
     }
 
     public class UserController : IUserController
@@ -24,16 +31,24 @@ namespace Apotheca.Controllers
             _userRepo = userRepo;
         }
 
-        public object HandleSeedGet(UserModule module)
+        public object HandleSetupGet(UserModule module)
         {
             if (_userRepo.UsersExist())
             {
-                return module.Response.AsRedirect("/login");
+                return module.Response.AsRedirect(Actions.Login.Default);
             }
 
-            LoginViewModel model = new LoginViewModel();
-            return module.View["Content/Views/User/SeedView.cshtml", model];
+            UserViewModel model = new UserViewModel();
+            model.FormAction = Actions.User.Setup;
+            return module.View[Views.User.Setup, model];
 
+        }
+
+        public object HandleSetupPost(UserModule module)
+        {
+            UserViewModel model = module.Bind<UserViewModel>();
+            model.Role = Roles.Admin;
+            return module.View[Views.User.Setup, model];
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,25 +10,39 @@ namespace Apotheca
 {
     class Program
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         static void Main(string[] args)
         {
-            HostFactory.Run(
-                configuration =>
-                {
-                    configuration.Service<ApothecaService>(
-                        service =>
-                        {
-                            service.ConstructUsing(x => new ApothecaService());
-                            service.WhenStarted(x => x.Start());
-                            service.WhenStopped(x => x.Stop());
-                        });
+            _logger.Info("Apotheca starting up.");
 
-                    configuration.RunAsLocalSystem();
+            try
+            {
+                HostFactory.Run(
+                    configuration =>
+                    {
+                        configuration.Service<ApothecaService>(
+                            service =>
+                            {
+                                service.ConstructUsing(x => new ApothecaService());
+                                service.WhenStarted(x => x.Start());
+                                service.WhenStopped(x => x.Stop());
+                            });
 
-                    configuration.SetServiceName("Apotheca");
-                    configuration.SetDisplayName("Apotheca");
-                    configuration.SetDescription("The Apotheca Document Store service.");
-                });
+                        configuration.RunAsLocalSystem();
+
+                        configuration.SetServiceName("Apotheca");
+                        configuration.SetDisplayName("Apotheca");
+                        configuration.SetDescription("The Apotheca Document Store service.");
+                    });
+                _logger.Info("Apotheca shutting down.");
+            }
+            catch (Exception ex)
+            {
+                _logger.Fatal(ex, "Apotheca crashed!");
+            }
+
+
         }
     }
 }

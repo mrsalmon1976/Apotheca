@@ -28,7 +28,7 @@ namespace Apotheca.Controllers
         {
             if (!_userRepo.UsersExist())
             {
-                return module.Response.AsRedirect("/users/seed");
+                return module.Response.AsRedirect(Actions.User.Setup);
             }
 
             LoginViewModel model = new LoginViewModel();

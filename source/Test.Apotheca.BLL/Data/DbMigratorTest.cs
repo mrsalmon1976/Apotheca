@@ -8,13 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Apotheca.BLL.Data;
 
 namespace Test.Apotheca.BLL.Data
 {
     [TestFixture]
     public class DbMigratorTest
     {
-        private IDbMigrator _dbMigrator;
+        private DbMigrator _dbMigrator;
+        private IDbContext _dbContext;
         private IDbConnection _dbConnection;
 
         public DbMigratorTest()
@@ -24,8 +26,10 @@ namespace Test.Apotheca.BLL.Data
         [SetUp]
         public void DbMigratorTest_SetUp()
         {
+            _dbContext = Substitute.For<IDbContext>();
             _dbConnection = Substitute.For<IDbConnection>();
-            _dbMigrator = new DbMigrator(_dbConnection);
+            _dbContext.GetConnection().Returns(_dbConnection);
+            _dbMigrator = new DbMigrator();
         }
 
         /// <summary>
@@ -38,9 +42,10 @@ namespace Test.Apotheca.BLL.Data
             string script2 = Guid.NewGuid().ToString();
             string script3 = Guid.NewGuid().ToString();
             string[] scripts = { script1, script2, script3 };
-            string schema = "dbo";
+            const string schema = "dbo";
+            _dbContext.Schema.Returns(schema);
 
-            _dbMigrator.Migrate(schema, scripts);
+            _dbMigrator.Migrate(_dbContext, scripts);
 
             _dbConnection.Received(3).Execute(Arg.Any<string>());
             _dbConnection.Received().Execute(script1, null, Arg.Any<IDbTransaction>(), 0, null);
@@ -56,11 +61,12 @@ namespace Test.Apotheca.BLL.Data
         {
             string s1 = "SELECT * FROM [{SCHEMA}].MyTable";
             string[] scripts = { s1 };
-            string schema = "dbo";
+            string schema = new Random().Next(1000, 9999).ToString();
+            _dbContext.Schema.Returns(schema);
 
-            _dbMigrator.Migrate(schema, scripts);
+            _dbMigrator.Migrate(_dbContext, scripts);
 
-            string expected = "SELECT * FROM [dbo].MyTable";
+            string expected = String.Format("SELECT * FROM [{0}].MyTable", schema);
             _dbConnection.Received(1).Execute(Arg.Any<string>());
             _dbConnection.Received(1).Execute(expected);
         }

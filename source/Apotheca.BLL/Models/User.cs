@@ -8,8 +8,21 @@ namespace Apotheca.BLL.Models
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; internal set; }
+
+        public string Email { get; set; }
+
+        public string Password { get; set; }
 
         public string FirstName { get; set; }
+
+        public string Surname { get; set; }
+
+        public string Role { get; set; }
+
+        public string ApiKey { get; internal set; }
+
+        public DateTime? CreatedOn { get; set; }
+
     }
 }
