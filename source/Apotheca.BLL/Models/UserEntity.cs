@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Apotheca.BLL.Models
 {
-    public class User
+    public class UserEntity
     {
         public Guid? Id { get; internal set; }
 

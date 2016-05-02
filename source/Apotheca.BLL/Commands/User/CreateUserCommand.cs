@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Apotheca.BLL.Validators;
+using Apotheca.BLL.Exceptions;
+using Apotheca.BLL.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,15 +10,33 @@ using System.Threading.Tasks;
 
 namespace Apotheca.BLL.Commands.User
 {
-    public class CreateUserCommand : Command<Guid?>
+    public interface ICreateUserCommand : ICommand<Guid>
     {
-        public Apotheca.BLL.Models.User User { get; set; }
+        Apotheca.BLL.Models.UserEntity User { get; set; }
+    }
 
-        public override Guid? Execute()
+    public class CreateUserCommand : Command<Guid>, ICreateUserCommand
+    {
+        private IUserValidator _userValidator;
+
+        public CreateUserCommand(IUserValidator stringValidator)
         {
-            // TODO: Add validation
-
-            throw new NotImplementedException();
+            _userValidator = stringValidator;
         }
+
+        public Apotheca.BLL.Models.UserEntity User { get; set; }
+        
+        public override Guid Execute()
+        {
+            // validate
+            if (this.User == null) throw new NullReferenceException("User property cannot be null");
+            _userValidator.Validate(this.User);
+
+            // TODO: Insert the new user
+
+            // TODO: return the Guid of the new user
+            return Guid.NewGuid();
+        }
+
     }
 }

@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" total="7" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2016-05-01" time="21:43:40">
+<test-results name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" total="28" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2016-05-02" time="09:35:25">
   <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.8689" os-version="Microsoft Windows NT 6.2.9200.0" platform="Win32NT" cwd="C:\Program Files (x86)\NUnit 2.6.3\bin" machine-name="ACC2S" user="Matt" user-domain="ACC2S" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="Project" name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" executed="True" result="Success" success="True" time="0.905" asserts="0">
+  <test-suite type="Project" name="C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" executed="True" result="Success" success="True" time="0.418" asserts="0">
     <results>
-      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca\bin\Debug\Test.Apotheca.dll" executed="True" result="Success" success="True" time="0.445" asserts="0">
+      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca\bin\Debug\Test.Apotheca.dll" executed="True" result="Success" success="True" time="0.071" asserts="0">
         <results>
-          <test-suite type="Namespace" name="Test" executed="True" result="Success" success="True" time="0.445" asserts="0">
+          <test-suite type="Namespace" name="Test" executed="True" result="Success" success="True" time="0.071" asserts="0">
             <results>
-              <test-suite type="Namespace" name="Apotheca" executed="True" result="Success" success="True" time="0.444" asserts="0">
+              <test-suite type="Namespace" name="Apotheca" executed="True" result="Success" success="True" time="0.070" asserts="0">
                 <results>
-                  <test-suite type="Namespace" name="Controllers" executed="True" result="Success" success="True" time="0.444" asserts="0">
+                  <test-suite type="Namespace" name="Controllers" executed="True" result="Success" success="True" time="0.069" asserts="0">
                     <results>
-                      <test-suite type="TestFixture" name="LoginControllerTest" executed="True" result="Success" success="True" time="0.429" asserts="0">
+                      <test-suite type="TestFixture" name="LoginControllerTest" executed="True" result="Success" success="True" time="0.055" asserts="0">
                         <results>
-                          <test-case name="Test.Apotheca.Controllers.LoginControllerTest.HandleLoginGet_NoUsers_RedirectsToSetup" executed="True" result="Success" success="True" time="0.408" asserts="0" />
-                          <test-case name="Test.Apotheca.Controllers.LoginControllerTest.HandleLoginGet_UsersExist_ReturnsView" executed="True" result="Success" success="True" time="0.004" asserts="0" />
+                          <test-case name="Test.Apotheca.Controllers.LoginControllerTest.HandleLoginGet_NoUsers_RedirectsToSetup" executed="True" result="Success" success="True" time="0.047" asserts="0" />
+                          <test-case name="Test.Apotheca.Controllers.LoginControllerTest.HandleLoginGet_UsersExist_ReturnsView" executed="True" result="Success" success="True" time="0.002" asserts="0" />
                         </results>
                       </test-suite>
                       <test-suite type="TestFixture" name="SetupControllerTest" executed="True" result="Success" success="True" time="0.008" asserts="0">
@@ -33,29 +33,90 @@
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca.BLL\bin\Debug\Test.Apotheca.BLL.dll" executed="True" result="Success" success="True" time="0.384" asserts="0">
+      <test-suite type="Assembly" name="C:\Matt\code\Apotheca\source\Test.Apotheca.BLL\bin\Debug\Test.Apotheca.BLL.dll" executed="True" result="Success" success="True" time="0.333" asserts="0">
         <results>
-          <test-suite type="Namespace" name="Test" executed="True" result="Success" success="True" time="0.383" asserts="0">
+          <test-suite type="Namespace" name="Test" executed="True" result="Success" success="True" time="0.332" asserts="0">
             <results>
-              <test-suite type="Namespace" name="Apotheca" executed="True" result="Success" success="True" time="0.382" asserts="0">
+              <test-suite type="Namespace" name="Apotheca" executed="True" result="Success" success="True" time="0.332" asserts="0">
                 <results>
-                  <test-suite type="Namespace" name="BLL" executed="True" result="Success" success="True" time="0.381" asserts="0">
+                  <test-suite type="Namespace" name="BLL" executed="True" result="Success" success="True" time="0.331" asserts="0">
                     <results>
-                      <test-suite type="Namespace" name="Data" executed="True" result="Success" success="True" time="0.349" asserts="0">
+                      <test-suite type="Namespace" name="Commands" executed="True" result="Success" success="True" time="0.014" asserts="0">
                         <results>
-                          <test-suite type="TestFixture" name="DbMigratorTest" executed="True" result="Success" success="True" time="0.347" asserts="0">
+                          <test-suite type="Namespace" name="User" executed="True" result="Success" success="True" time="0.014" asserts="0">
                             <results>
-                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ExecutesAllScripts" executed="True" result="Success" success="True" time="0.333" asserts="0" />
-                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ReplacesSchema" executed="True" result="Success" success="True" time="0.008" asserts="0" />
+                              <test-suite type="TestFixture" name="CreateUserCommandTest" executed="True" result="Success" success="True" time="0.013" asserts="0">
+                                <results>
+                                  <test-case name="Test.Apotheca.BLL.Commands.User.CreateUserCommandTest.Execute_UserNull_ThrowsException" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Commands.User.CreateUserCommandTest.Execute_WithUser_Validate" executed="True" result="Success" success="True" time="0.002" asserts="0" />
+                                </results>
+                              </test-suite>
                             </results>
                           </test-suite>
                         </results>
                       </test-suite>
-                      <test-suite type="Namespace" name="Resources" executed="True" result="Success" success="True" time="0.026" asserts="0">
+                      <test-suite type="Namespace" name="Data" executed="True" result="Success" success="True" time="0.180" asserts="0">
                         <results>
-                          <test-suite type="TestFixture" name="DbScriptResourceProviderTest" executed="True" result="Success" success="True" time="0.025" asserts="0">
+                          <test-suite type="TestFixture" name="DbMigratorTest" executed="True" result="Success" success="True" time="0.179" asserts="0">
                             <results>
-                              <test-case name="Test.Apotheca.BLL.Resources.DbScriptResourceProviderTest.GetDbMigrationScripts_WhenExecuted_ReturnsScripts" executed="True" result="Success" success="True" time="0.023" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ExecutesAllScripts" executed="True" result="Success" success="True" time="0.170" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Data.DbMigratorTest.Migrate_WhenExecuted_ReplacesSchema" executed="True" result="Success" success="True" time="0.003" asserts="0" />
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                      <test-suite type="Namespace" name="Resources" executed="True" result="Success" success="True" time="0.019" asserts="0">
+                        <results>
+                          <test-suite type="TestFixture" name="DbScriptResourceProviderTest" executed="True" result="Success" success="True" time="0.019" asserts="0">
+                            <results>
+                              <test-case name="Test.Apotheca.BLL.Resources.DbScriptResourceProviderTest.GetDbMigrationScripts_WhenExecuted_ReturnsScripts" executed="True" result="Success" success="True" time="0.016" asserts="0" />
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                      <test-suite type="Namespace" name="Validators" executed="True" result="Success" success="True" time="0.097" asserts="0">
+                        <results>
+                          <test-suite type="TestFixture" name="StringValidatorTest" executed="True" result="Success" success="True" time="0.018" asserts="0">
+                            <results>
+                              <test-suite type="ParameterizedTest" name="IsValidEmailAddress_CheckValidation" executed="True" result="Success" success="True" time="0.018" asserts="0">
+                                <results>
+                                  <test-case name="Test.Apotheca.BLL.Validators.StringValidatorTest.IsValidEmailAddress_CheckValidation(&quot;matt@test.com&quot;,True)" executed="True" result="Success" success="True" time="0.001" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.StringValidatorTest.IsValidEmailAddress_CheckValidation(null,False)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.StringValidatorTest.IsValidEmailAddress_CheckValidation(&quot;&quot;,False)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.StringValidatorTest.IsValidEmailAddress_CheckValidation(&quot;a@a.a&quot;,True)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.StringValidatorTest.IsValidEmailAddress_CheckValidation(&quot;a@a&quot;,False)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                </results>
+                              </test-suite>
+                            </results>
+                          </test-suite>
+                          <test-suite type="TestFixture" name="UserValidatorTest" executed="True" result="Success" success="True" time="0.071" asserts="0">
+                            <results>
+                              <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidEmailAddress_FailsValidation" executed="True" result="Success" success="True" time="0.001" asserts="0" />
+                              <test-suite type="ParameterizedTest" name="Validate_InvalidFirstName_FailsValidation" executed="True" result="Success" success="True" time="0.005" asserts="0">
+                                <results>
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidFirstName_FailsValidation(&quot;&quot;)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidFirstName_FailsValidation(null)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                </results>
+                              </test-suite>
+                              <test-suite type="ParameterizedTest" name="Validate_InvalidPassword_FailsValidation" executed="True" result="Success" success="True" time="0.014" asserts="0">
+                                <results>
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidPassword_FailsValidation(&quot;abc&quot;)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidPassword_FailsValidation(&quot;abcdefg&quot;)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidPassword_FailsValidation(&quot;&quot;)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidPassword_FailsValidation(null)" executed="True" result="Success" success="True" time="0.001" asserts="0" />
+                                </results>
+                              </test-suite>
+                              <test-suite type="ParameterizedTest" name="Validate_InvalidRole_FailsValidation" executed="True" result="Success" success="True" time="0.010" asserts="0">
+                                <results>
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidRole_FailsValidation(&quot;&quot;)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidRole_FailsValidation(&quot;bollocks&quot;)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_InvalidRole_FailsValidation(null)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                </results>
+                              </test-suite>
+                              <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_IsValidObject_PassesValidation" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_NewUserAlreadyExists_FailsValidation" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_OnValidation_CheckDependencies" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                              <test-case name="Test.Apotheca.BLL.Validators.UserValidatorTest.Validate_UserNull_ThrowsArgumentNullException" executed="True" result="Success" success="True" time="0.006" asserts="0" />
                             </results>
                           </test-suite>
                         </results>

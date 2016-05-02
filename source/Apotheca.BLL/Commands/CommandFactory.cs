@@ -24,7 +24,7 @@ namespace Apotheca.BLL.Commands
         public TCommand CreateCommand<TCommand, TReturnType>() where TCommand : ICommand<TReturnType>
         {
             TCommand cmd = Activator.CreateInstance<TCommand>();
-            cmd.DbConnection = _dbConnection;
+            //cmd.DbConnection = _dbConnection;
             return cmd;
         }
     }

@@ -6,12 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Apotheca.BLL.Data;
+using Apotheca.BLL.Models;
 
 namespace Apotheca.BLL.Repositories
 {
     public interface IUserRepository
     {
         Task<int> GetUserCountAsync();
+
+        UserEntity GetUserByEmail(string email);
+        UserEntity GetUserById(Guid id);
 
         bool UsersExist();
     }
@@ -20,6 +24,16 @@ namespace Apotheca.BLL.Repositories
     {
         public UserRepository(IDbContext dbContext) : base(dbContext)
         {
+        }
+
+        public UserEntity GetUserByEmail(string email)
+        {
+            return this.DbContext.GetConnection().Query<UserEntity>("select * from User where Email = @Email", new { Email = email }).SingleOrDefault();
+        }
+
+        public UserEntity GetUserById(Guid id)
+        {
+            return this.DbContext.GetConnection().Query<UserEntity>("select * from User where Id = @Id", new { Id = id }).SingleOrDefault();
         }
 
         public async Task<int> GetUserCountAsync()

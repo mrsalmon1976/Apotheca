@@ -9,15 +9,11 @@ namespace Apotheca.BLL.Commands
 {
     public interface ICommand<T>
     {
-        IDbConnection DbConnection { get; set; }
-
         T Execute();
     }
 
     public abstract class Command<T> : ICommand<T>
     {
-        public IDbConnection DbConnection { get; set; }
-
         public abstract T Execute();
     }
 }

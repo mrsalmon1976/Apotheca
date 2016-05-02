@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Apotheca.ViewModels.User
 {
-    public class UserViewModel : Apotheca.BLL.Models.User
+    public class UserViewModel : Apotheca.BLL.Models.UserEntity
     {
         public string ConfirmPassword { get; set; }
 

@@ -6,10 +6,17 @@ using System.Threading.Tasks;
 
 namespace Apotheca.BLL.Models
 {
-    public class Roles
+    public static class Roles
     {
+        static Roles()
+        {
+            AllRoles = new List<string>(new string[] { Admin, Moderator, User }).AsReadOnly();
+        }
+
         public const string Admin = "Admin";
         public const string Moderator = "Moderator";
         public const string User = "User";
+
+        public static IReadOnlyList<string> AllRoles { get; private set; }
     }
 }
