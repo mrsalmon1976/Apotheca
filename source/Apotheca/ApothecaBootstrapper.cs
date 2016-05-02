@@ -15,6 +15,8 @@ using Apotheca.Controllers;
 using Apotheca.ViewModels;
 using System.Reflection;
 using Apotheca.BLL.Data;
+using Apotheca.BLL.Commands.User;
+using Apotheca.BLL.Validators;
 
 namespace Apotheca
 {
@@ -65,8 +67,14 @@ namespace Apotheca
             container.Register<ILoginController, LoginController>();
             container.Register<ISetupController, SetupController>();
 
+            // BLL commands
+            container.Register<ICreateUserCommand, CreateUserCommand>();
+
             // BLL repositories
             container.Register<IUserRepository, UserRepository>();
+
+            // other BLL classes
+            container.Register<IUserValidator, UserValidator>();
 
             // register a DB context
             container.Register<IDbContext>(new DbContext(settings.ConnectionString, settings.DbSchema));

@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BCrypt.Net">
+      <HintPath>..\packages\BCrypt-Official.0.1.109\lib\BCrypt.Net.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
@@ -49,6 +52,8 @@
     <Compile Include="Commands\User\CreateUserCommand.cs" />
     <Compile Include="Data\DbContext.cs" />
     <Compile Include="Data\DbMigrator.cs" />
+    <Compile Include="Security\PasswordProvider.cs" />
+    <Compile Include="Security\RandomKeyGenerator.cs" />
     <Compile Include="Validators\StringValidator.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Models\Roles.cs" />
@@ -70,6 +75,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\DbMigrations\0002.CreateUserTable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

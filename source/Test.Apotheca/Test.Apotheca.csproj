@@ -52,6 +52,8 @@
     <Compile Include="Controllers\SetupControllerTest.cs" />
     <Compile Include="Controllers\LoginControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestHelpers\TestViewModelHelper.cs" />
+    <Compile Include="Validators\UserViewModelValidatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -84,10 +84,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\UserInfo.cs" />
     <Compile Include="Security\UserMapper.cs" />
+    <Compile Include="Validators\UserViewModelValidator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
+    <Compile Include="Web\Results\LoginAndRedirectResult.cs" />
     <Compile Include="Web\Results\ViewResult.cs" />
     <Compile Include="Web\Results\IControllerResult.cs" />
     <Compile Include="Web\Results\RedirectResult.cs" />
@@ -113,6 +115,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Views\DashboardView.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Views\Shared\_ValidationErrorPanel.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Views\User\_UserForm.cshtml">

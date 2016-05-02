@@ -1,5 +1,6 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @model Apotheca.ViewModels.User.UserViewModel
+@Html.Partial("Content/Views/Shared/_ValidationErrorPanel.cshtml", Model.ValidationErrors)
 <form role="form" method="post" action="@Model.FormAction">
     <fieldset>
         <div class="form-group">

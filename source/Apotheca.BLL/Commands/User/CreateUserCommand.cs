@@ -7,35 +7,64 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Apotheca.BLL.Security;
+using Apotheca.BLL.Repositories;
+using Apotheca.BLL.Data;
 
 namespace Apotheca.BLL.Commands.User
 {
     public interface ICreateUserCommand : ICommand<Guid>
     {
-        Apotheca.BLL.Models.UserEntity User { get; set; }
+        UserEntity User { get; set; }
     }
 
     public class CreateUserCommand : Command<Guid>, ICreateUserCommand
     {
+        private IDbContext _dbContext;
         private IUserValidator _userValidator;
+        private IUserRepository _userRepo;
+        private IRandomKeyGenerator _keyGenerator;
+        private IPasswordProvider _passwordProvider;
 
-        public CreateUserCommand(IUserValidator stringValidator)
+        public CreateUserCommand(IDbContext dbContext, IUserValidator userValidator, IUserRepository userRepo, IRandomKeyGenerator keyGenerator, IPasswordProvider passwordProvider)
         {
-            _userValidator = stringValidator;
+            _dbContext = dbContext;
+            _userValidator = userValidator;
+            _userRepo = userRepo;
+            _keyGenerator = keyGenerator;
+            _passwordProvider = passwordProvider;
         }
 
-        public Apotheca.BLL.Models.UserEntity User { get; set; }
+        public UserEntity User { get; set; }
         
         public override Guid Execute()
         {
-            // validate
             if (this.User == null) throw new NullReferenceException("User property cannot be null");
+
+            // set values that are not set by the user: API Key, Salted Password, CreatedOn
+            this.User.ApiKey = _keyGenerator.GenerateKey();
+            this.User.Salt = _passwordProvider.GenerateSalt();
+            this.User.Password = _passwordProvider.HashPassword(this.User.Password, this.User.Salt);
+
+            //validate
             _userValidator.Validate(this.User);
 
-            // TODO: Insert the new user
+            // start a transaction as now we're hitting the database
+            IDbTransaction txn = this._dbContext.BeginTransaction();
+            try
+            {
+                // set the CreatedOn and insert the new user
+                this.User.CreatedOn = DateTime.UtcNow;
+                _userRepo.Create(this.User);
 
-            // TODO: return the Guid of the new user
-            return Guid.NewGuid();
+                txn.Commit();
+            }
+            catch (Exception)
+            {
+                if (txn != null) txn.Rollback();
+                throw;
+            }
+            return this.User.Id.Value;
         }
 
     }

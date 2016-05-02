@@ -14,6 +14,8 @@ namespace Apotheca.BLL.Models
 
         public string Password { get; set; }
 
+        public string Salt { get; set; }
+
         public string FirstName { get; set; }
 
         public string Surname { get; set; }

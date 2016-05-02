@@ -8,6 +8,8 @@ using Nancy.Authentication.Forms;
 using Apotheca.Controllers;
 using Apotheca.ViewModels.Login;
 using Nancy.ModelBinding;
+using Apotheca.ViewModels.User;
+using Apotheca.Web.Results;
 
 namespace Apotheca.Modules
 {
@@ -22,7 +24,7 @@ namespace Apotheca.Modules
 
             Post[Actions.Setup.Default] = x =>
             {
-                return base.HandleResult(setupController.DefaultPost(this));
+                return base.HandleResult(setupController.DefaultPost(this.Bind<UserViewModel>()));
             };
 
         }

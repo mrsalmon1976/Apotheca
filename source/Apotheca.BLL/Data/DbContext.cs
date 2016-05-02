@@ -10,7 +10,11 @@ namespace Apotheca.BLL.Data
 {
     public interface IDbContext : IDisposable
     {
+        IDbTransaction BeginTransaction();
+
         IDbConnection GetConnection();
+
+        IDbTransaction CurrentTransaction { get; }
 
         string Schema { get; set; }
     }
@@ -26,6 +30,15 @@ namespace Apotheca.BLL.Data
             _connectionString = connectionString;
             this.Schema = schema;
         }
+
+        public virtual IDbTransaction BeginTransaction()
+        {
+            IDbTransaction txn = this.GetConnection().BeginTransaction();
+            this.CurrentTransaction = txn;
+            return txn;
+        }
+
+        public virtual IDbTransaction CurrentTransaction { get; private set; }
 
         /// <summary>
         /// Gets/sets the schema used in the database (configurable app setting)

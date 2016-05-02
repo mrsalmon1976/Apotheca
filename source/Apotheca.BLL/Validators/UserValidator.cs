@@ -36,13 +36,19 @@ namespace Apotheca.BLL.Validators
                 errors.Add("Email address is invalid");
             }
 
-            if (String.IsNullOrEmpty(user.FirstName) || user.FirstName.Trim().Length < 1)
+            if (String.IsNullOrWhiteSpace(user.FirstName))
             {
                 errors.Add("First name not supplied");
             }
-            if (String.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
+            // we can't do too much with the password as this will be an encrypted value at this stage anyway, 
+            // leave the full password validation to the UI level
+            if (String.IsNullOrEmpty(user.Password))
             {
-                errors.Add("Password must be at least 8 characters");
+                errors.Add("Password not supplied");
+            }
+            if (String.IsNullOrWhiteSpace(user.ApiKey))
+            {
+                errors.Add("ApiKey does not exist");
             }
             if (!Roles.AllRoles.Contains(user.Role))
             {

@@ -56,8 +56,6 @@ namespace Test.Apotheca.BLL.Validators
 
         [TestCase(null)]
         [TestCase("")]
-        [TestCase("abc")]
-        [TestCase("abcdefg")]
         public void Validate_InvalidPassword_FailsValidation(string password)
         {
             UserEntity user = TestEntityHelper.CreateUserWithData();
