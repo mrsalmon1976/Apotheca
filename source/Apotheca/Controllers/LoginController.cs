@@ -1,5 +1,5 @@
 ﻿using Apotheca.BLL.Repositories;
-using Apotheca.Content.Views;
+using Apotheca.Navigation;
 using Apotheca.Modules;
 using Apotheca.ViewModels.Login;
 using Apotheca.Web.Results;
@@ -34,7 +34,7 @@ namespace Apotheca.Controllers
             }
 
             LoginViewModel model = new LoginViewModel();
-            return new ViewResult(Views.Login.Default, model);
+            return new ViewResult(Views.Login, model);
         }
     }
 }

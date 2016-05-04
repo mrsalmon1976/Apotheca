@@ -70,12 +70,14 @@
     <Compile Include="ApothecaBootstrapper.cs" />
     <Compile Include="ApothecaService.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
-    <Compile Include="Content\Views\Views.cs" />
+    <Compile Include="Navigation\Views.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\SetupController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Modules\Actions.cs" />
+    <Compile Include="Navigation\Actions.cs" />
     <Compile Include="Modules\ApothecaModule.cs" />
+    <Compile Include="Modules\DocumentModule.cs" />
     <Compile Include="Modules\SetupModule.cs" />
     <Compile Include="Modules\DashboardModule.cs" />
     <Compile Include="Modules\LoginModule.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Validators\UserViewModelValidator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\Document\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
     <Compile Include="Web\Results\LoginAndRedirectResult.cs" />
@@ -115,6 +118,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Views\DashboardView.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Views\Document\DocumentFormView.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Views\Shared\_ValidationErrorPanel.cshtml">
@@ -159,6 +165,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Js\bootstrap.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Js\dropzone.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Js\jquery.min.js">

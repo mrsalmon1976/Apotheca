@@ -4,13 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apotheca.Modules
+namespace Apotheca.Navigation
 {
     public class Actions
     {
-        public class Dashboard
+        public const string Dashboard = "/dashboard";
+
+        public class Document
         {
-            public const string Default = "/dashboard";
+            public const string Default = "/document";
+
+            public const string Add = "/document/add";
         }
 
         public class Login

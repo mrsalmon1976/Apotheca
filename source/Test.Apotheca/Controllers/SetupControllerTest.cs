@@ -12,7 +12,7 @@ using Nancy;
 using Nancy.ModelBinding;
 using Apotheca.ViewModels.Login;
 using Apotheca.Web.Results;
-using Apotheca.Content.Views;
+using Apotheca.Navigation;
 using Apotheca.ViewModels.User;
 using Apotheca.BLL.Commands.User;
 using Apotheca.Validators;
@@ -134,7 +134,7 @@ namespace Test.Apotheca.Controllers
             _createUserCommand.Received(1).Execute();
             Assert.IsNotNull(result);
             Assert.AreEqual(model.Id.Value, result.UserId);
-            Assert.AreEqual(Actions.Dashboard.Default, result.Location);
+            Assert.AreEqual(Actions.Dashboard, result.Location);
 
         }
 

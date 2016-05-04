@@ -4,13 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apotheca.Content.Views
+namespace Apotheca.Navigation
 {
     public class Views
     {
-        public class Login
+        public const string Dashboard = "Content/Views/DashboardView.cshtml";
+
+        public const string Login = "Content/Views/LoginView.cshtml";
+
+        public class Document
         {
-            public const string Default = "Content/Views/LoginView.cshtml";
+            public const string Add = "Content/Views/Document/DocumentFormView.cshtml";
         }
 
         public class Setup

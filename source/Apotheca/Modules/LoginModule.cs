@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Nancy.Authentication.Forms;
 using Apotheca.Controllers;
 using Apotheca.ViewModels.Login;
+using Apotheca.Navigation;
 
 namespace Apotheca.Modules
 {
@@ -28,7 +29,7 @@ namespace Apotheca.Modules
             Post["/login"] = x =>
             {
                 // TODO: Complete authentication
-                return this.LoginAndRedirect(Guid.NewGuid(), DateTime.Now.AddDays(1), Actions.Dashboard.Default);
+                return this.LoginAndRedirect(Guid.NewGuid(), DateTime.Now.AddDays(1), Actions.Dashboard);
             };
 
             Get["/logout"] = x =>

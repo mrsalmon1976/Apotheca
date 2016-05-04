@@ -11,7 +11,7 @@ using Apotheca.Modules;
 using Nancy;
 using Apotheca.ViewModels.Login;
 using Apotheca.Web.Results;
-using Apotheca.Content.Views;
+using Apotheca.Navigation;
 
 namespace Test.Apotheca.Controllers
 {
@@ -55,7 +55,7 @@ namespace Test.Apotheca.Controllers
 
             // assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(Views.Login.Default, result.ViewName);
+            Assert.AreEqual(Views.Login, result.ViewName);
 
             LoginViewModel model = result.Model as LoginViewModel;
             Assert.IsNotNull(model);

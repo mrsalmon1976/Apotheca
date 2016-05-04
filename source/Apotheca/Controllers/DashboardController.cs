@@ -1,4 +1,5 @@
 ﻿using Apotheca.BLL.Repositories;
+using Apotheca.Navigation;
 using Apotheca.Modules;
 using Apotheca.ViewModels.Dashboard;
 using Nancy;
@@ -33,7 +34,7 @@ namespace Apotheca.Controllers
 
             DashboardViewModel model = new DashboardViewModel();
             model.UserCount = userCount.Result;
-            return module.View["Content/Views/DashboardView.cshtml", model];
+            return module.View[Views.Dashboard, model];
 
         }
 

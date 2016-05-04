@@ -2,7 +2,7 @@
 using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
-using Apotheca.Content.Views;
+using Apotheca.Navigation;
 using Apotheca.Modules;
 using Apotheca.Validators;
 using Apotheca.ViewModels.Login;
@@ -78,7 +78,7 @@ namespace Apotheca.Controllers
             }
 
             // if we've got here, we're all good - redirect to the dashboard
-            return new LoginAndRedirectResult(model.Id.Value, Actions.Dashboard.Default);
+            return new LoginAndRedirectResult(model.Id.Value, Actions.Dashboard);
         }
     }
 }

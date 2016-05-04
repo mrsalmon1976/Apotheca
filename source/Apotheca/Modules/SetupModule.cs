@@ -10,6 +10,7 @@ using Apotheca.ViewModels.Login;
 using Nancy.ModelBinding;
 using Apotheca.ViewModels.User;
 using Apotheca.Web.Results;
+using Apotheca.Navigation;
 
 namespace Apotheca.Modules
 {
