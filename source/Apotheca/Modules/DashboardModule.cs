@@ -1,5 +1,6 @@
 ﻿using Apotheca.BLL.Repositories;
 using Apotheca.Controllers;
+using Apotheca.Navigation;
 using Apotheca.ViewModels.Dashboard;
 using Nancy;
 using Nancy.Authentication.Forms;
@@ -15,7 +16,7 @@ namespace Apotheca.Modules
     {
         public DashboardModule(IUserMapper userMapper, IDashboardController dashboardController) : base(userMapper)
         {
-            Get["/dashboard", true] = async (x, ct) =>
+            Get[Actions.Dashboard, true] = async (x, ct) =>
             {
                 return await dashboardController.HandleDashboardGetAsync(this);
             };

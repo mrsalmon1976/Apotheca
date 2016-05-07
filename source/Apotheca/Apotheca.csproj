@@ -62,6 +62,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="SystemWrapper">
+      <HintPath>..\packages\SystemWrapper.0.4\lib\SystemWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="Topshelf">
       <HintPath>..\packages\Topshelf.3.3.1\lib\net40-full\Topshelf.dll</HintPath>
     </Reference>
@@ -70,6 +73,7 @@
     <Compile Include="ApothecaBootstrapper.cs" />
     <Compile Include="ApothecaService.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
+    <Compile Include="Navigation\PathHelper.cs" />
     <Compile Include="Navigation\Views.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\SetupController.cs" />
@@ -92,6 +96,8 @@
     <Compile Include="ViewModels\Document\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
+    <Compile Include="Web\Results\TextResult.cs" />
+    <Compile Include="Web\Results\JsonResult.cs" />
     <Compile Include="Web\Results\LoginAndRedirectResult.cs" />
     <Compile Include="Web\Results\ViewResult.cs" />
     <Compile Include="Web\Results\IControllerResult.cs" />
@@ -149,6 +155,9 @@
     <Content Include="Content\Css\apotheca.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Css\dropzone.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Css\font-awesome.min.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -170,6 +179,9 @@
     <Content Include="Content\Js\dropzone.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Js\apotheca.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Js\jquery.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -179,8 +191,13 @@
     <Content Include="Content\Js\sb-admin-2.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Js\Views\DocumentFormView.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\Uploads\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Apotheca.BLL\Apotheca.BLL.csproj">
       <Project>{71496e8d-984d-4be0-a366-05f7d14ef99c}</Project>

@@ -2,6 +2,7 @@
 using Apotheca.Web.Results;
 using Nancy;
 using Nancy.Authentication.Forms;
+using Nancy.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,11 @@ namespace Apotheca.Modules
     {
         public ApothecaModule()
         {
+        }
+
+        protected void AddScript(string script)
+        {
+            ((List<string>)Context.ViewBag.Scripts).Add(script);
         }
 
         protected object HandleResult(IControllerResult result)
@@ -36,6 +42,18 @@ namespace Apotheca.Modules
             if (lrr != null)
             {
                 return this.LoginAndRedirect(lrr.UserId, DateTime.Now.AddDays(1), lrr.Location);
+            }
+
+            JsonResult jr = result as JsonResult;
+            if (jr != null)
+            {
+                return new JsonResponse(jr.Model, new DefaultJsonSerializer());
+            }
+
+            TextResult tr = result as TextResult;
+            if (tr != null)
+            {
+                return Response.AsText(tr.Text);
             }
 
             throw new NotSupportedException("Results of type " + result.GetType().Name + " not supported");

@@ -17,6 +17,9 @@ using System.Reflection;
 using Apotheca.BLL.Data;
 using Apotheca.BLL.Commands.User;
 using Apotheca.BLL.Validators;
+using System.Collections.Generic;
+using Apotheca.Navigation;
+using SystemWrapper.IO;
 
 namespace Apotheca
 {
@@ -61,9 +64,15 @@ namespace Apotheca
             
             IAppSettings settings = container.Resolve<IAppSettings>();
 
+            // IO Wrapper
+            container.Register<IDirectoryWrap, DirectoryWrap>();
+            container.Register<IPathWrap, PathWrap>();
+            container.Register<IPathHelper, PathHelper>();
+
             // Apotheca classes and controllers
             container.Register<IUserMapper, UserMapper>();
             container.Register<IDashboardController, DashboardController>();
+            container.Register<IDocumentController, DocumentController>();
             container.Register<ILoginController, LoginController>();
             container.Register<ISetupController, SetupController>();
 
@@ -84,6 +93,7 @@ namespace Apotheca
         {
             // set shared ViewBag details here
             context.ViewBag.AppVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+            context.ViewBag.Scripts = new List<string>();
         }
 
     }

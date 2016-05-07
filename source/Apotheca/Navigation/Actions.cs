@@ -15,6 +15,8 @@ namespace Apotheca.Navigation
             public const string Default = "/document";
 
             public const string Add = "/document/add";
+
+            public const string Upload = "/document/upload";
         }
 
         public class Login

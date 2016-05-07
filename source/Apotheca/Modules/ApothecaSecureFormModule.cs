@@ -9,7 +9,7 @@ using Nancy.Authentication.Forms;
 
 namespace Apotheca.Modules
 {
-    public class ApothecaSecureFormModule : NancyModule
+    public class ApothecaSecureFormModule : ApothecaModule
     {
         public ApothecaSecureFormModule(IUserMapper userMapper)
         {
