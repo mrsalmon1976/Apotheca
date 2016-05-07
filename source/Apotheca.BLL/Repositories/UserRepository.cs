@@ -29,8 +29,9 @@ namespace Apotheca.BLL.Repositories
 
         public void Create(UserEntity user)
         {
-            IDbConnection conn = this.DbContext.GetConnection();
-            string sql = this.ReplaceSchemaPlaceholders(@"
+            using (IDbConnection conn = this.DbContext.GetConnection())
+            {
+                string sql = this.ReplaceSchemaPlaceholders(@"
                 DECLARE @returnid TABLE (id uniqueidentifier);
                 INSERT INTO [{SCHEMA}].[Users] 
                 (Email, Password, Salt, FirstName, Surname, Role, ApiKey, CreatedOn) 
@@ -38,8 +39,9 @@ namespace Apotheca.BLL.Repositories
                 VALUES
                 (@Email, @Password, @Salt, @FirstName, @Surname, @Role, @ApiKey, @CreatedOn);
                 select r.id from @returnid r");
-            Guid id = conn.ExecuteScalar<Guid>(sql, user, transaction: DbContext.CurrentTransaction);
-            user.Id = id;
+                Guid id = conn.ExecuteScalar<Guid>(sql, user, transaction: DbContext.CurrentTransaction);
+                user.Id = id;
+            }
         }
 
         public UserEntity GetUserByEmail(string email)
@@ -52,8 +54,11 @@ namespace Apotheca.BLL.Repositories
 
         public UserEntity GetUserById(Guid id)
         {
-            string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Id = @Id");
-            return this.DbContext.GetConnection().Query<UserEntity>(sql, new { Id = id }).SingleOrDefault();
+            using (IDbConnection conn = this.DbContext.GetConnection())
+            {
+                string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Id = @Id");
+                return conn.Query<UserEntity>(sql, new { Id = id }).SingleOrDefault();
+            }
         }
 
         public async Task<int> GetUserCountAsync()

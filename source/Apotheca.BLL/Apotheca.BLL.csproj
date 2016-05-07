@@ -52,6 +52,8 @@
     <Compile Include="Commands\User\CreateUserCommand.cs" />
     <Compile Include="Data\DbContext.cs" />
     <Compile Include="Data\DbMigrator.cs" />
+    <Compile Include="Models\DocumentEntity.cs" />
+    <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Security\PasswordProvider.cs" />
     <Compile Include="Security\RandomKeyGenerator.cs" />
     <Compile Include="Validators\StringValidator.cs" />
@@ -78,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <EmbeddedResource Include="Resources\DbMigrations\0003.CreateDocumentTable.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -26,13 +26,13 @@ var DocumentFormVew = function () {
         });
         this.dropZone.on('success', function (file) {
             that.toggleFormState(file.name, true);
-            $('#hid-filename').val(that.uploadedFileName);
         });
     };
 
     this.toggleFormState = function (fileName, isSubmitEnabled) {
         $('#txt-name').val(fileName);
         $('#btn-submit-document').prop('disabled', isSubmitEnabled);
+        $('#hid-filename').val(that.uploadedFileName);
     };
 }
 

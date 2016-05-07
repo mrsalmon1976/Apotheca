@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
   <TopNode>[0-1000]C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit</TopNode>
-  <SelectedNode>[0-1000]C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit</SelectedNode>
+  <SelectedNode>[0-1002]Test.Apotheca.Controllers.DashboardControllerTest.HandleDashboardGetAsync_OnExecute_SetsModelValues</SelectedNode>
   <ExcludeCategories>false</ExcludeCategories>
   <Nodes>
     <Node UniqueName="[0-1000]C:\Matt\code\Apotheca\source\Apotheca.Tests.nunit" Expanded="true" />
-    <Node UniqueName="[0-1007]C:\Matt\code\Apotheca\source\Test.Apotheca.BLL\bin\Debug\Test.Apotheca.BLL.dll" Expanded="true" />
-    <Node UniqueName="[0-1008]Test" Expanded="true" />
-    <Node UniqueName="[0-1009]Test.Apotheca" Expanded="true" />
-    <Node UniqueName="[0-1010]Test.Apotheca.BLL" Expanded="true" />
-    <Node UniqueName="[0-1011]Test.Apotheca.BLL.Data" Expanded="true" />
-    <Node UniqueName="[0-1002]Test.Apotheca.BLL.Data.DbMigratorTest" Expanded="true" />
-    <Node UniqueName="[0-1012]Test.Apotheca.BLL.Resources" Expanded="true" />
-    <Node UniqueName="[0-1005]Test.Apotheca.BLL.Resources.DbScriptResourceProviderTest" Expanded="true" />
+    <Node UniqueName="[0-1033]C:\Matt\code\Apotheca\source\Test.Apotheca\bin\Debug\Test.Apotheca.dll" Expanded="true" />
+    <Node UniqueName="[0-1034]Test" Expanded="true" />
+    <Node UniqueName="[0-1035]Test.Apotheca" Expanded="true" />
+    <Node UniqueName="[0-1036]Test.Apotheca.Controllers" Expanded="true" />
+    <Node UniqueName="[0-1001]Test.Apotheca.Controllers.DashboardControllerTest" Expanded="true" />
+    <Node UniqueName="[0-1037]Test.Apotheca.Validators" Expanded="true" />
+    <Node UniqueName="[0-1074]C:\Matt\code\Apotheca\source\Test.Apotheca.BLL\bin\Debug\Test.Apotheca.BLL.dll" Expanded="true" />
+    <Node UniqueName="[0-1075]Test" Expanded="true" />
+    <Node UniqueName="[0-1076]Test.Apotheca" Expanded="true" />
+    <Node UniqueName="[0-1077]Test.Apotheca.BLL" Expanded="true" />
+    <Node UniqueName="[0-1078]Test.Apotheca.BLL.Commands" Expanded="true" />
+    <Node UniqueName="[0-1079]Test.Apotheca.BLL.Commands.User" Expanded="true" />
+    <Node UniqueName="[0-1080]Test.Apotheca.BLL.Data" Expanded="true" />
+    <Node UniqueName="[0-1082]Test.Apotheca.BLL.Resources" Expanded="true" />
+    <Node UniqueName="[0-1081]Test.Apotheca.BLL.Validators" Expanded="true" />
   </Nodes>
 </VisualState>

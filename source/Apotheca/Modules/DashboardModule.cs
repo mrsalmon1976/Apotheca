@@ -2,6 +2,7 @@
 using Apotheca.Controllers;
 using Apotheca.Navigation;
 using Apotheca.ViewModels.Dashboard;
+using Apotheca.Web.Results;
 using Nancy;
 using Nancy.Authentication.Forms;
 using System;
@@ -18,7 +19,8 @@ namespace Apotheca.Modules
         {
             Get[Actions.Dashboard, true] = async (x, ct) =>
             {
-                return await dashboardController.HandleDashboardGetAsync(this);
+                IControllerResult result = await dashboardController.HandleDashboardGetAsync();
+                return this.HandleResult(result);
             };
         }
     }

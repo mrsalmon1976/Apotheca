@@ -9,5 +9,7 @@ namespace Apotheca.ViewModels.Dashboard
     public class DashboardViewModel : BaseViewModel
     {
         public int UserCount { get; set; }
+
+        public int DocumentCount { get; set; }
     }
 }

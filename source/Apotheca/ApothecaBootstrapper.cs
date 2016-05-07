@@ -80,6 +80,7 @@ namespace Apotheca
             container.Register<ICreateUserCommand, CreateUserCommand>();
 
             // BLL repositories
+            container.Register<IDocumentRepository, DocumentRepository>();
             container.Register<IUserRepository, UserRepository>();
 
             // other BLL classes

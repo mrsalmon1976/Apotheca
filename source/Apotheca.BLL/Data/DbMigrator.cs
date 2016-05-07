@@ -19,21 +19,19 @@ namespace Apotheca.BLL.Database
         public void Migrate(IDbContext dbContext, string[] scripts)
         {
             IDbConnection conn = dbContext.GetConnection();
-            using (IDbTransaction tran = conn.BeginTransaction())
+            // NOTE: you can't use a transaction here due to full index catalogs needing to be created, but 
+            // the scripts should be able to be rerun anyway
+            try
             {
-                try
+                foreach (string script in scripts)
                 {
-                    foreach (string script in scripts)
-                    {
-                        string sql = script.Replace("{SCHEMA}", dbContext.Schema);
-                        conn.Execute(sql, null, tran, 0, null);
-                    }
-                    tran.Commit();
+                    string sql = script.Replace("{SCHEMA}", dbContext.Schema);
+                    conn.Execute(sql, null, null, 0, null);
                 }
-                catch (Exception)
-                {
-                    throw;
-                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

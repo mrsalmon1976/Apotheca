@@ -53,10 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\DashboardControllerTest.cs" />
     <Compile Include="Controllers\DocumentControllerTest.cs" />
     <Compile Include="Controllers\SetupControllerTest.cs" />
     <Compile Include="Controllers\LoginControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestHelpers\TestRandomHelper.cs" />
     <Compile Include="TestHelpers\TestViewModelHelper.cs" />
     <Compile Include="Validators\UserViewModelValidatorTest.cs" />
   </ItemGroup>
