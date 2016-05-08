@@ -20,6 +20,7 @@ using Apotheca.BLL.Validators;
 using System.Collections.Generic;
 using Apotheca.Navigation;
 using SystemWrapper.IO;
+using Apotheca.Web;
 
 namespace Apotheca
 {
@@ -60,7 +61,7 @@ namespace Apotheca
 
         protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
-            base.ConfigureRequestContainer(container, context);
+            //base.ConfigureRequestContainer(container, context);
             
             IAppSettings settings = container.Resolve<IAppSettings>();
 
@@ -92,9 +93,19 @@ namespace Apotheca
 
         protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
         {
+            base.RequestStartup(container, pipelines, context);
+
+            var formsAuthConfiguration = new FormsAuthenticationConfiguration()
+            {
+                RedirectUrl = "~/login",
+                UserMapper = container.Resolve<IUserMapper>(),
+            };
+            FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
+
             // set shared ViewBag details here
             context.ViewBag.AppVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             context.ViewBag.Scripts = new List<string>();
+
         }
 
     }

@@ -13,7 +13,8 @@ namespace Apotheca.Security
     {
         public IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context)
         {
-            return new UserInfo();
+            UserInfo ui = new UserInfo();
+            return ui;
         }
     }
 }

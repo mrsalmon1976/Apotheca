@@ -29,19 +29,16 @@ namespace Apotheca.BLL.Repositories
 
         public void Create(UserEntity user)
         {
-            using (IDbConnection conn = this.DbContext.GetConnection())
-            {
-                string sql = this.ReplaceSchemaPlaceholders(@"
-                DECLARE @returnid TABLE (id uniqueidentifier);
-                INSERT INTO [{SCHEMA}].[Users] 
-                (Email, Password, Salt, FirstName, Surname, Role, ApiKey, CreatedOn) 
-                output inserted.id into @returnid
-                VALUES
-                (@Email, @Password, @Salt, @FirstName, @Surname, @Role, @ApiKey, @CreatedOn);
-                select r.id from @returnid r");
-                Guid id = conn.ExecuteScalar<Guid>(sql, user, transaction: DbContext.CurrentTransaction);
-                user.Id = id;
-            }
+            string sql = this.ReplaceSchemaPlaceholders(@"
+            DECLARE @returnid TABLE (id uniqueidentifier);
+            INSERT INTO [{SCHEMA}].[Users] 
+            (Email, Password, Salt, FirstName, Surname, Role, ApiKey, CreatedOn) 
+            output inserted.id into @returnid
+            VALUES
+            (@Email, @Password, @Salt, @FirstName, @Surname, @Role, @ApiKey, @CreatedOn);
+            select r.id from @returnid r");
+            Guid id = this.Connection.ExecuteScalar<Guid>(sql, user, transaction: DbContext.CurrentTransaction);
+            user.Id = id;
         }
 
         public UserEntity GetUserByEmail(string email)
@@ -54,24 +51,21 @@ namespace Apotheca.BLL.Repositories
 
         public UserEntity GetUserById(Guid id)
         {
-            using (IDbConnection conn = this.DbContext.GetConnection())
-            {
-                string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Id = @Id");
-                return conn.Query<UserEntity>(sql, new { Id = id }).SingleOrDefault();
-            }
+            string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Id = @Id");
+            return this.Connection.Query<UserEntity>(sql, new { Id = id }).SingleOrDefault();
         }
 
         public async Task<int> GetUserCountAsync()
         {
             string sql = this.ReplaceSchemaPlaceholders("SELECT COUNT(*) FROM [{SCHEMA}].[Users]");
-            Task<int> count = this.DbContext.GetConnection().ExecuteScalarAsync<int>(sql);
+            Task<int> count = this.Connection.ExecuteScalarAsync<int>(sql);
             return await count;
         }
 
         public bool UsersExist()
         {
             string sql = this.ReplaceSchemaPlaceholders("SELECT TOP 1 Id FROM [{SCHEMA}].[Users]");
-            Guid? id = this.DbContext.GetConnection().ExecuteScalar<Guid?>(sql);
+            Guid? id = this.Connection.ExecuteScalar<Guid?>(sql);
             return id.HasValue;
         }
     }

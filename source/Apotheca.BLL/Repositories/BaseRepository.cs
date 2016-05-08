@@ -1,6 +1,7 @@
 ﻿using Apotheca.BLL.Data;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -25,6 +26,16 @@ namespace Apotheca.BLL.Repositories
                 return _dbContext;
             }
 
+        }
+
+        protected virtual IDbConnection Connection
+        {
+            get
+            {
+                IDbConnection conn = _dbContext.GetConnection();
+                if (conn == null) throw new NullReferenceException("Connection has not been set on the DbContext");
+                return conn;
+            }
         }
 
         protected virtual string CleanseSchema(string schema)

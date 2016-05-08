@@ -9,12 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Apotheca.Web;
+using Nancy.Security;
 
 namespace Apotheca.Controllers
 {
     public interface ILoginController
     {
-        IControllerResult LoginGet();
+        IControllerResult LoginGet(IUserIdentity currentUser);
     }
 
     public class LoginController : ILoginController
@@ -26,13 +28,18 @@ namespace Apotheca.Controllers
             _userRepo = userRepo;
         }
 
-        public IControllerResult LoginGet()
+        public IControllerResult LoginGet(IUserIdentity currentUser)
         {
             if (!_userRepo.UsersExist())
             {
                 return new RedirectResult(Actions.Setup.Default);
             }
 
+            if (currentUser != null)
+            {
+                return new RedirectResult(Actions.Dashboard);
+            }
+            
             LoginViewModel model = new LoginViewModel();
             return new ViewResult(Views.Login, model);
         }

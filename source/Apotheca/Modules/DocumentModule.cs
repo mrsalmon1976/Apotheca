@@ -15,7 +15,7 @@ namespace Apotheca.Modules
 {
     public class DocumentModule : ApothecaSecureFormModule
     {
-        public DocumentModule(IRootPathProvider pathProvider, IUserMapper userMapper, IDocumentController documentController) : base(userMapper)
+        public DocumentModule(IRootPathProvider pathProvider, IUserMapper userMapper, IDocumentController documentController) : base(userMapper)//, documentController)
         {
             Get[Actions.Document.Add, true] = async (x, ct) =>
             {

@@ -52,12 +52,9 @@ namespace Apotheca.BLL.Repositories
 
         public async Task<int> GetCountAsync()
         {
-            using (IDbConnection conn = this.DbContext.GetConnection())
-            {
-                string sql = this.ReplaceSchemaPlaceholders("SELECT COUNT(*) FROM [{SCHEMA}].[Documents]");
-                Task<int> count = conn.ExecuteScalarAsync<int>(sql);
-                return await count;
-            }
+            string sql = this.ReplaceSchemaPlaceholders("SELECT COUNT(*) FROM [{SCHEMA}].[Documents]");
+            Task<int> count = this.Connection.ExecuteScalarAsync<int>(sql);
+            return await count;
         }
 
     }

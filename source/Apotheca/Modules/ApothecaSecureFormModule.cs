@@ -6,20 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Nancy.Security;
 using Nancy.Authentication.Forms;
+using Apotheca.Controllers;
 
 namespace Apotheca.Modules
 {
     public class ApothecaSecureFormModule : ApothecaModule
     {
-        public ApothecaSecureFormModule(IUserMapper userMapper)
+        public ApothecaSecureFormModule(IUserMapper userMapper)//, IController controller)
         {
-            var formsAuthConfiguration = new FormsAuthenticationConfiguration()
-            {
-                RedirectUrl = "~/login",
-                UserMapper = userMapper,
-            };
-            FormsAuthentication.Enable(this, formsAuthConfiguration);
             this.RequiresAuthentication();
+            //controller.CurrentUser = this.Context.CurrentUser;
+            
             //this.RequiresClaims(new[] { "Admin" });
             //Before += ctx =>
             //{
@@ -28,5 +25,6 @@ namespace Apotheca.Modules
 
             // Your routes here
         }
+
     }
 }

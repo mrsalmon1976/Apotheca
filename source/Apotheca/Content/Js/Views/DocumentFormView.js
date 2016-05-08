@@ -31,7 +31,7 @@ var DocumentFormVew = function () {
 
     this.toggleFormState = function (fileName, isSubmitEnabled) {
         $('#txt-name').val(fileName);
-        $('#btn-submit-document').prop('disabled', isSubmitEnabled);
+        $('#btn-submit-document').prop('disabled', !isSubmitEnabled);
         $('#hid-filename').val(that.uploadedFileName);
     };
 }

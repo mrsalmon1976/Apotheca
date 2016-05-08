@@ -22,8 +22,7 @@ namespace Apotheca.Modules
 
             Get["/login"] = x =>
             {
-
-                return this.HandleResult(loginController.LoginGet());
+                return this.HandleResult(loginController.LoginGet(this.Context.CurrentUser));
             };
 
             Post["/login"] = x =>

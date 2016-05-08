@@ -12,6 +12,8 @@ using Nancy;
 using Apotheca.ViewModels.Login;
 using Apotheca.Web.Results;
 using Apotheca.Navigation;
+using Apotheca.Web;
+using Nancy.Security;
 
 namespace Test.Apotheca.Controllers
 {
@@ -25,6 +27,7 @@ namespace Test.Apotheca.Controllers
         public void LoginControllerTest_SetUp()
         {
             _userRepo = Substitute.For<IUserRepository>();
+
             _loginController = new LoginController(_userRepo);
         }
 
@@ -35,11 +38,28 @@ namespace Test.Apotheca.Controllers
             _userRepo.UsersExist().Returns(false);
 
             // execute
-            RedirectResult result = _loginController.LoginGet() as RedirectResult;
+            RedirectResult result = _loginController.LoginGet(null) as RedirectResult;
 
             // assert
             Assert.IsNotNull(result);
             Assert.AreEqual(Actions.Setup.Default, result.Location);
+            _userRepo.Received(1).UsersExist();
+
+        }
+
+        [Test]
+        public void HandleLoginGet_AlreadyLoggedIn_RedirectsToDashboard()
+        {
+            // setup 
+            IUserIdentity currentUser = Substitute.For<IUserIdentity>();
+            _userRepo.UsersExist().Returns(true);
+
+            // execute
+            RedirectResult result = _loginController.LoginGet(currentUser) as RedirectResult;
+
+            // assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(Actions.Dashboard, result.Location);
             _userRepo.Received(1).UsersExist();
 
         }
@@ -51,7 +71,7 @@ namespace Test.Apotheca.Controllers
             _userRepo.UsersExist().Returns(true);
 
             // execute
-            ViewResult result = _loginController.LoginGet() as ViewResult;
+            ViewResult result = _loginController.LoginGet(null) as ViewResult;
 
             // assert
             Assert.IsNotNull(result);
