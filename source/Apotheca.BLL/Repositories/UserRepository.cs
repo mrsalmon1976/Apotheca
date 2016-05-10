@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Apotheca.BLL.Data;
 using Apotheca.BLL.Models;
+using Apotheca.BLL.Exceptions;
 
 namespace Apotheca.BLL.Repositories
 {
@@ -16,7 +17,9 @@ namespace Apotheca.BLL.Repositories
 
         void Create(UserEntity user);
         UserEntity GetUserByEmail(string email);
+        UserEntity GetUserByEmailOrDefault(string email);
         UserEntity GetUserById(Guid id);
+        UserEntity GetUserByIdOrDefault(Guid id);
 
         bool UsersExist();
     }
@@ -43,6 +46,13 @@ namespace Apotheca.BLL.Repositories
 
         public UserEntity GetUserByEmail(string email)
         {
+            UserEntity user = this.GetUserByEmailOrDefault(email);
+            if (user == null) throw new EntityDoesNotExistException("email", email);
+            return user;
+        }
+
+        public UserEntity GetUserByEmailOrDefault(string email)
+        {
             string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Email = @Email");
             return this.DbContext.GetConnection().Query<UserEntity>(sql
                 , new { Email = email }
@@ -50,6 +60,13 @@ namespace Apotheca.BLL.Repositories
         }
 
         public UserEntity GetUserById(Guid id)
+        {
+            UserEntity user = this.GetUserByIdOrDefault(id);
+            if (user == null) throw new EntityDoesNotExistException("id", id);
+            return user;
+        }
+
+        public UserEntity GetUserByIdOrDefault(Guid id)
         {
             string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Id = @Id");
             return this.Connection.Query<UserEntity>(sql, new { Id = id }).SingleOrDefault();

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Apotheca.Controllers
 {
@@ -68,7 +69,8 @@ namespace Apotheca.Controllers
             // try and execute the command 
             try
             {
-                _createUserCommand.User = model;
+                UserEntity user = Mapper.Map<UserViewModel, UserEntity>(model);
+                _createUserCommand.User = user;
                 _createUserCommand.Execute();
             }
             catch (ValidationException vex)

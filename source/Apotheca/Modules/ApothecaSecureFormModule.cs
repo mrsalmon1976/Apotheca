@@ -12,7 +12,7 @@ namespace Apotheca.Modules
 {
     public class ApothecaSecureFormModule : ApothecaModule
     {
-        public ApothecaSecureFormModule(IUserMapper userMapper)//, IController controller)
+        public ApothecaSecureFormModule()//, IController controller)
         {
             this.RequiresAuthentication();
             //controller.CurrentUser = this.Context.CurrentUser;

@@ -12,5 +12,12 @@ namespace Test.Apotheca.TestHelpers
         {
             return new Random().Next(min, max);
         }
+
+        public static byte[] GetFileContents(int length)
+        {
+            byte[] contents = new byte[length];
+            new Random().NextBytes(contents);
+            return contents;
+        }
     }
 }

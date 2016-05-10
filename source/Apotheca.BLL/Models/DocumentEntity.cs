@@ -10,7 +10,17 @@ namespace Apotheca.BLL.Models
     {
         public Guid? Id { get; internal set; }
 
+        public string FileName { get; set; }
+
+        public string Extension { get; set; }
+
+        public string Description { get; set; }
+
+        public byte[] FileContents { get; set; }
+
         public DateTime? CreatedOn { get; set; }
+
+        public Guid CreatedByUserId { get; set; }
 
     }
 }

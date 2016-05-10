@@ -14,7 +14,7 @@ namespace Apotheca.BLL.Repositories
     {
         Task<int> GetCountAsync();
 
-        void Create(DocumentEntity user);
+        void Create(DocumentEntity document);
 
         DocumentEntity GetById(Guid id);
 
@@ -27,20 +27,18 @@ namespace Apotheca.BLL.Repositories
         {
         }
 
-        public void Create(DocumentEntity user)
+        public void Create(DocumentEntity document)
         {
-            throw new NotImplementedException();
-//            IDbConnection conn = this.DbContext.GetConnection();
-//            string sql = this.ReplaceSchemaPlaceholders(@"
-//                DECLARE @returnid TABLE (id uniqueidentifier);
-//                INSERT INTO [{SCHEMA}].[Users] 
-//                (Email, Password, Salt, FirstName, Surname, Role, ApiKey, CreatedOn) 
-//                output inserted.id into @returnid
-//                VALUES
-//                (@Email, @Password, @Salt, @FirstName, @Surname, @Role, @ApiKey, @CreatedOn);
-//                select r.id from @returnid r");
-//            Guid id = conn.ExecuteScalar<Guid>(sql, user, transaction: DbContext.CurrentTransaction);
-//            user.Id = id;
+            string sql = this.ReplaceSchemaPlaceholders(@"
+                DECLARE @returnid TABLE (id uniqueidentifier);
+                INSERT INTO [{SCHEMA}].[Documents] 
+                (FileName, Extension, Description, FileContents, CreatedOn, CreatedByUserId) 
+                output inserted.id into @returnid
+                VALUES
+                (@FileName, @Extension, @Description, @FileContents, @CreatedOn, @CreatedByUserId) 
+                select r.id from @returnid r");
+            Guid id = this.Connection.ExecuteScalar<Guid>(sql, document, transaction: DbContext.CurrentTransaction);
+            document.Id = id;
         }
 
         public DocumentEntity GetById(Guid id)

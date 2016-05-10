@@ -1,20 +1,19 @@
-﻿using Apotheca.BLL.Repositories;
+﻿using Apotheca.BLL.Commands.Document;
+using Apotheca.BLL.Models;
+using Apotheca.BLL.Repositories;
 using Apotheca.Controllers;
+using Apotheca.Navigation;
+using Apotheca.Services;
+using Apotheca.Validators;
+using Apotheca.ViewModels.Document;
+using Apotheca.Web.Results;
+using AutoMapper;
+using Nancy;
+using NSubstitute;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NSubstitute;
-using Apotheca.Modules;
-using Nancy;
-using Apotheca.ViewModels.Login;
-using Apotheca.Web.Results;
-using Apotheca.Navigation;
-using SystemWrapper.IO;
-using System.Reflection;
 using System.IO;
+using Test.Apotheca.TestHelpers;
 
 namespace Test.Apotheca.Controllers
 {
@@ -22,80 +21,89 @@ namespace Test.Apotheca.Controllers
     public class DocumentControllerTest
     {
         private IDocumentController _documentController;
-        private IPathHelper _pathHelper;
-        private IDirectoryWrap _directoryWrap;
-        private IPathWrap _pathWrap;
-        private string _rootDir;
-        private string _uploadDir;
+        private IFileUtilityService _fileUtilityService;
+        private IDocumentViewModelValidator _documentViewModelValidator;
+        private ICreateDocumentCommand _createDocumentCommand;
+        private IUserRepository _userRepository;
 
         [SetUp]
         public void DocumentControllerTest_SetUp()
         {
-            _pathHelper = Substitute.For<IPathHelper>();
-            _directoryWrap = Substitute.For<IDirectoryWrap>();
-            _pathWrap = Substitute.For<IPathWrap>();
-            _documentController = new DocumentController(_pathHelper, _directoryWrap, _pathWrap);
+            _fileUtilityService = Substitute.For<IFileUtilityService>();
+            _documentViewModelValidator = Substitute.For<IDocumentViewModelValidator>();
+            _createDocumentCommand = Substitute.For<ICreateDocumentCommand>();
+            _userRepository = Substitute.For<IUserRepository>();
 
-            _rootDir = Environment.CurrentDirectory;
-            _uploadDir = Path.Combine(_rootDir, "DocumentControllerTest");
-            Directory.CreateDirectory(_uploadDir);
+            Mapper.Reset();
+            Mapper.Initialize((cfg) =>
+            {
+                cfg.CreateMap<DocumentViewModel, DocumentEntity>();
+            });
+            _documentController = new DocumentController(_documentViewModelValidator, _fileUtilityService, _createDocumentCommand, _userRepository);
+
+        }
+
+        #region HandleDocumentUploadPost Tests
+
+        [TestCase("Test.txt")]
+        [TestCase("Test.txt", "Test2.txt")]
+        [TestCase("Test.txt", "Test2.txt", "Test3.txt")]
+        public void HandleDocumentUploadPost_FilesPosted_Saved(params string[] files)
+        {
+            // set up
+            int fileCount = files.Length;
+            string rootPath = Environment.CurrentDirectory;
+            HttpFile[] httpFiles = new HttpFile[files.Length];
+            for (int i=0; i<files.Length; i++)
+            {
+                httpFiles[i] = new HttpFile("text/plain", files[i], new MemoryStream(TestRandomHelper.GetFileContents(100)), files[i]);
+            }
+
+            // execute 
+            _documentController.HandleDocumentUploadPost(rootPath, httpFiles);
+
+            // assert
+            _fileUtilityService.Received(files.Length).SaveUploadedFile(rootPath, Arg.Any<HttpFile>());
+        }
+
+        #endregion
+
+        #region HandleDocumentAddPost Tests
+
+        [Test]
+        public void HandleDocumentAddPost_FailsModelValidation_DisplaysView()
+        {
+            Assert.Fail();
         }
 
         [Test]
-        public void HandleDocumentUploadPost_DirectoryDoesNotExist_DirectoryCreated()
+        public void HandleDocumentAddPost_FailsDataValidation_DisplaysView()
         {
-            // setup
-            HttpFile[] files = new HttpFile[] { };
-            _pathHelper.UploadDirectory(_rootDir).Returns(_uploadDir);
-            _directoryWrap.Exists(_uploadDir).Returns(false);
+            Assert.Fail();
+        }
+
+        [Test]
+        public void HandleDocumentAddPost_OnSuccess_RedirectsToDashboard()
+        {
+            // setup 
+            string rootPath = Environment.CurrentDirectory;
+            string currentUserName = Path.GetRandomFileName() + "@test.com";
+            DocumentViewModel model = TestViewModelHelper.CreateDocumentViewModelWithData();
+            byte[] fileContents = TestRandomHelper.GetFileContents(100);
+
+            _fileUtilityService.LoadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
+            _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
 
             // execute
-            _documentController.HandleDocumentUploadPost(_rootDir, files);
-
+            RedirectResult result = _documentController.HandleDocumentAddPost(rootPath, currentUserName, model) as RedirectResult;
+            
             // assert
-            _directoryWrap.Received(1).Exists(_uploadDir);
-            _directoryWrap.Received(1).CreateDirectory(_uploadDir);
-            _pathWrap.DidNotReceive().Combine(Arg.Any<string>(), Arg.Any<string>());
-
+            Assert.IsNotNull(result);
+            Assert.AreEqual(Actions.Dashboard, result.Location);
+            _createDocumentCommand.Received(1).Execute();
         }
 
-        [Test]
-        public void HandleDocumentUploadPost_FilePosted_FileIsCreated()
-        {
-            // setup - create a physical file for the HttpFile object
-            string fileName = "TestResult.txt";
-            string filePath = Path.Combine(_uploadDir, "Test.txt");
-            string filePathResult = Path.Combine(_uploadDir, fileName);
-            File.Delete(filePath);
-            File.Delete(filePathResult);
-            using (StreamWriter writer = File.CreateText(filePath)) 
-            {
-                writer.WriteLine("test file");
-            }
-
-            _pathHelper.UploadDirectory(_rootDir).Returns(_uploadDir);
-            _pathWrap.Combine(_uploadDir, fileName).Returns(filePathResult);
-            _directoryWrap.Exists(_uploadDir).Returns(true);
-
-
-            // execute - we need a stream for the HttpFile
-            using (FileStream reader = File.OpenRead(filePath))
-            {
-                HttpFile[] files = new HttpFile[] { new HttpFile("text/plain", fileName, reader, "Test")  };
-                _documentController.HandleDocumentUploadPost(_rootDir, files);
-
-            }
-
-            // assert
-            _directoryWrap.Received(1).Exists(_uploadDir);
-            _directoryWrap.Received(0).CreateDirectory(_uploadDir);
-            Assert.True(File.Exists(filePathResult));
-
-            // clean up the files
-            File.Delete(filePath);
-            File.Delete(filePathResult);
-
-        }
+        #endregion
 
     }
 }

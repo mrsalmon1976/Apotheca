@@ -9,5 +9,12 @@ namespace Apotheca.ViewModels
 {
     public class BaseViewModel
     {
+        public BaseViewModel()
+        {
+            this.ValidationErrors = new List<string>();
+        }
+
+        public List<string> ValidationErrors { get; private set; }
+
     }
 }

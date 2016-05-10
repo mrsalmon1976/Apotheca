@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Nancy">
       <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
     </Reference>
@@ -74,6 +77,7 @@
     <Compile Include="ApothecaService.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
     <Compile Include="Navigation\PathHelper.cs" />
+    <Compile Include="Navigation\Scripts.cs" />
     <Compile Include="Navigation\Views.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\SetupController.cs" />
@@ -88,8 +92,10 @@
     <Compile Include="Modules\ApothecaSecureFormModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\UserInfo.cs" />
+    <Compile Include="Security\UserIdentity.cs" />
     <Compile Include="Security\UserMapper.cs" />
+    <Compile Include="Services\FileUtilityService.cs" />
+    <Compile Include="Validators\DocumentViewModelValidator.cs" />
     <Compile Include="Validators\UserViewModelValidator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />

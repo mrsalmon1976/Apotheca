@@ -15,7 +15,7 @@ namespace Apotheca.Modules
 {
     public class DashboardModule : ApothecaSecureFormModule
     {
-        public DashboardModule(IUserMapper userMapper, IDashboardController dashboardController) : base(userMapper)//, dashboardController)
+        public DashboardModule(IDashboardController dashboardController) : base()//, dashboardController)
         {
             Get[Actions.Dashboard, true] = async (x, ct) =>
             {

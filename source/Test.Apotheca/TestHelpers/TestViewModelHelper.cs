@@ -1,4 +1,5 @@
 ﻿using Apotheca.BLL.Models;
+using Apotheca.ViewModels.Document;
 using Apotheca.ViewModels.User;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,16 @@ namespace Test.Apotheca.TestHelpers
     /// </summary>
     public class TestViewModelHelper
     {
+
+        public static DocumentViewModel CreateDocumentViewModelWithData()
+        {
+            DocumentViewModel model = new DocumentViewModel();
+            model.Description = "This is a test document view model.";
+            model.FileName = "test.doc";
+            model.UploadedFileName = "1000_test.doc";
+            return model;
+        }
+
         public static UserViewModel CreateUserViewModel(Guid? id = null, string email = null, string firstName = null, string surname = null, string password = null, string confirmPassword = null, string role = null, DateTime? createdOn = null, string apiKey = null)
         {
             UserViewModel model = new UserViewModel();

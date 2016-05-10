@@ -48,9 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Document\CreateDocumentCommandTest.cs" />
     <Compile Include="Commands\User\CreateUserCommandTest.cs" />
     <Compile Include="Data\DbMigratorTest.cs" />
     <Compile Include="TestHelpers\TestEntityHelper.cs" />
+    <Compile Include="Validators\DocumentValidatorTest.cs" />
     <Compile Include="Validators\UserValidatorTest.cs" />
     <Compile Include="Validators\StringValidatorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

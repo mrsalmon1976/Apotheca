@@ -1,72 +1,90 @@
-﻿using Apotheca.BLL.Repositories;
+﻿using Apotheca.BLL.Commands.Document;
+using Apotheca.BLL.Exceptions;
+using Apotheca.BLL.Models;
+using Apotheca.BLL.Repositories;
 using Apotheca.Navigation;
-using Apotheca.Modules;
-using Apotheca.ViewModels.Dashboard;
+using Apotheca.Services;
+using Apotheca.Validators;
 using Apotheca.ViewModels.Document;
+using Apotheca.Web.Results;
+using AutoMapper;
 using Nancy;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Nancy.Responses.Negotiation;
-using System.IO;
-using SystemWrapper.IO;
 
 namespace Apotheca.Controllers
 {
     public interface IDocumentController
     {
-        Task<Negotiator> HandleDocumentAddGetAsync(INancyModule module);
+        IControllerResult HandleDocumentAddGet();
+
+        IControllerResult HandleDocumentAddPost(string rootPath, string currentUserName, DocumentViewModel model);
 
         void HandleDocumentUploadPost(string rootPath, IEnumerable<HttpFile> files);
     }
 
     public class DocumentController : IDocumentController
     {
-        private IPathHelper _pathHelper;
-        private IDirectoryWrap _directoryWrap;
-        private IPathWrap _pathWrap;
+        private IDocumentViewModelValidator _documentViewModelValidator;
+        private IFileUtilityService _fileUtilityService;
+        private ICreateDocumentCommand _createDocumentCommand;
+        private IUserRepository _userRepository;
 
-        public DocumentController(IPathHelper pathHelper, IDirectoryWrap directoryWrap, IPathWrap pathWrap)
+        public DocumentController(IDocumentViewModelValidator documentViewModelValidator, IFileUtilityService fileUtilityService, ICreateDocumentCommand createDocumentCommand, IUserRepository userRepository)
         {
-            _pathHelper = pathHelper;
-            _directoryWrap = directoryWrap;
-            _pathWrap = pathWrap;
+            _documentViewModelValidator = documentViewModelValidator;
+            _fileUtilityService = fileUtilityService;
+            _createDocumentCommand = createDocumentCommand;
+            _userRepository = userRepository;
         }
 
-        public async Task<Negotiator> HandleDocumentAddGetAsync(INancyModule module)
+        public IControllerResult HandleDocumentAddGet()
         {
-
-            //var userCount = _userRepo.GetUserCountAsync();
-
-            //await Task.WhenAll(userCount);
-
             DocumentViewModel model = new DocumentViewModel();
-            return module.View[Views.Document.Add, model];
+            return new ViewResult(Views.Document.Add, model);
+        }
 
+        public IControllerResult HandleDocumentAddPost(string rootPath, string currentUserName, DocumentViewModel model)
+        {
+            UserEntity user = _userRepository.GetUserByEmail(currentUserName);
+            byte[] fileContents = _fileUtilityService.LoadUploadedFile(rootPath, model.UploadedFileName);
+            
+            // set up the entity
+            DocumentEntity document = Mapper.Map<DocumentViewModel, DocumentEntity>(model);
+            document.CreatedByUserId = user.Id.Value;
+            document.FileContents = fileContents;
+
+            // do first level validation - if it fails then we need to exit
+            List<string> validationErrors = this._documentViewModelValidator.Validate(model);
+            if (validationErrors.Count > 0)
+            {
+                model.ValidationErrors.AddRange(validationErrors);
+                return new ViewResult(Views.Setup.Default, model);
+            }
+
+            // try and execute the command 
+            try
+            {
+                _createDocumentCommand.Document = document;
+                _createDocumentCommand.Execute();
+            }
+            catch (ValidationException vex)
+            {
+                model.ValidationErrors.AddRange(vex.Errors);
+                return new ViewResult(Views.Setup.Default, model);
+            }
+
+            // if we've got here, we're all good - redirect to the dashboard
+            return new RedirectResult(Actions.Dashboard);
         }
 
         public void HandleDocumentUploadPost(string rootPath, IEnumerable<HttpFile> files)
         {
-            var uploadDirectory = _pathHelper.UploadDirectory(rootPath);
-
-            if (!_directoryWrap.Exists(uploadDirectory))
-            {
-                _directoryWrap.CreateDirectory(uploadDirectory);
-            }
-
             foreach (var file in files)
             {
-                var filename = _pathWrap.Combine(uploadDirectory, file.Name);
-                using (FileStream fileStream = new FileStream(filename, FileMode.Create))
-                {
-                    file.Value.CopyTo(fileStream);
-                }
+                _fileUtilityService.SaveUploadedFile(rootPath, file);
             }
-
         }
-
 
     }
 }

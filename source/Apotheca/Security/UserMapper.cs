@@ -1,4 +1,6 @@
-﻿using Nancy;
+﻿using Apotheca.BLL.Models;
+using Apotheca.BLL.Repositories;
+using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Security;
 using System;
@@ -11,9 +13,23 @@ namespace Apotheca.Security
 {
     public class UserMapper : IUserMapper
     {
+        private IUserRepository _userRepo;
+
+        public UserMapper(IUserRepository userRepo)
+        {
+            this._userRepo = userRepo;
+        }
+
         public IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context)
         {
-            UserInfo ui = new UserInfo();
+            UserIdentity ui = null;
+            UserEntity user = _userRepo.GetUserById(identifier);
+            if (user != null)
+            {
+                ui = new UserIdentity();
+                ui.Claims = new string[] { user.Role };
+                ui.UserName = user.Email;
+            }
             return ui;
         }
     }

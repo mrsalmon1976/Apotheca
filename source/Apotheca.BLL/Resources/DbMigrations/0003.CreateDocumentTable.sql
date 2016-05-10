@@ -8,7 +8,7 @@ BEGIN
 		Id uniqueidentifier rowguidcol NOT NULL,
 		Name nvarchar(255) NOT NULL,
 		[Description] nvarchar(max) NULL,
-		Document varbinary(MAX) NOT NULL DEFAULT (0x),
+		[FileContents] varbinary(MAX) NOT NULL DEFAULT (0x),
 		Extension nvarchar(100) NOT NULL,
 		MimeType nvarchar(255) NOT NULL,
 		CreatedOn datetime NOT NULL,
@@ -30,7 +30,7 @@ BEGIN
 	( 
 		Name Language 1033,
 		[Description] Language 1033,
-		[Document] TYPE COLUMN Extension Language 1033     
+		[FileContents] TYPE COLUMN Extension Language 1033     
 	) 
 	KEY INDEX PK_Documents ON DocumentCatalog; 
  

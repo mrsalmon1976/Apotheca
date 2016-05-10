@@ -21,6 +21,11 @@ using System.Collections.Generic;
 using Apotheca.Navigation;
 using SystemWrapper.IO;
 using Apotheca.Web;
+using AutoMapper;
+using Apotheca.ViewModels.Document;
+using Apotheca.BLL.Models;
+using Apotheca.Services;
+using Apotheca.BLL.Commands.Document;
 
 namespace Apotheca
 {
@@ -51,6 +56,11 @@ namespace Apotheca
             // make sure we migrate database changes if there are any
             container.Register<IDbScriptResourceProvider, DbScriptResourceProvider>();
 
+            // set up mappings
+            Mapper.Initialize((cfg) => {
+                cfg.CreateMap<DocumentViewModel, DocumentEntity>();
+            });
+
             // at this point, run in any database changes if there are any
             using (IDbContext dbContext = new DbContext(settings.ConnectionString, settings.DbSchema))
             {
@@ -68,6 +78,7 @@ namespace Apotheca
             // IO Wrapper
             container.Register<IDirectoryWrap, DirectoryWrap>();
             container.Register<IPathWrap, PathWrap>();
+            container.Register<IFileWrap, FileWrap>();
             container.Register<IPathHelper, PathHelper>();
 
             // Apotheca classes and controllers
@@ -77,7 +88,11 @@ namespace Apotheca
             container.Register<ILoginController, LoginController>();
             container.Register<ISetupController, SetupController>();
 
+            // apotheca services
+            container.Register<IFileUtilityService, FileUtilityService>();
+
             // BLL commands
+            container.Register<ICreateDocumentCommand, CreateDocumentCommand>();
             container.Register<ICreateUserCommand, CreateUserCommand>();
 
             // BLL repositories
@@ -85,6 +100,7 @@ namespace Apotheca
             container.Register<IUserRepository, UserRepository>();
 
             // other BLL classes
+            container.Register<IDocumentValidator, DocumentValidator>();
             container.Register<IUserValidator, UserValidator>();
 
             // register a DB context

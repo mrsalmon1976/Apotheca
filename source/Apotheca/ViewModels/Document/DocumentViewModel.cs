@@ -1,34 +1,33 @@
 ﻿using Apotheca.BLL.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Apotheca.ViewModels.Document
 {
-    public class DocumentViewModel //: UserEntity
+    public class DocumentViewModel : BaseViewModel
     {
-        public DocumentViewModel()
+        public DocumentViewModel() : base()
         {
-            this.ValidationErrors = new List<string>();
         }
 
-        public string DocumentName { get; set; }
+        public string FileName { get; set; }
 
-        public string DocumentDetails { get; set; }
-        ///// <summary>
-        ///// Gets/sets the form action for the user form.
-        ///// </summary>
-        //public string FormAction { get; set; }
+        public string Extension
+        {
+            get
+            {
+                if (this.FileName == null) return null;
+                return Path.GetExtension(this.FileName);
+            }
+        }
 
-        ///// <summary>
-        ///// Determines whether to show the permissions options (role, categories, etc).
-        ///// </summary>
-        //public bool IsPermissionPanelVisible { get; set; }
+        public string Description { get; set; }
 
-        public List<string> ValidationErrors { get; private set; }
+        public string UploadedFileName { get; set; }
 
-        
     }
 }

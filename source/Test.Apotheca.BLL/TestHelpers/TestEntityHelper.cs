@@ -12,6 +12,34 @@ namespace Test.Apotheca.BLL.TestHelpers
     /// </summary>
     public class TestEntityHelper
     {
+        public static DocumentEntity CreateDocument(Guid? id = null, string name = null, string extension = null, string description = null, byte[] fileContents = null, DateTime? createdOn = null, Guid? createdByUserId = null)
+        {
+            DocumentEntity document = new DocumentEntity();
+            document.Id = id;
+            document.FileName = name;
+            document.Extension = extension;
+            document.FileContents = fileContents;
+            document.CreatedOn = createdOn;
+            document.CreatedByUserId = createdByUserId ?? Guid.Empty;
+            return document;
+        }
+
+        public static DocumentEntity CreateDocumentWithData()
+        {
+            byte[] fileContents = new byte[100];
+            new Random().NextBytes(fileContents);
+
+            DocumentEntity document = new DocumentEntity();
+            document.Id = Guid.NewGuid();
+            document.FileName = "Test.txt";
+            document.Extension = ".txt";
+            document.Description = "This is a test document";
+            document.FileContents = fileContents;
+            document.CreatedOn = DateTime.UtcNow;
+            document.CreatedByUserId = Guid.NewGuid();
+            return document;
+        }
+
         public static UserEntity CreateUser(Guid? id = null, string email = null, string firstName = null, string surname = null, string password = null, string role = null, DateTime? createdOn = null, string apiKey = null)
         {
             UserEntity user = new UserEntity();
