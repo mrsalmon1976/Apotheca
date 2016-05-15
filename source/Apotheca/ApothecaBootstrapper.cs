@@ -53,8 +53,18 @@ namespace Apotheca
             IAppSettings settings = new AppSettings();
             container.Register<IAppSettings>(settings);
 
+            // IO Wrapper
+            container.Register<IDirectoryWrap, DirectoryWrap>();
+            container.Register<IPathWrap, PathWrap>();
+            container.Register<IFileWrap, FileWrap>();
+            container.Register<IPathHelper, PathHelper>();
+
             // make sure we migrate database changes if there are any
             container.Register<IDbScriptResourceProvider, DbScriptResourceProvider>();
+
+            // apotheca services
+            container.Register<IFileUtilityService, FileUtilityService>();
+
 
             // set up mappings
             Mapper.Initialize((cfg) => {
@@ -65,21 +75,24 @@ namespace Apotheca
             using (IDbContext dbContext = new DbContext(settings.ConnectionString, settings.DbSchema))
             {
                 IDbScriptResourceProvider resourceProvider = container.Resolve<IDbScriptResourceProvider>();
+                Console.Write("Running migrations...");
                 new DbMigrator().Migrate(dbContext, resourceProvider.GetDbMigrationScripts());
+                Console.WriteLine("Done.");
             }
+
+            // delete old files
+            IRootPathProvider rootPathProvider = container.Resolve<IRootPathProvider>();
+            IFileUtilityService fileUtilityService = container.Resolve<IFileUtilityService>();
+            Console.Write("Cleaning user uploads...");
+            int files = fileUtilityService.CleanUploadedFiles(rootPathProvider.GetRootPath());
+            Console.WriteLine("{0} file(s) deleted.", files);
         }
 
         protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
-            //base.ConfigureRequestContainer(container, context);
+            base.ConfigureRequestContainer(container, context);
             
             IAppSettings settings = container.Resolve<IAppSettings>();
-
-            // IO Wrapper
-            container.Register<IDirectoryWrap, DirectoryWrap>();
-            container.Register<IPathWrap, PathWrap>();
-            container.Register<IFileWrap, FileWrap>();
-            container.Register<IPathHelper, PathHelper>();
 
             // Apotheca classes and controllers
             container.Register<IUserMapper, UserMapper>();
@@ -87,9 +100,6 @@ namespace Apotheca
             container.Register<IDocumentController, DocumentController>();
             container.Register<ILoginController, LoginController>();
             container.Register<ISetupController, SetupController>();
-
-            // apotheca services
-            container.Register<IFileUtilityService, FileUtilityService>();
 
             // BLL commands
             container.Register<ICreateDocumentCommand, CreateDocumentCommand>();
