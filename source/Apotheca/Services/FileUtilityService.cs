@@ -6,12 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SystemWrapper;
 using SystemWrapper.IO;
 
 namespace Apotheca.Services
 {
     public interface IFileUtilityService
     {
+        int CleanUploadedFiles(string rootPath);
+
         byte[] LoadUploadedFile(string rootPath, string fileName);
 
         void SaveUploadedFile(string rootPath, HttpFile file);
@@ -30,6 +33,26 @@ namespace Apotheca.Services
             _directoryWrap = directoryWrap;
             _pathWrap = pathWrap;
             _fileWrap = fileWrap;
+        }
+
+        /// <summary>
+        /// Cleans up previously uploaded files.
+        /// </summary>
+        public int CleanUploadedFiles(string rootPath)
+        {
+            string uploadPath = _pathHelper.UploadDirectory(rootPath);
+            string[] files =_directoryWrap.GetFiles(uploadPath);
+            int count = 0;
+            foreach (string file in files)
+            {
+                FileInfo fi = new FileInfo(file);
+                if (fi.LastAccessTimeUtc < DateTime.UtcNow.AddDays(-1))
+                {
+                    _fileWrap.Delete(file);
+                    count++;
+                }
+            }
+            return count;
         }
 
         public byte[] LoadUploadedFile(string rootPath, string fileName)

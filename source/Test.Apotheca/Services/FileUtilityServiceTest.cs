@@ -38,9 +38,89 @@ namespace Test.Apotheca.Services
 
             _rootDir = Environment.CurrentDirectory;
             _uploadDir = Path.Combine(_rootDir, "DocumentControllerTest");
+            if (Directory.Exists(_uploadDir)) Directory.Delete(_uploadDir, true);
             Directory.CreateDirectory(_uploadDir);
 
         }
+
+        [Test]
+        public void CleanUploadedFiles_FileExistsButNotOldEnough_DoesNotDeleteFile()
+        {
+            string filePath = Path.Combine(_uploadDir, "test.txt");
+            _pathHelper.UploadDirectory(_rootDir).Returns(_uploadDir);
+            _directoryWrap.GetFiles(_uploadDir).Returns(Enumerable.Empty<string>());
+            CreateTextFile(filePath, "CleanUploadedFiles_FileExistsButNotOldEnough_DoesNotDeleteFile", DateTime.UtcNow);
+
+            int deleted = _fileUtilityService.CleanUploadedFiles(_rootDir);
+
+            Assert.AreEqual(0, deleted);
+            _pathHelper.Received(1).UploadDirectory(_rootDir);
+            _directoryWrap.Received(1).GetFiles(_uploadDir);
+            _fileWrap.DidNotReceive().Delete(Arg.Any<string>());
+
+        }
+
+        [Test]
+        public void CleanUploadedFiles_OldFilesExist_DeletesFile()
+        {
+            _pathHelper.UploadDirectory(_rootDir).Returns(_uploadDir);
+
+            string file1 = Path.Combine(_uploadDir, "1.txt");
+            string file2 = Path.Combine(_uploadDir, "2.txt");
+
+            CreateTextFile(file1, "2.txt", DateTime.UtcNow.AddHours(-24).AddSeconds(-1));
+            CreateTextFile(file2, "3.txt", DateTime.UtcNow.AddHours(-48));
+
+            _directoryWrap.GetFiles(_uploadDir).Returns(Directory.GetFiles(_uploadDir));
+
+            int deleted = _fileUtilityService.CleanUploadedFiles(_rootDir);
+
+            Assert.AreEqual(2, deleted);
+            _pathHelper.Received(1).UploadDirectory(_rootDir);
+            _directoryWrap.Received(1).GetFiles(_uploadDir);
+            _fileWrap.Received(1).Delete(file1);
+            _fileWrap.Received(1).Delete(file2);
+        }
+
+        [Test]
+        public void CleanUploadedFiles_NewAndOldFilesExist_DeletesOnlyOldFile()
+        {
+            _pathHelper.UploadDirectory(_rootDir).Returns(_uploadDir);
+
+            string file1 = Path.Combine(_uploadDir, "1.txt");
+            string file2 = Path.Combine(_uploadDir, "2.txt");
+            string file3 = Path.Combine(_uploadDir, "3.txt");
+
+            CreateTextFile(file1, "1.txt", DateTime.UtcNow.AddHours(-23));
+            CreateTextFile(file2, "2.txt", DateTime.UtcNow.AddHours(-24).AddSeconds(-1));
+            CreateTextFile(file3, "3.txt", DateTime.UtcNow.AddHours(-48));
+
+            _directoryWrap.GetFiles(_uploadDir).Returns(Directory.GetFiles(_uploadDir));
+
+            int deleted = _fileUtilityService.CleanUploadedFiles(_rootDir);
+
+            Assert.AreEqual(2, deleted);
+            _pathHelper.Received(1).UploadDirectory(_rootDir);
+            _directoryWrap.Received(1).GetFiles(_uploadDir);
+            _fileWrap.DidNotReceive().Delete(file1);
+            _fileWrap.Received(1).Delete(file2);
+            _fileWrap.Received(1).Delete(file3);
+        }
+
+        [Test]
+        public void CleanUploadedFiles_NoFiles_Executes()
+        {
+            _pathHelper.UploadDirectory(_rootDir).Returns(_uploadDir);
+            _directoryWrap.GetFiles(_uploadDir).Returns(Directory.GetFiles(_uploadDir));
+
+            int deleted = _fileUtilityService.CleanUploadedFiles(_rootDir);
+
+            Assert.AreEqual(0, deleted);
+            _pathHelper.Received(1).UploadDirectory(_rootDir);
+            _directoryWrap.Received(1).GetFiles(_uploadDir);
+            _fileWrap.DidNotReceive().Delete(Arg.Any<string>());
+        }
+
 
         [Test]
         public void LoadUploadedFile_OnExecute_LoadsFile()
@@ -117,5 +197,16 @@ namespace Test.Apotheca.Services
 
         }
 
+        private void CreateTextFile(string path, string contents, DateTime lastAccessedTimeUtc)
+        {
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                sw.Write(contents);
+                sw.Close();
+            }
+            FileInfo fi = new FileInfo(path);
+            fi.LastAccessTimeUtc = lastAccessedTimeUtc;
+
+        }
     }
 }

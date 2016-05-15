@@ -59,7 +59,7 @@ namespace Apotheca.Controllers
             if (validationErrors.Count > 0)
             {
                 model.ValidationErrors.AddRange(validationErrors);
-                return new ViewResult(Views.Setup.Default, model);
+                return new ViewResult(Views.Document.Add, model);
             }
 
             // try and execute the command 
@@ -71,7 +71,7 @@ namespace Apotheca.Controllers
             catch (ValidationException vex)
             {
                 model.ValidationErrors.AddRange(vex.Errors);
-                return new ViewResult(Views.Setup.Default, model);
+                return new ViewResult(Views.Document.Add, model);
             }
 
             // if we've got here, we're all good - redirect to the dashboard
