@@ -141,6 +141,10 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
+#Nunit files
+TestResult.xml
+*VisualState.xml
+
 # =========================
 # Windows detritus
 # =========================
