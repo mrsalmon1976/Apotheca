@@ -70,6 +70,7 @@
     <Compile Include="Services\FileUtilityServiceTest.cs" />
     <Compile Include="TestHelpers\TestRandomHelper.cs" />
     <Compile Include="TestHelpers\TestViewModelHelper.cs" />
+    <Compile Include="Validators\DocumentViewModelValidatorTest.cs" />
     <Compile Include="Validators\UserViewModelValidatorTest.cs" />
   </ItemGroup>
   <ItemGroup>

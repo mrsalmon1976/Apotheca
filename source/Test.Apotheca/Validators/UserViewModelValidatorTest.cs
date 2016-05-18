@@ -66,10 +66,12 @@ namespace Test.Apotheca.Validators
             AssertValidationFailed(user, "Password must");
         }
 
-        public void Validate_PasswordConfirmFails_FailsValidation(string password)
+        [Test]
+        public void Validate_PasswordConfirmFails_FailsValidation()
         {
             UserViewModel user = TestViewModelHelper.CreateUserViewModelWithData();
-            user.Password = password;
+            user.Password = "ValidPassword1";
+            user.ConfirmPassword = "ValidPassword2";
             _stringValidator.IsValidEmailAddress(user.Email).Returns(true);
             AssertValidationFailed(user, "Password and confirmation password");
         }

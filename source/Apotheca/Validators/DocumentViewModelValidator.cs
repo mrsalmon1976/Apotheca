@@ -27,22 +27,14 @@ namespace Apotheca.Validators
 
             List<string> errors = new List<string>();
 
-            //if (String.IsNullOrWhiteSpace(model.FirstName))
-            //{
-            //    errors.Add("First name not supplied");
-            //}
-            //if (String.IsNullOrEmpty(model.Password) || model.Password.Length < 8)
-            //{
-            //    errors.Add("Password must be at least 8 characters");
-            //}
-            //if (model.Password != model.ConfirmPassword)
-            //{
-            //    errors.Add("Password and confirmation password do not match");
-            //}
-            //if (!Roles.AllRoles.Contains(model.Role))
-            //{
-            //    errors.Add("Role is invalid");
-            //}
+            if (String.IsNullOrWhiteSpace(model.FileName))
+            {
+                errors.Add("File name not supplied");
+            }
+            if (String.IsNullOrWhiteSpace(model.UploadedFileName))
+            {
+                errors.Add("Uploaded file name not supplied");
+            }
 
             return errors;
         }
