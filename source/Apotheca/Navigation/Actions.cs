@@ -10,6 +10,11 @@ namespace Apotheca.Navigation
     {
         public const string Dashboard = "/dashboard";
 
+        public class Category
+        {
+            public const string Default = "/category";
+        }
+
         public class Document
         {
             public const string Default = "/document";

@@ -96,6 +96,7 @@ namespace Apotheca
 
             // Apotheca classes and controllers
             container.Register<IUserMapper, UserMapper>();
+            container.Register<ICategoryController, CategoryController>();
             container.Register<IDashboardController, DashboardController>();
             container.Register<IDocumentController, DocumentController>();
             container.Register<ILoginController, LoginController>();

@@ -76,6 +76,8 @@
     <Compile Include="ApothecaBootstrapper.cs" />
     <Compile Include="ApothecaService.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Modules\CategoryModule.cs" />
     <Compile Include="Navigation\PathHelper.cs" />
     <Compile Include="Navigation\Scripts.cs" />
     <Compile Include="Navigation\Views.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="Validators\DocumentViewModelValidator.cs" />
     <Compile Include="Validators\UserViewModelValidator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Category\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Document\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
@@ -127,6 +130,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Layouts\BasicLayout.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Views\Categories\CategoryFormView.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Views\DashboardView.cshtml">

@@ -1,10 +1,12 @@
-﻿using Apotheca.BLL.Repositories;
+﻿using Apotheca.BLL.Models;
+using Apotheca.BLL.Repositories;
 using Apotheca.Controllers;
 using Apotheca.Navigation;
 using Apotheca.ViewModels.Dashboard;
 using Apotheca.Web.Results;
 using Nancy;
 using Nancy.Authentication.Forms;
+using Nancy.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,7 @@ namespace Apotheca.Modules
         {
             Get[Actions.Dashboard, true] = async (x, ct) =>
             {
+                this.RequiresAnyClaim(Roles.AllRoles);
                 IControllerResult result = await dashboardController.HandleDashboardGetAsync();
                 return this.HandleResult(result);
             };

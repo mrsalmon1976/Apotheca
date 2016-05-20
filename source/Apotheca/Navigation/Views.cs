@@ -8,6 +8,11 @@ namespace Apotheca.Navigation
 {
     public class Views
     {
+        public class Category
+        {
+            public const string Form = "Content/Views/Categories/CategoryFormView.cshtml";
+        }
+
         public const string Dashboard = "Content/Views/DashboardView.cshtml";
 
         public const string Login = "Content/Views/LoginView.cshtml";
