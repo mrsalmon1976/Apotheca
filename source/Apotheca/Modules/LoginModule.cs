@@ -28,7 +28,9 @@ namespace Apotheca.Modules
             Post["/login"] = x =>
             {
                 // TODO: Complete authentication
-                return this.LoginAndRedirect(new Guid("0E36B343-9A10-E611-BFE1-506313A3F1A1"), DateTime.Now.AddDays(1), Actions.Dashboard);
+                string redirectUrl = this.Request.Query["returnUrl"];
+                if (String.IsNullOrEmpty(redirectUrl)) redirectUrl = Actions.Dashboard;
+                return this.LoginAndRedirect(new Guid("0E36B343-9A10-E611-BFE1-506313A3F1A1"), DateTime.Now.AddDays(1), redirectUrl);
             };
 
             Get["/logout"] = x =>

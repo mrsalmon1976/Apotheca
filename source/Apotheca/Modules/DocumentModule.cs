@@ -30,6 +30,17 @@ namespace Apotheca.Modules
                 return base.HandleResult(documentController.HandleDocumentAddPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, this.Bind<DocumentViewModel>()));
             };
 
+            Get[Actions.Document.Search] = (x) =>
+            {
+                //AddScript(Scripts.DocumentFormView);
+                return this.HandleResult(documentController.HandleDocumentSearchGet());
+            };
+
+            Post[Actions.Document.Search] = (x) =>
+            {
+                return base.HandleResult(documentController.HandleDocumentSearchPost(this.Bind<DocumentSearchViewModel>()));
+            };
+
             Post[Actions.Document.Upload] = x =>
             {
                 documentController.HandleDocumentUploadPost(pathProvider.GetRootPath(), Request.Files);

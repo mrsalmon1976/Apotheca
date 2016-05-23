@@ -21,6 +21,8 @@ namespace Apotheca.Navigation
 
             public const string Add = "/document/add";
 
+            public const string Search = "/document/search";
+
             public const string Upload = "/document/upload";
         }
 
@@ -28,6 +30,8 @@ namespace Apotheca.Navigation
         {
             public const string Default = "/login";
         }
+
+        public const string Logout = "/logout";
 
         public class Setup
         {

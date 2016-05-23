@@ -26,6 +26,7 @@ namespace Test.Apotheca.Controllers
         private IDocumentViewModelValidator _documentViewModelValidator;
         private ICreateDocumentCommand _createDocumentCommand;
         private IUserRepository _userRepository;
+        private IDocumentRepository _documentRepository;
 
         [SetUp]
         public void DocumentControllerTest_SetUp()
@@ -34,13 +35,14 @@ namespace Test.Apotheca.Controllers
             _documentViewModelValidator = Substitute.For<IDocumentViewModelValidator>();
             _createDocumentCommand = Substitute.For<ICreateDocumentCommand>();
             _userRepository = Substitute.For<IUserRepository>();
+            _documentRepository = Substitute.For<IDocumentRepository>();
 
             Mapper.Reset();
             Mapper.Initialize((cfg) =>
             {
                 cfg.CreateMap<DocumentViewModel, DocumentEntity>();
             });
-            _documentController = new DocumentController(_documentViewModelValidator, _fileUtilityService, _createDocumentCommand, _userRepository);
+            _documentController = new DocumentController(_documentViewModelValidator, _fileUtilityService, _createDocumentCommand, _userRepository, _documentRepository);
 
         }
 

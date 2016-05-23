@@ -20,6 +20,10 @@ namespace Apotheca.Controllers
 
         IControllerResult HandleDocumentAddPost(string rootPath, string currentUserName, DocumentViewModel model);
 
+        IControllerResult HandleDocumentSearchGet();
+
+        IControllerResult HandleDocumentSearchPost(DocumentSearchViewModel model);
+
         void HandleDocumentUploadPost(string rootPath, IEnumerable<HttpFile> files);
     }
 
@@ -29,13 +33,15 @@ namespace Apotheca.Controllers
         private IFileUtilityService _fileUtilityService;
         private ICreateDocumentCommand _createDocumentCommand;
         private IUserRepository _userRepository;
+        private IDocumentRepository _documentRepository;
 
-        public DocumentController(IDocumentViewModelValidator documentViewModelValidator, IFileUtilityService fileUtilityService, ICreateDocumentCommand createDocumentCommand, IUserRepository userRepository)
+        public DocumentController(IDocumentViewModelValidator documentViewModelValidator, IFileUtilityService fileUtilityService, ICreateDocumentCommand createDocumentCommand, IUserRepository userRepository, IDocumentRepository documentRepository)
         {
             _documentViewModelValidator = documentViewModelValidator;
             _fileUtilityService = fileUtilityService;
             _createDocumentCommand = createDocumentCommand;
             _userRepository = userRepository;
+            _documentRepository = documentRepository;
         }
 
         public IControllerResult HandleDocumentAddGet()
@@ -76,6 +82,19 @@ namespace Apotheca.Controllers
 
             // if we've got here, we're all good - redirect to the dashboard
             return new RedirectResult(Actions.Dashboard);
+        }
+
+        public IControllerResult HandleDocumentSearchGet()
+        {
+            DocumentSearchViewModel model = new DocumentSearchViewModel();
+            return new ViewResult(Views.Document.Search, model);
+        }
+
+        public IControllerResult HandleDocumentSearchPost(DocumentSearchViewModel model)
+        {
+            model.Results.AddRange(_documentRepository.Search(model.SearchText, null));
+            model.IsResultGridVisible = true;
+            return new ViewResult(Views.Document.Search, model);
         }
 
         public void HandleDocumentUploadPost(string rootPath, IEnumerable<HttpFile> files)

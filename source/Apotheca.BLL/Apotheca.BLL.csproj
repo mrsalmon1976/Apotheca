@@ -55,6 +55,7 @@
     <Compile Include="Data\DbMigrator.cs" />
     <Compile Include="Exceptions\EntityDoesNotExistException.cs" />
     <Compile Include="Models\DocumentEntity.cs" />
+    <Compile Include="Models\DocumentSearchResult.cs" />
     <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Security\PasswordProvider.cs" />
     <Compile Include="Security\RandomKeyGenerator.cs" />

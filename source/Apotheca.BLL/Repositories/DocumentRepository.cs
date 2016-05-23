@@ -18,6 +18,8 @@ namespace Apotheca.BLL.Repositories
 
         DocumentEntity GetById(Guid id);
 
+        IEnumerable<DocumentSearchResult> Search(string text, IEnumerable<int> categories);
+
     }
 
     public class DocumentRepository : BaseRepository, IDocumentRepository
@@ -54,6 +56,23 @@ namespace Apotheca.BLL.Repositories
             Task<int> count = this.Connection.ExecuteScalarAsync<int>(sql);
             return await count;
         }
+
+        public IEnumerable<DocumentSearchResult> Search(string text, IEnumerable<int> categories)
+        {
+            string val = String.Format("\"{0}*\"", text);
+            string sql = this.ReplaceSchemaPlaceholders(@"
+                SELECT TOP 101
+                    d.Id AS DocumentId
+                    , d.FileName
+                    , LTRIM(RTRIM(u.FirstName + ' ' + u.Surname)) AS CreatedBy
+                    , d.CreatedOn
+                FROM [{SCHEMA}].[Documents] d 
+                LEFT JOIN [{SCHEMA}].[Users] u ON d.CreatedByUserId = u.Id 
+                WHERE CONTAINS(d.*, @SearchText)
+                ");
+            return this.Connection.Query<DocumentSearchResult>(sql, new { SearchText = val });
+        }
+
 
     }
 }
