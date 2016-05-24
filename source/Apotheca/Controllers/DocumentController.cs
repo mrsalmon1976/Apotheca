@@ -11,6 +11,7 @@ using AutoMapper;
 using Nancy;
 using System;
 using System.Collections.Generic;
+using System.Web;
 
 namespace Apotheca.Controllers
 {
@@ -59,6 +60,7 @@ namespace Apotheca.Controllers
             DocumentEntity document = Mapper.Map<DocumentViewModel, DocumentEntity>(model);
             document.CreatedByUserId = user.Id.Value;
             document.FileContents = fileContents;
+            document.MimeType = MimeMapping.GetMimeMapping(document.FileName);
 
             // do first level validation - if it fails then we need to exit
             List<string> validationErrors = this._documentViewModelValidator.Validate(model);

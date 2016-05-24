@@ -20,7 +20,7 @@ namespace Apotheca.BLL.Resources
         public string[] GetDbMigrationScripts()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(name => name.StartsWith(DbMigrationResourceNamespacePrefix));
+            var resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(name => name.StartsWith(DbMigrationResourceNamespacePrefix)).OrderBy(x => x);
             List<string> result = new List<string>();
 
             foreach (string resourceName in resourceNames)
@@ -34,7 +34,7 @@ namespace Apotheca.BLL.Resources
                 }
             }
 
-            return result.OrderBy(x => x).ToArray();
+            return result.ToArray();
         }
     }
 }

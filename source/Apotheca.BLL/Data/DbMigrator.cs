@@ -21,17 +21,10 @@ namespace Apotheca.BLL.Database
             IDbConnection conn = dbContext.GetConnection();
             // NOTE: you can't use a transaction here due to full index catalogs needing to be created, but 
             // the scripts should be able to be rerun anyway
-            try
+            foreach (string script in scripts)
             {
-                foreach (string script in scripts)
-                {
-                    string sql = script.Replace("{SCHEMA}", dbContext.Schema);
-                    conn.Execute(sql, null, null, 0, null);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
+                string sql = script.Replace("{SCHEMA}", dbContext.Schema);
+                conn.Execute(sql, null, null, 0, null);
             }
         }
     }

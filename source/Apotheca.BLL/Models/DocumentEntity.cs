@@ -22,5 +22,7 @@ namespace Apotheca.BLL.Models
 
         public Guid CreatedByUserId { get; set; }
 
+        public string MimeType { get; set; }
+
     }
 }

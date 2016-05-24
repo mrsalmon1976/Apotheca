@@ -1,12 +1,12 @@
 ﻿IF (NOT EXISTS (SELECT * 
                  FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'apotheca' 
+                 WHERE TABLE_SCHEMA = '{SCHEMA}' 
                  AND  TABLE_NAME = 'Documents'))
 BEGIN
 
 	CREATE TABLE [{SCHEMA}].[Documents](
 		Id uniqueidentifier rowguidcol NOT NULL,
-		Name nvarchar(255) NOT NULL,
+		[FileName] nvarchar(255) NOT NULL,
 		[Description] nvarchar(max) NULL,
 		[FileContents] varbinary(MAX) NOT NULL DEFAULT (0x),
 		Extension nvarchar(100) NOT NULL,
@@ -28,7 +28,7 @@ BEGIN
 
 	CREATE FULLTEXT INDEX ON [{SCHEMA}].[Documents]
 	( 
-		Name Language 1033,
+		[FileName] Language 1033,
 		[Description] Language 1033,
 		[FileContents] TYPE COLUMN Extension Language 1033     
 	) 

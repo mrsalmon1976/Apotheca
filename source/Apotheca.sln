@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Apotheca", "Test.Apoth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Apotheca.BLL", "Test.Apotheca.BLL\Test.Apotheca.BLL.csproj", "{DE538FF2-81C5-4EBE-8D03-2EE1895F0B19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Apotheca.Integration", "Test.Apotheca.Integration\Test.Apotheca.Integration.csproj", "{C68CC215-E04E-40C7-A4DF-7D1F211E2C78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DE538FF2-81C5-4EBE-8D03-2EE1895F0B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE538FF2-81C5-4EBE-8D03-2EE1895F0B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE538FF2-81C5-4EBE-8D03-2EE1895F0B19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C68CC215-E04E-40C7-A4DF-7D1F211E2C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68CC215-E04E-40C7-A4DF-7D1F211E2C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68CC215-E04E-40C7-A4DF-7D1F211E2C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68CC215-E04E-40C7-A4DF-7D1F211E2C78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

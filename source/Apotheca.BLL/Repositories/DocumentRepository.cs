@@ -34,10 +34,10 @@ namespace Apotheca.BLL.Repositories
             string sql = this.ReplaceSchemaPlaceholders(@"
                 DECLARE @returnid TABLE (id uniqueidentifier);
                 INSERT INTO [{SCHEMA}].[Documents] 
-                (FileName, Extension, Description, FileContents, CreatedOn, CreatedByUserId) 
+                (FileName, Extension, Description, FileContents, MimeType, CreatedOn, CreatedByUserId) 
                 output inserted.id into @returnid
                 VALUES
-                (@FileName, @Extension, @Description, @FileContents, @CreatedOn, @CreatedByUserId) 
+                (@FileName, @Extension, @Description, @FileContents, @MimeType, @CreatedOn, @CreatedByUserId) 
                 select r.id from @returnid r");
             Guid id = this.Connection.ExecuteScalar<Guid>(sql, document, transaction: DbContext.CurrentTransaction);
             document.Id = id;
