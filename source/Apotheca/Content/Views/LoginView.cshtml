@@ -1,4 +1,5 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@model Apotheca.ViewModels.Login.LoginViewModel
 @{
     Layout = "Content/Layouts/BasicLayout.cshtml";
 }
@@ -25,6 +26,7 @@
                             </div>
                             <button type="submit" class="btn btn-lg btn-success btn-block">Login</button>
                         </fieldset>
+                        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
                     </form>
                 </div>
             </div>

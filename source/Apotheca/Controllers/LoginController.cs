@@ -16,7 +16,7 @@ namespace Apotheca.Controllers
 {
     public interface ILoginController
     {
-        IControllerResult LoginGet(IUserIdentity currentUser);
+        IControllerResult LoginGet(IUserIdentity currentUser, LoginViewModel model);
     }
 
     public class LoginController : ILoginController
@@ -28,7 +28,7 @@ namespace Apotheca.Controllers
             _userRepo = userRepo;
         }
 
-        public IControllerResult LoginGet(IUserIdentity currentUser)
+        public IControllerResult LoginGet(IUserIdentity currentUser, LoginViewModel model)
         {
             if (!_userRepo.UsersExist())
             {
@@ -40,7 +40,6 @@ namespace Apotheca.Controllers
                 return new RedirectResult(Actions.Dashboard);
             }
             
-            LoginViewModel model = new LoginViewModel();
             return new ViewResult(Views.Login, model);
         }
     }

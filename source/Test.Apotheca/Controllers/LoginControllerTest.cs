@@ -38,7 +38,7 @@ namespace Test.Apotheca.Controllers
             _userRepo.UsersExist().Returns(false);
 
             // execute
-            RedirectResult result = _loginController.LoginGet(null) as RedirectResult;
+            RedirectResult result = _loginController.LoginGet(null, new LoginViewModel()) as RedirectResult;
 
             // assert
             Assert.IsNotNull(result);
@@ -55,7 +55,7 @@ namespace Test.Apotheca.Controllers
             _userRepo.UsersExist().Returns(true);
 
             // execute
-            RedirectResult result = _loginController.LoginGet(currentUser) as RedirectResult;
+            RedirectResult result = _loginController.LoginGet(currentUser, new LoginViewModel()) as RedirectResult;
 
             // assert
             Assert.IsNotNull(result);
@@ -71,7 +71,7 @@ namespace Test.Apotheca.Controllers
             _userRepo.UsersExist().Returns(true);
 
             // execute
-            ViewResult result = _loginController.LoginGet(null) as ViewResult;
+            ViewResult result = _loginController.LoginGet(null, new LoginViewModel()) as ViewResult;
 
             // assert
             Assert.IsNotNull(result);

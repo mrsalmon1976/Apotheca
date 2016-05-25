@@ -8,5 +8,6 @@ namespace Apotheca.ViewModels.Login
 {
     public class LoginViewModel
     {
+        public string ReturnUrl { get; set; }
     }
 }
