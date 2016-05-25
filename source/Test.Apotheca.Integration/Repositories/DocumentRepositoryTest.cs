@@ -38,7 +38,23 @@ namespace Test.Apotheca.Integration.Repositories
             document.MimeType = MimeMapping.GetMimeMapping(document.FileName);
 
             _repo.Create(document);
-
         }
+
+        [Test]
+        public async void GetCountAsync()
+        {
+            Task<int> count = _repo.GetCountAsync();
+            await count;
+            Assert.GreaterOrEqual(count.Result, 0);
+        }
+
+        [TestCase("test", "")]
+        public void Search(string text, string categories)
+        {
+            IEnumerable<int> cats = categories.Split(',').Select(x => Convert.ToInt32(x));
+            IEnumerable<DocumentSearchResult> results = _repo.Search(text, cats);
+            Assert.GreaterOrEqual(results.Count(), 0);
+        }
+
     }
 }

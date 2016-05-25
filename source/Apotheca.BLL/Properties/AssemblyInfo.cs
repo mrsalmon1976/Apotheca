@@ -14,8 +14,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: InternalsVisibleTo("Test.Apotheca.BLL")]
 [assembly: InternalsVisibleTo("Test.Apotheca")]
+[assembly: InternalsVisibleTo("Test.Apotheca.BLL")]
+[assembly: InternalsVisibleTo("Test.Apotheca.Integration")]
 
 
 // Setting ComVisible to false makes the types in this assembly not visible 

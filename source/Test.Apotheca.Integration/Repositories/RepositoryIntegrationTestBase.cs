@@ -11,6 +11,7 @@ using Apotheca.BLL.Data;
 using System.Configuration;
 using Test.Apotheca.Integration.Properties;
 using Apotheca.BLL.Database;
+using Dapper;
 
 namespace Test.Apotheca.Integration.Repositories
 {
@@ -28,6 +29,19 @@ namespace Test.Apotheca.Integration.Repositories
             // make sure migrations have run on the test database
             IDbScriptResourceProvider resourceProvider = new DbScriptResourceProvider();
             new DbMigrator().Migrate(this.DbContext, resourceProvider.GetDbMigrationScripts());
+        }
+
+        [TestFixtureTearDown]
+        public void RepositoryIntegrationTestBase_TestFixtureTearDown()
+        {
+            using (IDbConnection conn = this.DbContext.GetConnection())
+            {
+                conn.Execute("DROP FULLTEXT INDEX ON test.[Documents]");
+                conn.Execute("DROP FULLTEXT CATALOG [DocumentCatalog]");
+
+                conn.Execute("DROP TABLE test.[Users]");
+                conn.Execute("DROP TABLE test.[Documents]");
+            }
         }
 
     }
