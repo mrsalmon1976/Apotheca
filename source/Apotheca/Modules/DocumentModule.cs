@@ -30,6 +30,12 @@ namespace Apotheca.Modules
                 return base.HandleResult(documentController.HandleDocumentAddPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, this.Bind<DocumentViewModel>()));
             };
 
+            Get[Actions.Document.Download] = (x) =>
+            {
+                Guid id = Request.Query["id"];
+                return base.HandleResult(documentController.HandleDocumentDownloadGet(pathProvider.GetRootPath(), id));
+            };
+
             Get[Actions.Document.Search] = (x) =>
             {
                 //AddScript(Scripts.DocumentFormView);

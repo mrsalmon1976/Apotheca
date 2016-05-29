@@ -123,7 +123,7 @@ namespace Test.Apotheca.Services
 
 
         [Test]
-        public void LoadUploadedFile_OnExecute_LoadsFile()
+        public void ReadUploadedFile_OnExecute_LoadsFile()
         {
             // setup 
             string fileName = Path.GetRandomFileName();
@@ -133,13 +133,46 @@ namespace Test.Apotheca.Services
             _pathWrap.Combine(_uploadDir, fileName).Returns(filePath);
             
             // execute
-            _fileUtilityService.LoadUploadedFile(_rootDir, fileName);
+            _fileUtilityService.ReadUploadedFile(_rootDir, fileName);
 
             // assert
             _pathHelper.Received(1).UploadDirectory(_rootDir);
             _pathWrap.Received(1).Combine(_uploadDir, fileName);
             _fileWrap.Received(1).ReadAllBytes(filePath);
 
+        }
+
+        [Test]
+        public void SaveDownloadFile_DirectoryDoesNotExist_DirectoryCreated()
+        {
+            string dir = Environment.CurrentDirectory + "\\Downloads";
+            byte[] fileContents = new byte[100];
+            new Random().NextBytes(fileContents);
+            string fileName = Guid.NewGuid().ToString();
+            string filePath = Path.Combine(dir, fileName);
+            IFileInfoWrap fileInfo = new FileInfoWrap(filePath);
+
+            // execute
+            _fileUtilityService.SaveDownloadFile(fileInfo, fileContents);
+
+            // assert
+            _directoryWrap.Received(1).CreateDirectory(dir);
+
+        }
+
+        [Test]
+        public void SaveDownloadedFile_FilePosted_FileIsCreated()
+        {
+            string dir = Environment.CurrentDirectory + "\\Downloads";
+            byte[] fileContents = new byte[100];
+            new Random().NextBytes(fileContents);
+            string fileName = Guid.NewGuid().ToString();
+            string filePath = Path.Combine(dir, fileName);
+            IFileInfoWrap fileInfo = new FileInfoWrap(filePath);
+
+            _fileUtilityService.SaveDownloadFile(fileInfo, fileContents);
+
+            _fileWrap.Received(1).WriteAllBytes(filePath, fileContents);
         }
 
         [Test]

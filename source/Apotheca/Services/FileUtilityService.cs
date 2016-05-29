@@ -15,7 +15,11 @@ namespace Apotheca.Services
     {
         int CleanUploadedFiles(string rootPath);
 
-        byte[] LoadUploadedFile(string rootPath, string fileName);
+        IFileInfoWrap GetDownloadFileInfo(string rootPath, string fileName);
+
+        byte[] ReadUploadedFile(string rootPath, string fileName);
+
+        void SaveDownloadFile(IFileInfoWrap fileInfo, byte[] fileContents);
 
         void SaveUploadedFile(string rootPath, HttpFile file);
     }
@@ -55,11 +59,27 @@ namespace Apotheca.Services
             return count;
         }
 
-        public byte[] LoadUploadedFile(string rootPath, string fileName)
+        public IFileInfoWrap GetDownloadFileInfo(string rootPath, string fileName)
+        {
+            var downloadDirectory = _pathHelper.DownloadDirectory(rootPath);
+            return new FileInfoWrap(_pathWrap.Combine(downloadDirectory, fileName));
+        }
+
+        public byte[] ReadUploadedFile(string rootPath, string fileName)
         {
             var uploadDirectory = _pathHelper.UploadDirectory(rootPath);
             var filePath = _pathWrap.Combine(uploadDirectory, fileName);
             return _fileWrap.ReadAllBytes(filePath);
+        }
+
+        public void SaveDownloadFile(IFileInfoWrap fileInfo, byte[] fileContents)
+        {
+            
+            //var downloadDirectory = _pathHelper.DownloadDirectory(rootPath);
+            _directoryWrap.CreateDirectory(fileInfo.DirectoryName);
+            //var filePath = _pathWrap.Combine(downloadDirectory, fileName);
+            _fileWrap.WriteAllBytes(fileInfo.FullName, fileContents);
+
         }
 
         public void SaveUploadedFile(string rootPath, HttpFile file)

@@ -1,31 +1,26 @@
-﻿using Apotheca.BLL.Database;
-using Apotheca.Configuration;
-using Apotheca.Security;
+﻿using Apotheca.BLL.Commands.Document;
+using Apotheca.BLL.Commands.User;
+using Apotheca.BLL.Data;
+using Apotheca.BLL.Database;
+using Apotheca.BLL.Models;
+using Apotheca.BLL.Repositories;
 using Apotheca.BLL.Resources;
+using Apotheca.BLL.Validators;
+using Apotheca.Configuration;
+using Apotheca.Controllers;
+using Apotheca.Navigation;
+using Apotheca.Security;
+using Apotheca.Services;
+using Apotheca.ViewModels.Document;
+using AutoMapper;
 using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
-using Nancy.Security;
 using Nancy.TinyIoc;
 using System;
-using System.Data;
-using System.Data.SqlClient;
-using Apotheca.BLL.Repositories;
-using Apotheca.Controllers;
-using Apotheca.ViewModels;
-using System.Reflection;
-using Apotheca.BLL.Data;
-using Apotheca.BLL.Commands.User;
-using Apotheca.BLL.Validators;
 using System.Collections.Generic;
-using Apotheca.Navigation;
+using System.Reflection;
 using SystemWrapper.IO;
-using Apotheca.Web;
-using AutoMapper;
-using Apotheca.ViewModels.Document;
-using Apotheca.BLL.Models;
-using Apotheca.Services;
-using Apotheca.BLL.Commands.Document;
 
 namespace Apotheca
 {
@@ -132,7 +127,6 @@ namespace Apotheca
             // set shared ViewBag details here
             context.ViewBag.AppVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             context.ViewBag.Scripts = new List<string>();
-
         }
 
     }

@@ -56,6 +56,18 @@ namespace Apotheca.Modules
                 return Response.AsText(tr.Text);
             }
 
+            FileResult fr = result as FileResult;
+            if (fr != null)
+            {
+                return Response.AsFile(fr.ApplicationRelativeFilePath, fr.ContentType);
+            }
+
+            NotFoundResult nfr = result as NotFoundResult;
+            if (nfr != null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
             throw new NotSupportedException("Results of type " + result.GetType().Name + " not supported");
         }
 

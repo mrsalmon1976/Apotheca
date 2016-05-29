@@ -14,6 +14,8 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.IO;
+using SystemWrapper.IO;
+using Test.Apotheca.BLL.TestHelpers;
 using Test.Apotheca.TestHelpers;
 
 namespace Test.Apotheca.Controllers
@@ -85,7 +87,7 @@ namespace Test.Apotheca.Controllers
             UserEntity user = new UserEntity() { Email = currentUserName, Id = Guid.NewGuid() };
             _userRepository.GetUserByEmail(currentUserName).Returns(user);
 
-            _fileUtilityService.LoadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
+            _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>() { "error" });
 
             // execute
@@ -109,7 +111,7 @@ namespace Test.Apotheca.Controllers
             UserEntity user = new UserEntity() { Email = currentUserName, Id = Guid.NewGuid() };
             _userRepository.GetUserByEmail(currentUserName).Returns(user);
 
-            _fileUtilityService.LoadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
+            _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
 
             _createDocumentCommand.When(x => x.Execute()).Do((args) => { throw new ValidationException("error"); });
@@ -135,7 +137,7 @@ namespace Test.Apotheca.Controllers
             UserEntity user = new UserEntity() { Email = currentUserName, Id = Guid.NewGuid() };
             _userRepository.GetUserByEmail(currentUserName).Returns(user);
 
-            _fileUtilityService.LoadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
+            _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
 
             // execute
@@ -146,6 +148,79 @@ namespace Test.Apotheca.Controllers
             Assert.AreEqual(Actions.Dashboard, result.Location);
             _createDocumentCommand.Received(1).Execute();
             _userRepository.Received(1).GetUserByEmail(currentUserName);
+        }
+
+        #endregion
+
+        #region HandleDocumentDownloadGet Tests
+
+        [Test]
+        public void HandleDocumentDownloadGet_NoDocument_Returns404()
+        {
+            string rootPath = Environment.CurrentDirectory;
+            Guid documentId = Guid.NewGuid();
+            string fileName = documentId.ToString();
+            IFileInfoWrap fileInfo = Substitute.For<IFileInfoWrap>();
+            DocumentEntity documentEntity = null;
+
+            _fileUtilityService.GetDownloadFileInfo(rootPath, fileName).Returns(fileInfo);
+            _documentRepository.GetByIdOrDefault(documentId, false).Returns(documentEntity);
+
+            // execute
+            NotFoundResult result = _documentController.HandleDocumentDownloadGet(rootPath, documentId) as NotFoundResult;
+
+            Assert.IsNotNull(result);
+            _fileUtilityService.Received(1).GetDownloadFileInfo(rootPath, fileName);
+            _documentRepository.Received(1).GetByIdOrDefault(documentId, false);
+
+        }
+
+        [Test]
+        public void HandleDocumentDownloadGet_DocumentFound_SavesToDisk()
+        {
+            string rootPath = Environment.CurrentDirectory;
+            Guid documentId = Guid.NewGuid();
+            string fileName = documentId.ToString();
+            IFileInfoWrap fileInfo = Substitute.For<IFileInfoWrap>();
+            fileInfo.Exists.Returns(false);
+            DocumentEntity documentEntity = TestEntityHelper.CreateDocumentWithData();
+            byte[] fileContents = documentEntity.FileContents;
+
+            _fileUtilityService.GetDownloadFileInfo(rootPath, fileName).Returns(fileInfo);
+            _documentRepository.GetByIdOrDefault(documentId, false).Returns(documentEntity);
+            _documentRepository.GetFileContents(documentId).Returns(fileContents);
+
+            // execute
+            _documentController.HandleDocumentDownloadGet(rootPath, documentId);
+
+            _documentRepository.Received(1).GetFileContents(documentId);
+            _fileUtilityService.Received(1).SaveDownloadFile(fileInfo, fileContents);
+        }
+
+        [Test]
+        public void HandleDocumentDownloadGet_DocumentFound_ReturnsFileResult()
+        {
+            string rootPath = Environment.CurrentDirectory;
+            Guid documentId = Guid.NewGuid();
+            string fileName = documentId.ToString();
+            string filePath = Path.Combine(rootPath, fileName);
+
+            IFileInfoWrap fileInfo = Substitute.For<IFileInfoWrap>();
+            fileInfo.Exists.Returns(true);
+            fileInfo.FullName.Returns(filePath);
+
+            DocumentEntity documentEntity = TestEntityHelper.CreateDocumentWithData();
+            byte[] fileContents = documentEntity.FileContents;
+
+            _fileUtilityService.GetDownloadFileInfo(rootPath, fileName).Returns(fileInfo);
+            _documentRepository.GetByIdOrDefault(documentId, false).Returns(documentEntity);
+
+            // execute
+            FileResult result = _documentController.HandleDocumentDownloadGet(rootPath, documentId) as FileResult;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(filePath, result.ApplicationRelativeFilePath);
+            Assert.AreEqual(documentEntity.MimeType, result.ContentType);
         }
 
         #endregion

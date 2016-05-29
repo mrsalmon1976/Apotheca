@@ -12,6 +12,7 @@ using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Web;
+using SystemWrapper.IO;
 
 namespace Apotheca.Controllers
 {
@@ -20,6 +21,8 @@ namespace Apotheca.Controllers
         IControllerResult HandleDocumentAddGet();
 
         IControllerResult HandleDocumentAddPost(string rootPath, string currentUserName, DocumentViewModel model);
+
+        IControllerResult HandleDocumentDownloadGet(string rootPath, Guid id);
 
         IControllerResult HandleDocumentSearchGet();
 
@@ -54,7 +57,7 @@ namespace Apotheca.Controllers
         public IControllerResult HandleDocumentAddPost(string rootPath, string currentUserName, DocumentViewModel model)
         {
             UserEntity user = _userRepository.GetUserByEmail(currentUserName);
-            byte[] fileContents = _fileUtilityService.LoadUploadedFile(rootPath, model.UploadedFileName);
+            byte[] fileContents = _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName);
             
             // set up the entity
             DocumentEntity document = Mapper.Map<DocumentViewModel, DocumentEntity>(model);
@@ -84,6 +87,33 @@ namespace Apotheca.Controllers
 
             // if we've got here, we're all good - redirect to the dashboard
             return new RedirectResult(Actions.Dashboard);
+        }
+
+        public IControllerResult HandleDocumentDownloadGet(string rootPath, Guid id)
+        {
+            IFileInfoWrap fileInfo = _fileUtilityService.GetDownloadFileInfo(rootPath, id.ToString());
+
+            // TODO: check the current user has access to download the document 
+
+            // get the document, with contents
+            DocumentEntity document = _documentRepository.GetByIdOrDefault(id, false);
+            if (document == null)
+            {
+                return new NotFoundResult();
+            }
+
+            // save document to disk (Downloads folder) if it does not exist already
+            if (!fileInfo.Exists)
+            {
+                byte[] fileContents = _documentRepository.GetFileContents(id);
+                _fileUtilityService.SaveDownloadFile(fileInfo, fileContents);
+            }
+            
+            // set up the result
+            FileResult result = new FileResult();
+            result.ApplicationRelativeFilePath = fileInfo.FullName;
+            result.ContentType = document.MimeType;
+            return result;
         }
 
         public IControllerResult HandleDocumentSearchGet()

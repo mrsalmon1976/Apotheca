@@ -16,7 +16,9 @@ namespace Apotheca.BLL.Repositories
 
         void Create(DocumentEntity document);
 
-        DocumentEntity GetById(Guid id);
+        DocumentEntity GetByIdOrDefault(Guid id, bool includeFileData = false);
+
+        byte[] GetFileContents(Guid id);
 
         IEnumerable<DocumentSearchResult> Search(string text, IEnumerable<int> categories);
 
@@ -43,11 +45,15 @@ namespace Apotheca.BLL.Repositories
             document.Id = id;
         }
 
-        public DocumentEntity GetById(Guid id)
+        public DocumentEntity GetByIdOrDefault(Guid id, bool includeFileData = false)
         {
-            throw new NotImplementedException();
-            //string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Id = @Id");
-            //return this.DbContext.GetConnection().Query<UserEntity>(sql, new { Id = id }).SingleOrDefault();
+            string columns = "Id, FileName, Description, Extension, MimeType, CreatedOn, CreatedByUserId";
+            if (includeFileData)
+            {
+                columns += ", FileContents";
+            }
+            string sql = String.Format(this.ReplaceSchemaPlaceholders("select {0} from [{SCHEMA}].[Documents] where Id = @Id"), columns);
+            return this.Connection.Query<DocumentEntity>(sql, new { Id = id }).SingleOrDefault();
         }
 
         public async Task<int> GetCountAsync()
@@ -55,6 +61,12 @@ namespace Apotheca.BLL.Repositories
             string sql = this.ReplaceSchemaPlaceholders("SELECT COUNT(*) FROM [{SCHEMA}].[Documents]");
             Task<int> count = this.Connection.ExecuteScalarAsync<int>(sql);
             return await count;
+        }
+
+        public byte[] GetFileContents(Guid id)
+        {
+            string sql = this.ReplaceSchemaPlaceholders("select FileContents from [{SCHEMA}].[Documents] where Id = @Id");
+            return this.Connection.Query<byte[]>(sql, new { Id = id }).Single();
         }
 
         public IEnumerable<DocumentSearchResult> Search(string text, IEnumerable<int> categories)

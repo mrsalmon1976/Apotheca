@@ -24,6 +24,45 @@ namespace Test.Apotheca.Integration.Repositories
         [Test]
         public void Create()
         {
+            DocumentEntity document = this.CreateEntity();
+            _repo.Create(document);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void GetByIdOrDefault(bool includeFileData)
+        {
+            _repo.GetByIdOrDefault(Guid.NewGuid(), includeFileData);
+        }
+
+        [Test]
+        public async void GetCountAsync()
+        {
+            Task<int> count = _repo.GetCountAsync();
+            await count;
+            Assert.GreaterOrEqual(count.Result, 0);
+        }
+
+        [Test]
+        public void GetFileContents()
+        {
+            DocumentEntity document = this.CreateEntity();
+            _repo.Create(document);
+
+            byte[] fileContents = _repo.GetFileContents(document.Id.Value);
+            Assert.AreEqual(document.FileContents, fileContents);
+        }
+
+        [TestCase("test", "")]
+        public void Search(string text, string categories)
+        {
+            IEnumerable<int> cats = categories.Split(',').Select(x => Convert.ToInt32(x));
+            IEnumerable<DocumentSearchResult> results = _repo.Search(text, cats);
+            Assert.GreaterOrEqual(results.Count(), 0);
+        }
+
+        private DocumentEntity CreateEntity()
+        {
             byte[] fileContents = new byte[100];
             new Random().NextBytes(fileContents);
 
@@ -36,24 +75,7 @@ namespace Test.Apotheca.Integration.Repositories
             document.FileContents = fileContents;
             document.FileName = "test.txt";
             document.MimeType = MimeMapping.GetMimeMapping(document.FileName);
-
-            _repo.Create(document);
-        }
-
-        [Test]
-        public async void GetCountAsync()
-        {
-            Task<int> count = _repo.GetCountAsync();
-            await count;
-            Assert.GreaterOrEqual(count.Result, 0);
-        }
-
-        [TestCase("test", "")]
-        public void Search(string text, string categories)
-        {
-            IEnumerable<int> cats = categories.Split(',').Select(x => Convert.ToInt32(x));
-            IEnumerable<DocumentSearchResult> results = _repo.Search(text, cats);
-            Assert.GreaterOrEqual(results.Count(), 0);
+            return document;
         }
 
     }

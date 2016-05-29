@@ -3,6 +3,11 @@
     margin-top: 20px;
 }
 
+/* Dropzone overrides */
+.dropzone {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 /* Margin styles */
 .margin-top-0 {
     margin-top: 0pt;

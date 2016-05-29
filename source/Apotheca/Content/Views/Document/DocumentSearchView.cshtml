@@ -36,13 +36,13 @@
                 @foreach (var r in Model.Results)
                 {
                     <tr>
-                        <td>@r.FileName</td>
+                        <td><a href="@(Actions.Document.Download)?id=@r.DocumentId">@r.FileName</a></td>
                         <td>@r.CreatedBy</td>
                         <td>@r.CreatedOn</td>
                     </tr>
                 }
             </table>
-            <p class="bg-info info-panel">Results: @Model.Results.Count</p>
+            <p class="bg-info info-panel">Documents found: @Model.Results.Count</p>
         </div>
     </div>
 }

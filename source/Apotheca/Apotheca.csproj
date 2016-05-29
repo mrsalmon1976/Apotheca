@@ -107,6 +107,8 @@
     <Compile Include="ViewModels\Document\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
+    <Compile Include="Web\Results\FileResult.cs" />
+    <Compile Include="Web\Results\NotFoundResult.cs" />
     <Compile Include="Web\Results\TextResult.cs" />
     <Compile Include="Web\Results\JsonResult.cs" />
     <Compile Include="Web\Results\LoginAndRedirectResult.cs" />
@@ -213,6 +215,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Downloads\" />
     <Folder Include="Content\Uploads\" />
   </ItemGroup>
   <ItemGroup>

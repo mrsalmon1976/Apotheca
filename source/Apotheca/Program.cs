@@ -14,7 +14,7 @@ namespace Apotheca
 
         static void Main(string[] args)
         {
-            _logger.Info("Apotheca starting up.");
+            _logger.Info("Apotheca starting up");
 
             try
             {
@@ -35,7 +35,7 @@ namespace Apotheca
                         configuration.SetDisplayName("Apotheca");
                         configuration.SetDescription("The Apotheca Document Store service.");
                     });
-                _logger.Info("Apotheca shutting down.");
+                _logger.Info("Apotheca shutting down");
             }
             catch (Exception ex)
             {

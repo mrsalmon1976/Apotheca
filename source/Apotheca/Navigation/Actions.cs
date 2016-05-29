@@ -21,6 +21,8 @@ namespace Apotheca.Navigation
 
             public const string Add = "/document/add";
 
+            public const string Download = "/document/download";
+
             public const string Search = "/document/search";
 
             public const string Upload = "/document/upload";
