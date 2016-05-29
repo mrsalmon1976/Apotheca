@@ -19,6 +19,8 @@ namespace Apotheca.Services
 
         byte[] ReadUploadedFile(string rootPath, string fileName);
 
+        byte[] ReadFile(string filePath);
+
         void SaveDownloadFile(IFileInfoWrap fileInfo, byte[] fileContents);
 
         void SaveUploadedFile(string rootPath, HttpFile file);
@@ -63,6 +65,11 @@ namespace Apotheca.Services
         {
             var downloadDirectory = _pathHelper.DownloadDirectory(rootPath);
             return new FileInfoWrap(_pathWrap.Combine(downloadDirectory, fileName));
+        }
+
+        public byte[] ReadFile(string filePath)
+        {
+            return _fileWrap.ReadAllBytes(filePath);
         }
 
         public byte[] ReadUploadedFile(string rootPath, string fileName)

@@ -8,8 +8,12 @@ namespace Apotheca.Web.Results
 {
     public class FileResult : IControllerResult
     {
-        public string ApplicationRelativeFilePath { get; set; }
+        // public string ApplicationRelativeFilePath { get; set; }
         
         public string ContentType { get; set; }
+
+        public string FileName { get; set; }
+
+        public byte[] FileContents { get; set; }
     }
 }

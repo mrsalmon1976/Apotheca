@@ -59,7 +59,17 @@ namespace Apotheca.Modules
             FileResult fr = result as FileResult;
             if (fr != null)
             {
-                return Response.AsFile(fr.ApplicationRelativeFilePath, fr.ContentType);
+                var response = new Response();
+                response.Headers.Add("Content-Disposition", String.Format("attachment; filename={0}", fr.FileName));
+                response.ContentType = fr.ContentType;
+                response.Contents = 
+                    stream => {
+                    using (var writer = new System.IO.BinaryWriter(stream))
+                    {
+                        writer.Write(fr.FileContents);
+                    }
+                };
+                return response;
             }
 
             NotFoundResult nfr = result as NotFoundResult;

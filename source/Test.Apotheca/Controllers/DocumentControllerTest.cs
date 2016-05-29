@@ -176,7 +176,7 @@ namespace Test.Apotheca.Controllers
         }
 
         [Test]
-        public void HandleDocumentDownloadGet_DocumentFound_SavesToDisk()
+        public void HandleDocumentDownloadGet_DocumentFoundButNotOnDisk_SavesToDisk()
         {
             string rootPath = Environment.CurrentDirectory;
             Guid documentId = Guid.NewGuid();
@@ -195,6 +195,34 @@ namespace Test.Apotheca.Controllers
 
             _documentRepository.Received(1).GetFileContents(documentId);
             _fileUtilityService.Received(1).SaveDownloadFile(fileInfo, fileContents);
+            _fileUtilityService.DidNotReceive().ReadFile(Arg.Any<string>());
+        }
+
+        [Test]
+        public void HandleDocumentDownloadGet_DocumentFoundAndOnDisk_JustDownloads()
+        {
+            string rootPath = Environment.CurrentDirectory;
+            Guid documentId = Guid.NewGuid();
+            string fileName = documentId.ToString();
+            string filePath = Path.Combine(rootPath, fileName);
+
+            IFileInfoWrap fileInfo = Substitute.For<IFileInfoWrap>();
+            fileInfo.FullName.Returns(filePath);
+            fileInfo.Exists.Returns(true);
+            DocumentEntity documentEntity = TestEntityHelper.CreateDocumentWithData();
+            byte[] fileContents = documentEntity.FileContents;
+
+            _fileUtilityService.GetDownloadFileInfo(rootPath, fileName).Returns(fileInfo);
+            _fileUtilityService.ReadFile(filePath).Returns(fileContents);
+            _documentRepository.GetByIdOrDefault(documentId, false).Returns(documentEntity);
+            _documentRepository.GetFileContents(documentId).Returns(fileContents);
+
+            // execute
+            _documentController.HandleDocumentDownloadGet(rootPath, documentId);
+
+
+            _fileUtilityService.Received(1).ReadFile(filePath);
+            _fileUtilityService.DidNotReceive().SaveDownloadFile(Arg.Any<IFileInfoWrap>(), Arg.Any<byte[]>());
         }
 
         [Test]
@@ -210,17 +238,20 @@ namespace Test.Apotheca.Controllers
             fileInfo.FullName.Returns(filePath);
 
             DocumentEntity documentEntity = TestEntityHelper.CreateDocumentWithData();
+            documentEntity.FileName = fileName;
             byte[] fileContents = documentEntity.FileContents;
 
             _fileUtilityService.GetDownloadFileInfo(rootPath, fileName).Returns(fileInfo);
+            _fileUtilityService.ReadFile(filePath).Returns(fileContents);
             _documentRepository.GetByIdOrDefault(documentId, false).Returns(documentEntity);
 
             // execute
             FileResult result = _documentController.HandleDocumentDownloadGet(rootPath, documentId) as FileResult;
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(filePath, result.ApplicationRelativeFilePath);
             Assert.AreEqual(documentEntity.MimeType, result.ContentType);
+            Assert.AreEqual(fileContents, result.FileContents);
+            Assert.AreEqual(fileName, result.FileName);
         }
 
         #endregion

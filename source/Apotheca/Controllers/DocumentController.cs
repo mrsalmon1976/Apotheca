@@ -92,6 +92,7 @@ namespace Apotheca.Controllers
         public IControllerResult HandleDocumentDownloadGet(string rootPath, Guid id)
         {
             IFileInfoWrap fileInfo = _fileUtilityService.GetDownloadFileInfo(rootPath, id.ToString());
+            FileResult result = new FileResult();
 
             // TODO: check the current user has access to download the document 
 
@@ -103,16 +104,20 @@ namespace Apotheca.Controllers
             }
 
             // save document to disk (Downloads folder) if it does not exist already
-            if (!fileInfo.Exists)
+            if (fileInfo.Exists)
+            {
+                result.FileContents = _fileUtilityService.ReadFile(fileInfo.FullName);
+            }
+            else
             {
                 byte[] fileContents = _documentRepository.GetFileContents(id);
                 _fileUtilityService.SaveDownloadFile(fileInfo, fileContents);
             }
             
             // set up the result
-            FileResult result = new FileResult();
-            result.ApplicationRelativeFilePath = fileInfo.FullName;
+            //result.ApplicationRelativeFilePath = fileInfo.FullName;
             result.ContentType = document.MimeType;
+            result.FileName = document.FileName;
             return result;
         }
 
