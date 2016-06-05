@@ -13,22 +13,24 @@ using Apotheca.BLL.Data;
 
 namespace Apotheca.BLL.Commands.Document
 {
-    public interface ICreateDocumentCommand : ICommand<Guid>
+    public interface ISaveDocumentCommand : ICommand<Guid>
     {
         DocumentEntity Document { get; set; }
     }
 
-    public class CreateDocumentCommand : Command<Guid>, ICreateDocumentCommand
+    public class SaveDocumentCommand : Command<Guid>, ISaveDocumentCommand
     {
         private IDbContext _dbContext;
         private IDocumentValidator _documentValidator;
         private IDocumentRepository _documentRepo;
+        private IDocumentVersionRepository _documentVersionRepo;
 
-        public CreateDocumentCommand(IDbContext dbContext, IDocumentValidator documentValidator, IDocumentRepository documentRepo)
+        public SaveDocumentCommand(IDbContext dbContext, IDocumentValidator documentValidator, IDocumentRepository documentRepo, IDocumentVersionRepository documentVersionRepo)
         {
             _dbContext = dbContext;
             _documentValidator = documentValidator;
             _documentRepo = documentRepo;
+            _documentVersionRepo = documentVersionRepo;
         }
 
         public DocumentEntity Document { get; set; }
@@ -37,16 +39,36 @@ namespace Apotheca.BLL.Commands.Document
         {
             if (this.Document == null) throw new NullReferenceException("Document property cannot be null");
 
-            //validate
-            _documentValidator.Validate(this.Document);
+            bool isExisting = this.Document.Id.HasValue;
 
             // start a transaction as now we're hitting the database
             IDbTransaction txn = this._dbContext.BeginTransaction();
             try
             {
+                // determine the version number
+                int versionNo = 1;
+                if (isExisting)
+                {
+                    versionNo = _documentVersionRepo.GetVersionCount(this.Document.Id.Value) + 1;
+                }
+                this.Document.VersionNo = versionNo;
+
+                // validate
+                _documentValidator.Validate(this.Document);
+
                 // set the CreatedOn and insert the new document
                 this.Document.CreatedOn = DateTime.UtcNow;
-                _documentRepo.Create(this.Document);
+                if (isExisting)
+                {
+                    _documentRepo.Update(this.Document);
+                }
+                else
+                {
+                    _documentRepo.Create(this.Document);
+                }
+
+                // create the version
+                _documentVersionRepo.Create(this.Document);
 
                 txn.Commit();
             }

@@ -22,6 +22,8 @@ namespace Apotheca.BLL.Repositories
 
         IEnumerable<DocumentSearchResult> Search(string text, IEnumerable<int> categories);
 
+        void Update(DocumentEntity document);
+
     }
 
     public class DocumentRepository : BaseRepository, IDocumentRepository
@@ -36,10 +38,10 @@ namespace Apotheca.BLL.Repositories
             string sql = this.ReplaceSchemaPlaceholders(@"
                 DECLARE @returnid TABLE (id uniqueidentifier);
                 INSERT INTO [{SCHEMA}].[Documents] 
-                (FileName, Extension, Description, FileContents, MimeType, CreatedOn, CreatedByUserId) 
+                (VersionNo, FileName, Extension, Description, FileContents, MimeType, CreatedOn, CreatedByUserId) 
                 output inserted.id into @returnid
                 VALUES
-                (@FileName, @Extension, @Description, @FileContents, @MimeType, @CreatedOn, @CreatedByUserId) 
+                (@VersionNo, @FileName, @Extension, @Description, @FileContents, @MimeType, @CreatedOn, @CreatedByUserId) 
                 select r.id from @returnid r");
             Guid id = this.Connection.ExecuteScalar<Guid>(sql, document, transaction: DbContext.CurrentTransaction);
             document.Id = id;
@@ -47,7 +49,7 @@ namespace Apotheca.BLL.Repositories
 
         public DocumentEntity GetByIdOrDefault(Guid id, bool includeFileData = false)
         {
-            string columns = "Id, FileName, Description, Extension, MimeType, CreatedOn, CreatedByUserId";
+            string columns = "Id, VersionNo, FileName, Description, Extension, MimeType, CreatedOn, CreatedByUserId";
             if (includeFileData)
             {
                 columns += ", FileContents";
@@ -75,6 +77,7 @@ namespace Apotheca.BLL.Repositories
             string sql = this.ReplaceSchemaPlaceholders(@"
                 SELECT TOP 101
                     d.Id AS DocumentId
+                    , d.VersionNo
                     , d.FileName
                     , LTRIM(RTRIM(u.FirstName + ' ' + u.Surname)) AS CreatedBy
                     , d.CreatedOn
@@ -84,6 +87,18 @@ namespace Apotheca.BLL.Repositories
                 ");
             return this.Connection.Query<DocumentSearchResult>(sql, new { SearchText = val });
         }
+
+        public void Update(DocumentEntity document)
+        {
+            string sql = this.ReplaceSchemaPlaceholders(@"
+                UPDATE [{SCHEMA}].[Documents] 
+                SET VersionNo = @VersionNo, FileName = @FileName, Extension = @Extension
+                    , Description = @Description, FileContents = @FileContents, MimeType = @MimeType
+                    , CreatedOn = @CreatedOn, CreatedByUserId = @CreatedByUserId 
+                    WHERE Id = @Id");
+            this.Connection.Execute(sql, document, transaction: DbContext.CurrentTransaction);
+        }
+
 
 
     }

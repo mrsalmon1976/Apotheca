@@ -26,7 +26,7 @@ namespace Test.Apotheca.Controllers
         private IDocumentController _documentController;
         private IFileUtilityService _fileUtilityService;
         private IDocumentViewModelValidator _documentViewModelValidator;
-        private ICreateDocumentCommand _createDocumentCommand;
+        private ISaveDocumentCommand _createDocumentCommand;
         private IUserRepository _userRepository;
         private IDocumentRepository _documentRepository;
 
@@ -35,7 +35,7 @@ namespace Test.Apotheca.Controllers
         {
             _fileUtilityService = Substitute.For<IFileUtilityService>();
             _documentViewModelValidator = Substitute.For<IDocumentViewModelValidator>();
-            _createDocumentCommand = Substitute.For<ICreateDocumentCommand>();
+            _createDocumentCommand = Substitute.For<ISaveDocumentCommand>();
             _userRepository = Substitute.For<IUserRepository>();
             _documentRepository = Substitute.For<IDocumentRepository>();
 
@@ -73,10 +73,10 @@ namespace Test.Apotheca.Controllers
 
         #endregion
 
-        #region HandleDocumentAddPost Tests
+        #region HandleDocumentFormPost Tests
 
         [Test]
-        public void HandleDocumentAddPost_FailsModelValidation_DisplaysView()
+        public void HandleDocumentFormPost_FailsModelValidation_DisplaysView()
         {
             // setup 
             string rootPath = Environment.CurrentDirectory;
@@ -91,7 +91,7 @@ namespace Test.Apotheca.Controllers
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>() { "error" });
 
             // execute
-            ViewResult result = _documentController.HandleDocumentAddPost(rootPath, currentUserName, model) as ViewResult;
+            ViewResult result = _documentController.HandleDocumentFormPost(rootPath, currentUserName, model) as ViewResult;
 
             // assert
             Assert.IsNotNull(result);
@@ -100,7 +100,7 @@ namespace Test.Apotheca.Controllers
         }
 
         [Test]
-        public void HandleDocumentAddPost_FailsDataValidation_DisplaysView()
+        public void HandleDocumentFormPost_FailsDataValidation_DisplaysView()
         {
             // setup 
             string rootPath = Environment.CurrentDirectory;
@@ -117,7 +117,7 @@ namespace Test.Apotheca.Controllers
             _createDocumentCommand.When(x => x.Execute()).Do((args) => { throw new ValidationException("error"); });
 
             // execute
-            ViewResult result = _documentController.HandleDocumentAddPost(rootPath, currentUserName, model) as ViewResult;
+            ViewResult result = _documentController.HandleDocumentFormPost(rootPath, currentUserName, model) as ViewResult;
 
             // assert
             Assert.IsNotNull(result);
@@ -126,7 +126,7 @@ namespace Test.Apotheca.Controllers
         }
 
         [Test]
-        public void HandleDocumentAddPost_OnSuccess_RedirectsToDashboard()
+        public void HandleDocumentFormPost_OnSuccess_RedirectsToDashboard()
         {
             // setup 
             string rootPath = Environment.CurrentDirectory;
@@ -141,7 +141,7 @@ namespace Test.Apotheca.Controllers
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
 
             // execute
-            RedirectResult result = _documentController.HandleDocumentAddPost(rootPath, currentUserName, model) as RedirectResult;
+            RedirectResult result = _documentController.HandleDocumentFormPost(rootPath, currentUserName, model) as RedirectResult;
             
             // assert
             Assert.IsNotNull(result);
@@ -252,6 +252,65 @@ namespace Test.Apotheca.Controllers
             Assert.AreEqual(documentEntity.MimeType, result.ContentType);
             Assert.AreEqual(fileContents, result.FileContents);
             Assert.AreEqual(fileName, result.FileName);
+        }
+
+        [Test]
+        public void HandleDocumentDownloadGet_DocumentFoundButNotOnDisk_ReturnsFileResult()
+        {
+            string rootPath = Environment.CurrentDirectory;
+            Guid documentId = Guid.NewGuid();
+            string fileName = documentId.ToString();
+            string filePath = Path.Combine(rootPath, fileName);
+
+            IFileInfoWrap fileInfo = Substitute.For<IFileInfoWrap>();
+            fileInfo.Exists.Returns(false);
+            fileInfo.FullName.Returns(filePath);
+
+            DocumentEntity documentEntity = TestEntityHelper.CreateDocumentWithData();
+            documentEntity.FileName = fileName;
+            byte[] fileContents = documentEntity.FileContents;
+
+            _fileUtilityService.GetDownloadFileInfo(rootPath, fileName).Returns(fileInfo);
+            _documentRepository.GetByIdOrDefault(documentId, false).Returns(documentEntity);
+            _documentRepository.GetFileContents(documentId).Returns(fileContents);
+
+            // execute
+            FileResult result = _documentController.HandleDocumentDownloadGet(rootPath, documentId) as FileResult;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(documentEntity.MimeType, result.ContentType);
+            Assert.AreEqual(fileContents, result.FileContents);
+            Assert.AreEqual(fileName, result.FileName);
+
+            _documentRepository.Received(1).GetFileContents(documentId);
+            _fileUtilityService.DidNotReceive().ReadFile(Arg.Any<string>());
+            _fileUtilityService.Received(1).SaveDownloadFile(fileInfo, fileContents);
+        }
+
+        #endregion
+
+        #region HandleDocumentUpdateGetTests
+
+        [TestCase("test")]
+        [TestCase("46CF7D5C-F521-E611-BFE3-506313A3F1A")]
+        [TestCase("46CF7D5C-F521-E611-BFE3506313A3F1A1-")]
+        public void HandleDocumentUpdateGet_InvalidGuid_ReturnsNotFound(string id)
+        {
+            NotFoundResult result = _documentController.HandleDocumentUpdateGet(id) as NotFoundResult;
+            Assert.IsNotNull(result);
+            _documentRepository.DidNotReceive().GetByIdOrDefault(Arg.Any<Guid>(), Arg.Any<bool>());
+        }
+
+        [Test]
+        public void HandleDocumentUpdateGet_DocumentDoesNotExist_ReturnsNotFound()
+        {
+            Guid id = Guid.NewGuid();
+            DocumentEntity document = null;
+            _documentRepository.GetByIdOrDefault(Arg.Any<Guid>(), false).Returns(document);
+
+            NotFoundResult result = _documentController.HandleDocumentUpdateGet(id.ToString()) as NotFoundResult;
+            Assert.IsNotNull(result);
+            _documentRepository.Received(1).GetByIdOrDefault(id, false);
         }
 
         #endregion

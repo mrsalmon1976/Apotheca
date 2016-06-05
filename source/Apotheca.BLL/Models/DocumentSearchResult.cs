@@ -10,6 +10,8 @@ namespace Apotheca.BLL.Models
     {
         public Guid DocumentId { get; set; }
 
+        public int VersionNo { get; set; }
+
         public string FileName { get; set; }
 
         public DateTime CreatedOn { get; set; }

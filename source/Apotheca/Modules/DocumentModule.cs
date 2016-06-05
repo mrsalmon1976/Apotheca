@@ -27,7 +27,7 @@ namespace Apotheca.Modules
 
             Post[Actions.Document.Add] = (x) =>
             {
-                return base.HandleResult(documentController.HandleDocumentAddPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, this.Bind<DocumentViewModel>()));
+                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, this.Bind<DocumentViewModel>()));
             };
 
             Get[Actions.Document.Download] = (x) =>
@@ -38,7 +38,6 @@ namespace Apotheca.Modules
 
             Get[Actions.Document.Search] = (x) =>
             {
-                //AddScript(Scripts.DocumentFormView);
                 return this.HandleResult(documentController.HandleDocumentSearchGet());
             };
 
@@ -47,6 +46,17 @@ namespace Apotheca.Modules
                 return base.HandleResult(documentController.HandleDocumentSearchPost(this.Bind<DocumentSearchViewModel>()));
             };
 
+            Get[Actions.Document.Update] = (x) =>
+            {
+                AddScript(Scripts.DocumentFormView);
+                string id = Request.Query["id"];
+                return this.HandleResult(documentController.HandleDocumentUpdateGet(id));
+            };
+
+            Post[Actions.Document.Update] = (x) =>
+            {
+                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, this.Bind<DocumentViewModel>()));
+            };
             Post[Actions.Document.Upload] = x =>
             {
                 documentController.HandleDocumentUploadPost(pathProvider.GetRootPath(), Request.Files);

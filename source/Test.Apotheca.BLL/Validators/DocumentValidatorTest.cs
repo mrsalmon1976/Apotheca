@@ -30,6 +30,15 @@ namespace Test.Apotheca.BLL.Validators
             Assert.Throws(typeof(ArgumentNullException), () => _documentValidator.Validate(null));
         }
 
+        [TestCase(0)]
+        [TestCase(-1)]
+        public void Validate_InvalidVersionNumber_FailsValidation(int versionNo)
+        {
+            DocumentEntity doc = TestEntityHelper.CreateDocumentWithData();
+            doc.VersionNo = versionNo;
+            AssertValidationFailed(doc, "Version number");
+        }
+
         [Test]
         public void Validate_InvalidName_FailsValidation()
         {

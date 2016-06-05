@@ -49,13 +49,14 @@
   <ItemGroup>
     <Compile Include="Commands\CommandFactory.cs" />
     <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\Document\CreateDocumentCommand.cs" />
+    <Compile Include="Commands\Document\SaveDocumentCommand.cs" />
     <Compile Include="Commands\User\CreateUserCommand.cs" />
     <Compile Include="Data\DbContext.cs" />
     <Compile Include="Data\DbMigrator.cs" />
     <Compile Include="Exceptions\EntityDoesNotExistException.cs" />
     <Compile Include="Models\DocumentEntity.cs" />
     <Compile Include="Models\DocumentSearchResult.cs" />
+    <Compile Include="Repositories\DocumentVersionRepository.cs" />
     <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Security\PasswordProvider.cs" />
     <Compile Include="Security\RandomKeyGenerator.cs" />
@@ -84,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <EmbeddedResource Include="Resources\DbMigrations\0004.CreateDocumentVersionTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0003.CreateDocumentTable.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -14,6 +14,11 @@ namespace Apotheca.ViewModels.Document
         {
         }
 
+        /// <summary>
+        /// The document id - this will be null when adding a new document.
+        /// </summary>
+        public Guid? DocumentId { get; set; }
+
         public string FileName { get; set; }
 
         public string Extension

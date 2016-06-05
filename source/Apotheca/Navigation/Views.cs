@@ -21,6 +21,7 @@ namespace Apotheca.Navigation
         {
             public const string Add = "Content/Views/Document/DocumentFormView.cshtml";
             public const string Search = "Content/Views/Document/DocumentSearchView.cshtml";
+            public const string Update = "Content/Views/Document/DocumentFormView.cshtml";
         }
 
         public class Setup

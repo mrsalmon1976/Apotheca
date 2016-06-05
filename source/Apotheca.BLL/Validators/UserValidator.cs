@@ -56,7 +56,7 @@ namespace Apotheca.BLL.Validators
             }
 
             // all the basic validation is done, if the user is new we need to check that it doesn't exist already
-            UserEntity existingUser = _userRepository.GetUserByEmail(user.Email);
+            UserEntity existingUser = _userRepository.GetUserByEmailOrDefault(user.Email);
             if (existingUser != null && existingUser.Id != user.Id)
             {
                 errors.Add(String.Format("A user already exists with email address '{0}'", user.Email));

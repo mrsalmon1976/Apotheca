@@ -63,7 +63,8 @@ namespace Apotheca
 
             // set up mappings
             Mapper.Initialize((cfg) => {
-                cfg.CreateMap<DocumentViewModel, DocumentEntity>();
+                cfg.CreateMap<DocumentViewModel, DocumentEntity>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.DocumentId));
+                cfg.CreateMap<DocumentEntity, DocumentViewModel>().ForMember(dest => dest.DocumentId, opt => opt.MapFrom(src => src.Id));
             });
 
             // at this point, run in any database changes if there are any
@@ -98,11 +99,12 @@ namespace Apotheca
             container.Register<ISetupController, SetupController>();
 
             // BLL commands
-            container.Register<ICreateDocumentCommand, CreateDocumentCommand>();
+            container.Register<ISaveDocumentCommand, SaveDocumentCommand>();
             container.Register<ICreateUserCommand, CreateUserCommand>();
 
             // BLL repositories
             container.Register<IDocumentRepository, DocumentRepository>();
+            container.Register<IDocumentVersionRepository, DocumentVersionRepository>();
             container.Register<IUserRepository, UserRepository>();
 
             // other BLL classes

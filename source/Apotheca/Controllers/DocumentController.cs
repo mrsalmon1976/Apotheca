@@ -20,7 +20,7 @@ namespace Apotheca.Controllers
     {
         IControllerResult HandleDocumentAddGet();
 
-        IControllerResult HandleDocumentAddPost(string rootPath, string currentUserName, DocumentViewModel model);
+        IControllerResult HandleDocumentFormPost(string rootPath, string currentUserName, DocumentViewModel model);
 
         IControllerResult HandleDocumentDownloadGet(string rootPath, Guid id);
 
@@ -29,17 +29,20 @@ namespace Apotheca.Controllers
         IControllerResult HandleDocumentSearchPost(DocumentSearchViewModel model);
 
         void HandleDocumentUploadPost(string rootPath, IEnumerable<HttpFile> files);
+
+        IControllerResult HandleDocumentUpdateGet(string id);
+
     }
 
     public class DocumentController : IDocumentController
     {
         private IDocumentViewModelValidator _documentViewModelValidator;
         private IFileUtilityService _fileUtilityService;
-        private ICreateDocumentCommand _createDocumentCommand;
+        private ISaveDocumentCommand _createDocumentCommand;
         private IUserRepository _userRepository;
         private IDocumentRepository _documentRepository;
 
-        public DocumentController(IDocumentViewModelValidator documentViewModelValidator, IFileUtilityService fileUtilityService, ICreateDocumentCommand createDocumentCommand, IUserRepository userRepository, IDocumentRepository documentRepository)
+        public DocumentController(IDocumentViewModelValidator documentViewModelValidator, IFileUtilityService fileUtilityService, ISaveDocumentCommand createDocumentCommand, IUserRepository userRepository, IDocumentRepository documentRepository)
         {
             _documentViewModelValidator = documentViewModelValidator;
             _fileUtilityService = fileUtilityService;
@@ -54,7 +57,7 @@ namespace Apotheca.Controllers
             return new ViewResult(Views.Document.Add, model);
         }
 
-        public IControllerResult HandleDocumentAddPost(string rootPath, string currentUserName, DocumentViewModel model)
+        public IControllerResult HandleDocumentFormPost(string rootPath, string currentUserName, DocumentViewModel model)
         {
             UserEntity user = _userRepository.GetUserByEmail(currentUserName);
             byte[] fileContents = _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName);
@@ -112,6 +115,7 @@ namespace Apotheca.Controllers
             {
                 byte[] fileContents = _documentRepository.GetFileContents(id);
                 _fileUtilityService.SaveDownloadFile(fileInfo, fileContents);
+                result.FileContents = fileContents;
             }
             
             // set up the result
@@ -132,6 +136,24 @@ namespace Apotheca.Controllers
             model.Results.AddRange(_documentRepository.Search(model.SearchText, null));
             model.IsResultGridVisible = true;
             return new ViewResult(Views.Document.Search, model);
+        }
+
+        public IControllerResult HandleDocumentUpdateGet(string id)
+        {
+            Guid documentId;
+            if (!Guid.TryParse(id, out documentId))
+            {
+                return new NotFoundResult();
+            }
+
+            DocumentEntity document = _documentRepository.GetByIdOrDefault(documentId);
+            if (document == null)
+            {
+                return new NotFoundResult();
+            }
+
+            DocumentViewModel model = Mapper.Map<DocumentEntity, DocumentViewModel>(document);
+            return new ViewResult(Views.Document.Update, model);
         }
 
         public void HandleDocumentUploadPost(string rootPath, IEnumerable<HttpFile> files)

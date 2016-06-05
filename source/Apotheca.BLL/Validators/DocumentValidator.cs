@@ -26,6 +26,10 @@ namespace Apotheca.BLL.Validators
 
             List<string> errors = new List<string>();
 
+            if (document.VersionNo < 1)
+            {
+                errors.Add("Version number not supplied");
+            }
             if (String.IsNullOrWhiteSpace(document.FileName))
             {
                 errors.Add("File name not supplied");

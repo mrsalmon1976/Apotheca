@@ -81,7 +81,7 @@ namespace Test.Apotheca.BLL.Validators
             UserEntity user = TestEntityHelper.CreateUserWithData();
             UserEntity existingUser = TestEntityHelper.CreateUserWithData();
             _stringValidator.IsValidEmailAddress(user.Email).Returns(true);
-            _userRepository.GetUserByEmail(user.Email).Returns(existingUser);
+            _userRepository.GetUserByEmailOrDefault(user.Email).Returns(existingUser);
             AssertValidationFailed(user, "user already exists");
         }
 
@@ -101,7 +101,7 @@ namespace Test.Apotheca.BLL.Validators
             _userValidator.Validate(user);
 
             _stringValidator.Received(1).IsValidEmailAddress(user.Email);
-            _userRepository.Received(1).GetUserByEmail(user.Email);
+            _userRepository.Received(1).GetUserByEmailOrDefault(user.Email);
         }
 
         /// <summary>

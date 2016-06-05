@@ -6,12 +6,13 @@
 }
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Add a Document</h1>
+        <h1 class="page-header">@(Model.DocumentId.HasValue ? "Update Document" : "Add a Document")</h1>
     </div>
 </div>
 <div class="row">
     <div class="col-md-8">
-        <form role="form" method="post" action="@Actions.Document.Add">
+        @Html.Partial("Content/Views/Shared/_ValidationErrorPanel.cshtml", Model.ValidationErrors)
+        <form role="form" method="post" action="@(Model.DocumentId.HasValue ? Actions.Document.Update : Actions.Document.Add)">
             <fieldset>
                 <div class="form-group">
                     <label>Document</label>
@@ -30,7 +31,8 @@
                     <p class="help-block">Provide some details about this document that may help others.  Or don't.</p>
                 </div>
                 <input type="hidden" id="hid-filename" name="UploadedFileName" value="" />
-                <button id="btn-submit-document" type="submit" class="btn btn-lg btn-primary btn-block" disabled="disabled">Add document</button>
+                <input type="hidden" name="DocumentId" value="@Model.DocumentId" />
+                <button id="btn-submit-document" type="submit" class="btn btn-lg btn-primary btn-block" disabled="disabled">@(Model.DocumentId.HasValue ? "Update document" : "Add document")</button>
             </fieldset>
         </form>
     </div>

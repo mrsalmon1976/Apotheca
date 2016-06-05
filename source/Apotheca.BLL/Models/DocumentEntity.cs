@@ -10,6 +10,8 @@ namespace Apotheca.BLL.Models
     {
         public Guid? Id { get; internal set; }
 
+        public int VersionNo { get; set; }
+
         public string FileName { get; set; }
 
         public string Extension { get; set; }

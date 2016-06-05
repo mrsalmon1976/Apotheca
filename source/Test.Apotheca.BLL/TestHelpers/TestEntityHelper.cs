@@ -12,10 +12,11 @@ namespace Test.Apotheca.BLL.TestHelpers
     /// </summary>
     public class TestEntityHelper
     {
-        public static DocumentEntity CreateDocument(Guid? id = null, string name = null, string extension = null, string description = null, byte[] fileContents = null, DateTime? createdOn = null, Guid? createdByUserId = null)
+        public static DocumentEntity CreateDocument(Guid? id = null, int versionNo = 1, string name = null, string extension = null, string description = null, byte[] fileContents = null, DateTime? createdOn = null, Guid? createdByUserId = null)
         {
             DocumentEntity document = new DocumentEntity();
             document.Id = id;
+            document.VersionNo = versionNo;
             document.FileName = name;
             document.Extension = extension;
             document.FileContents = fileContents;
@@ -31,6 +32,7 @@ namespace Test.Apotheca.BLL.TestHelpers
 
             DocumentEntity document = new DocumentEntity();
             document.Id = Guid.NewGuid();
+            document.VersionNo = 1;
             document.FileName = "Test.txt";
             document.Extension = ".txt";
             document.Description = "This is a test document";

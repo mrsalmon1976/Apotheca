@@ -6,6 +6,7 @@ BEGIN
 
 	CREATE TABLE [{SCHEMA}].[Documents](
 		Id uniqueidentifier rowguidcol NOT NULL,
+		VersionNo int NOT NULL,
 		[FileName] nvarchar(255) NOT NULL,
 		[Description] nvarchar(max) NULL,
 		[FileContents] varbinary(MAX) NOT NULL DEFAULT (0x),

@@ -11,14 +11,14 @@ using System.Web;
 namespace Test.Apotheca.Integration.Repositories
 {
     [TestFixture]
-    public class DocumentRepositoryTest : RepositoryIntegrationTestBase
+    public class DocumentVersionRepositoryTest : RepositoryIntegrationTestBase
     {
-        private IDocumentRepository _repo;
+        private IDocumentVersionRepository _repo;
 
         [SetUp]
         public void DocumentRepositoryTest_SetUp()
         {
-            _repo = new DocumentRepository(this.DbContext);
+            _repo = new DocumentVersionRepository(this.DbContext);
         }
 
         [Test]
@@ -32,15 +32,7 @@ namespace Test.Apotheca.Integration.Repositories
         [TestCase(false)]
         public void GetByIdOrDefault(bool includeFileData)
         {
-            _repo.GetByIdOrDefault(Guid.NewGuid(), includeFileData);
-        }
-
-        [Test]
-        public async void GetCountAsync()
-        {
-            Task<int> count = _repo.GetCountAsync();
-            await count;
-            Assert.GreaterOrEqual(count.Result, 0);
+            _repo.GetByIdOrDefault(Guid.NewGuid(), 1, includeFileData);
         }
 
         [Test]
@@ -49,16 +41,21 @@ namespace Test.Apotheca.Integration.Repositories
             DocumentEntity document = this.CreateEntity();
             _repo.Create(document);
 
-            byte[] fileContents = _repo.GetFileContents(document.Id.Value);
+            byte[] fileContents = _repo.GetFileContents(document.Id.Value, 1);
             Assert.AreEqual(document.FileContents, fileContents);
         }
 
-        [TestCase("test", "")]
-        public void Search(string text, string categories)
+        [Test]
+        public void GetVersionCount()
         {
-            IEnumerable<int> cats = categories.Split(',').Select(x => Convert.ToInt32(x));
-            IEnumerable<DocumentSearchResult> results = _repo.Search(text, cats);
-            Assert.GreaterOrEqual(results.Count(), 0);
+            DocumentEntity document = this.CreateEntity();
+            _repo.Create(document);
+
+            document.VersionNo = 2;
+            _repo.Create(document);
+
+            int count = _repo.GetVersionCount(document.Id.Value);
+            Assert.AreEqual(2, count);
         }
 
         private DocumentEntity CreateEntity()
@@ -68,6 +65,7 @@ namespace Test.Apotheca.Integration.Repositories
 
 
             DocumentEntity document = new DocumentEntity();
+            document.Id = Guid.NewGuid();
             document.VersionNo = 1;
             document.CreatedByUserId = Guid.NewGuid();
             document.CreatedOn = DateTime.UtcNow;
