@@ -54,6 +54,8 @@
     <Compile Include="Data\DbContext.cs" />
     <Compile Include="Data\DbMigrator.cs" />
     <Compile Include="Exceptions\EntityDoesNotExistException.cs" />
+    <Compile Include="Models\AuditLogEntity.cs" />
+    <Compile Include="Models\AuditLogDetailEntity.cs" />
     <Compile Include="Models\DocumentEntity.cs" />
     <Compile Include="Models\DocumentSearchResult.cs" />
     <Compile Include="Repositories\DocumentVersionRepository.cs" />
@@ -85,8 +87,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
-    <EmbeddedResource Include="Resources\DbMigrations\0004.CreateDocumentVersionTable.sql" />
-    <EmbeddedResource Include="Resources\DbMigrations\0003.CreateDocumentTable.sql" />
+    <EmbeddedResource Include="Resources\DbMigrations\0007.CreateAuditLogDetailTable.sql" />
+    <EmbeddedResource Include="Resources\DbMigrations\0003.CreateCategoryTable.sql" />
+    <EmbeddedResource Include="Resources\DbMigrations\0006.CreateAuditLogTable.sql" />
+    <EmbeddedResource Include="Resources\DbMigrations\0005.CreateDocumentVersionTable.sql" />
+    <EmbeddedResource Include="Resources\DbMigrations\0004.CreateDocumentTable.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

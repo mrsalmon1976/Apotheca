@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Test.Apotheca.BLL.TestHelpers;
 
 namespace Test.Apotheca.Integration.Repositories
 {
@@ -14,6 +15,17 @@ namespace Test.Apotheca.Integration.Repositories
     public class DocumentVersionRepositoryTest : RepositoryIntegrationTestBase
     {
         private IDocumentVersionRepository _repo;
+        private UserEntity _user;
+
+        [TestFixtureSetUp]
+        public void DocumentRepositoryTest_FixtureSetUp()
+        {
+            // create a user up front
+            IUserRepository userRepo = new UserRepository(this.DbContext);
+            _user = TestEntityHelper.CreateUserWithData();
+            userRepo.Create(_user);
+
+        }
 
         [SetUp]
         public void DocumentRepositoryTest_SetUp()
@@ -24,7 +36,8 @@ namespace Test.Apotheca.Integration.Repositories
         [Test]
         public void Create()
         {
-            DocumentEntity document = this.CreateEntity();
+            DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
+            document.CreatedByUserId = _user.Id.Value;
             _repo.Create(document);
         }
 
@@ -38,7 +51,8 @@ namespace Test.Apotheca.Integration.Repositories
         [Test]
         public void GetFileContents()
         {
-            DocumentEntity document = this.CreateEntity();
+            DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
+            document.CreatedByUserId = _user.Id.Value;
             _repo.Create(document);
 
             byte[] fileContents = _repo.GetFileContents(document.Id.Value, 1);
@@ -48,7 +62,8 @@ namespace Test.Apotheca.Integration.Repositories
         [Test]
         public void GetVersionCount()
         {
-            DocumentEntity document = this.CreateEntity();
+            DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
+            document.CreatedByUserId = _user.Id.Value;
             _repo.Create(document);
 
             document.VersionNo = 2;
@@ -56,25 +71,6 @@ namespace Test.Apotheca.Integration.Repositories
 
             int count = _repo.GetVersionCount(document.Id.Value);
             Assert.AreEqual(2, count);
-        }
-
-        private DocumentEntity CreateEntity()
-        {
-            byte[] fileContents = new byte[100];
-            new Random().NextBytes(fileContents);
-
-
-            DocumentEntity document = new DocumentEntity();
-            document.Id = Guid.NewGuid();
-            document.VersionNo = 1;
-            document.CreatedByUserId = Guid.NewGuid();
-            document.CreatedOn = DateTime.UtcNow;
-            document.Description = "This is a test document!";
-            document.Extension = ".txt";
-            document.FileContents = fileContents;
-            document.FileName = "test.txt";
-            document.MimeType = MimeMapping.GetMimeMapping(document.FileName);
-            return document;
         }
 
     }

@@ -111,6 +111,10 @@
       <Project>{71496e8d-984d-4be0-a366-05f7d14ef99c}</Project>
       <Name>Apotheca.BLL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Test.Apotheca.BLL\Test.Apotheca.BLL.csproj">
+      <Project>{de538ff2-81c5-4ebe-8d03-2ee1895f0b19}</Project>
+      <Name>Test.Apotheca.BLL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

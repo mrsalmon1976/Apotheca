@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Test.Apotheca.BLL.TestHelpers;
 
 namespace Test.Apotheca.Integration.Repositories
 {
@@ -14,17 +15,30 @@ namespace Test.Apotheca.Integration.Repositories
     public class DocumentRepositoryTest : RepositoryIntegrationTestBase
     {
         private IDocumentRepository _repo;
+        private UserEntity _user;
+
+        [TestFixtureSetUp]
+        public void DocumentRepositoryTest_FixtureSetUp()
+        {
+            // create a user up front
+            IUserRepository userRepo = new UserRepository(this.DbContext);
+            _user = TestEntityHelper.CreateUserWithData();
+            userRepo.Create(_user);
+
+        }
 
         [SetUp]
         public void DocumentRepositoryTest_SetUp()
         {
             _repo = new DocumentRepository(this.DbContext);
+
         }
 
         [Test]
         public void Create()
         {
-            DocumentEntity document = this.CreateEntity();
+            DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
+            document.CreatedByUserId = _user.Id.Value;
             _repo.Create(document);
         }
 
@@ -46,7 +60,8 @@ namespace Test.Apotheca.Integration.Repositories
         [Test]
         public void GetFileContents()
         {
-            DocumentEntity document = this.CreateEntity();
+            DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
+            document.CreatedByUserId = _user.Id.Value;
             _repo.Create(document);
 
             byte[] fileContents = _repo.GetFileContents(document.Id.Value);
@@ -59,24 +74,6 @@ namespace Test.Apotheca.Integration.Repositories
             IEnumerable<int> cats = categories.Split(',').Select(x => Convert.ToInt32(x));
             IEnumerable<DocumentSearchResult> results = _repo.Search(text, cats);
             Assert.GreaterOrEqual(results.Count(), 0);
-        }
-
-        private DocumentEntity CreateEntity()
-        {
-            byte[] fileContents = new byte[100];
-            new Random().NextBytes(fileContents);
-
-
-            DocumentEntity document = new DocumentEntity();
-            document.VersionNo = 1;
-            document.CreatedByUserId = Guid.NewGuid();
-            document.CreatedOn = DateTime.UtcNow;
-            document.Description = "This is a test document!";
-            document.Extension = ".txt";
-            document.FileContents = fileContents;
-            document.FileName = "test.txt";
-            document.MimeType = MimeMapping.GetMimeMapping(document.FileName);
-            return document;
         }
 
     }

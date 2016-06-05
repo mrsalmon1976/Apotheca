@@ -12,6 +12,7 @@ BEGIN
 		[FileContents] varbinary(MAX) NOT NULL DEFAULT (0x),
 		Extension nvarchar(100) NOT NULL,
 		MimeType nvarchar(255) NOT NULL,
+		CategoryId uniqueidentifier NULL,
 		CreatedOn datetime NOT NULL,
 		CreatedByUserId uniqueidentifier NOT NULL,
 		CONSTRAINT [PK_Documents] PRIMARY KEY CLUSTERED 
@@ -21,6 +22,10 @@ BEGIN
 	)
 
 	ALTER TABLE [{SCHEMA}].[Documents] ADD  CONSTRAINT [DF_Documents_Id] DEFAULT (NEWSEQUENTIALID()) FOR [Id]
+
+	ALTER TABLE [{SCHEMA}].[Documents] ADD CONSTRAINT [FK_Documents_CategoryId] FOREIGN KEY (CategoryId) REFERENCES [{SCHEMA}].[Categories](Id)
+	ALTER TABLE [{SCHEMA}].[Documents] ADD CONSTRAINT [FK_Documents_CreatedByUserId] FOREIGN KEY (CreatedByUserId) REFERENCES [{SCHEMA}].[Users](Id)
+
 END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM sys.fulltext_catalogs WHERE name = 'DocumentCatalog')

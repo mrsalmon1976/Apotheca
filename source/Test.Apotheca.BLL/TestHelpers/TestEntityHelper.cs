@@ -39,6 +39,7 @@ namespace Test.Apotheca.BLL.TestHelpers
             document.FileContents = fileContents;
             document.CreatedOn = DateTime.UtcNow;
             document.CreatedByUserId = Guid.NewGuid();
+            document.MimeType = "text/plain";
             return document;
         }
 
@@ -64,6 +65,7 @@ namespace Test.Apotheca.BLL.TestHelpers
             user.FirstName = "Joe";
             user.Surname = "Soap";
             user.ApiKey = Guid.NewGuid().ToString();
+            user.Salt = Guid.NewGuid().ToString();
             user.Password = "password1";
             user.Role = Roles.Moderator;
             user.CreatedOn = DateTime.UtcNow;
