@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nancy.ModelBinding;
+using Apotheca.BLL.Models;
 
 namespace Apotheca.Modules
 {
@@ -21,8 +22,12 @@ namespace Apotheca.Modules
         {
             Get[Actions.Category.Default] = (x) =>
             {
-                //AddScript(Scripts.DocumentFormView);
+                AddScript(Scripts.CategoryFormView);
                 return this.HandleResult(categoryController.HandleCategoryGet());
+            };
+            Post[Actions.Category.Default] = (x) =>
+            {
+                return this.HandleResult(categoryController.HandleCategoryPost(this.Bind<CategoryEntity>()));
             };
         }
     }

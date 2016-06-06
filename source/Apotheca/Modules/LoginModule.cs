@@ -33,7 +33,7 @@ namespace Apotheca.Modules
                 // TODO: Move logic into controller
                 var model = this.Bind<LoginViewModel>();
                 if (String.IsNullOrEmpty(model.ReturnUrl)) model.ReturnUrl = Actions.Dashboard;
-                return this.LoginAndRedirect(new Guid("0AE49C68-F12A-E611-BFE3-506313A3F1A1"), DateTime.Now.AddDays(1), model.ReturnUrl);
+                return this.LoginAndRedirect(new Guid("58DCBB23-2C2B-E611-BFE4-506313A3F1A1"), DateTime.Now.AddDays(1), model.ReturnUrl);
             };
 
             Get["/logout"] = x =>

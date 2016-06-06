@@ -103,6 +103,7 @@ namespace Apotheca
             container.Register<ICreateUserCommand, CreateUserCommand>();
 
             // BLL repositories
+            container.Register<ICategoryRepository, CategoryRepository>();
             container.Register<IDocumentRepository, DocumentRepository>();
             container.Register<IDocumentVersionRepository, DocumentVersionRepository>();
             container.Register<IUserRepository, UserRepository>();

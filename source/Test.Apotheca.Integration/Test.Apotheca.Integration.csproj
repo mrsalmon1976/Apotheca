@@ -69,6 +69,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\CategoryRepositoryTest.cs" />
     <Compile Include="Repositories\DocumentVersionRepositoryTest.cs" />
     <Compile Include="Repositories\UserRepositoryTest.cs" />
     <Compile Include="Repositories\DocumentRepositoryTest.cs" />

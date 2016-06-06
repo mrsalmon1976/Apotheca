@@ -56,8 +56,11 @@
     <Compile Include="Exceptions\EntityDoesNotExistException.cs" />
     <Compile Include="Models\AuditLogEntity.cs" />
     <Compile Include="Models\AuditLogDetailEntity.cs" />
+    <Compile Include="Models\CategoryEntity.cs" />
+    <Compile Include="Models\CategorySearchResult.cs" />
     <Compile Include="Models\DocumentEntity.cs" />
     <Compile Include="Models\DocumentSearchResult.cs" />
+    <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\DocumentVersionRepository.cs" />
     <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Security\PasswordProvider.cs" />

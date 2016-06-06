@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Apotheca.Web.Results
 {
-    public class JsonResult
+    public class JsonResult : IControllerResult
     {
         public JsonResult(object model)
         {

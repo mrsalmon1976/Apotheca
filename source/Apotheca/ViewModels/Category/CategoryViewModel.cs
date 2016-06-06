@@ -13,7 +13,10 @@ namespace Apotheca.ViewModels.Category
         public CategoryViewModel()
             : base()
         {
+            this.Categories = new List<CategorySearchResult>();
         }
+
+        public List<CategorySearchResult> Categories { get; private set; }
 
     }
 }
