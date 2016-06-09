@@ -8,12 +8,16 @@ using System.Threading.Tasks;
 
 namespace Apotheca.ViewModels.Category
 {
-    public class CategoryViewModel : BaseViewModel
+    public class CategoryListViewModel : BaseViewModel
     {
-        public CategoryViewModel()
+        public CategoryListViewModel()
             : base()
         {
+            this.Categories = new List<CategorySearchResult>();
         }
+
+        public List<CategorySearchResult> Categories { get; private set; }
+        
 
     }
 }

@@ -4,8 +4,26 @@ var CategoryFormVew = function () {
     var that = this;
 
     this.init = function () {
+        this.loadCategories();
         $('#btn-add').on('click', that.showForm);
         $('#btn-submit').on('click', that.submitForm);
+    };
+
+    this.loadCategories = function () {
+        var request = $.ajax({
+            url: "/category/list",
+            method: "GET",
+            dataType: 'html'
+        });
+
+        request.done(function (response) {
+            //debugger;
+            $('#category-list').html(response);
+        });
+
+        request.fail(function (xhr, textStatus) {
+            alert('error: ' + xhr.responseText);
+        });
     };
 
     this.showError = function (error) {
@@ -37,9 +55,10 @@ var CategoryFormVew = function () {
         });
 
         request.done(function (response) {
-            debugger;
+            //debugger;
             if (response.success) {
                 $('#dlg-add').modal('hide');
+                that.loadCategories();
             }
             else {
                 that.showError(response.messages);

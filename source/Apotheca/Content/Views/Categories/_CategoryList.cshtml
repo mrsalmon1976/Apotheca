@@ -1,0 +1,23 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using Apotheca.Navigation
+@model Apotheca.ViewModels.Category.CategoryListViewModel
+@if (Model.Categories.Count > 0)
+{
+    <table class="table table-striped table-hover table-bordered">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created On</th>
+            <th>Documents</th>
+        </tr>
+        @foreach (var r in Model.Categories)
+        {
+            <tr>
+                <td><a href="@(Actions.Document.Download)?id=@r.CategoryId">@r.Name</a></td>
+                <td>@r.Description</td>
+                <td>@r.CreatedOn</td>
+                <td>@r.DocumentCount</td>
+            </tr>
+        }
+    </table>
+}

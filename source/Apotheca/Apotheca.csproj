@@ -103,6 +103,7 @@
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\BasicResult.cs" />
     <Compile Include="ViewModels\Category\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\Category\CategoryListViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Document\DocumentSearchViewModel.cs" />
     <Compile Include="ViewModels\Document\DocumentViewModel.cs" />
@@ -137,7 +138,10 @@
     <None Include="Content\Layouts\BasicLayout.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Views\Categories\CategoryFormView.cshtml">
+    <None Include="Content\Views\Categories\CategoryView.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Views\Categories\_CategoryList.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Views\DashboardView.cshtml">
@@ -211,7 +215,7 @@
     <Content Include="Content\Js\sb-admin-2.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Js\Views\CategoryFormView.js">
+    <Content Include="Content\Js\Views\CategoryView.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Js\Views\DocumentFormView.js">

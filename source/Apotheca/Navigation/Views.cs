@@ -10,7 +10,8 @@ namespace Apotheca.Navigation
     {
         public class Category
         {
-            public const string Form = "Content/Views/Categories/CategoryFormView.cshtml";
+            public const string ListPartial = "Content/Views/Categories/_CategoryList.cshtml";
+            public const string Default = "Content/Views/Categories/CategoryView.cshtml";
         }
 
         public const string Dashboard = "Content/Views/DashboardView.cshtml";

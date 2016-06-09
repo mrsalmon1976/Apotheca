@@ -8,7 +8,7 @@ namespace Apotheca.Navigation
 {
     public static class Scripts
     {
-        public const string CategoryFormView = "/Content/Js/Views/CategoryFormView.js";
+        public const string CategoryView = "/Content/Js/Views/CategoryView.js";
         
         public const string DocumentFormView = "/Content/Js/Views/DocumentFormView.js";
     }

@@ -22,6 +22,8 @@ namespace Apotheca.Controllers
     {
         IControllerResult HandleCategoryGet();
 
+        IControllerResult HandleCategoryGetList();
+
         IControllerResult HandleCategoryPost(CategoryEntity category);
     }
 
@@ -39,10 +41,17 @@ namespace Apotheca.Controllers
         public IControllerResult HandleCategoryGet()
         {
             CategoryViewModel model = new CategoryViewModel();
-            model.Categories.AddRange(_unitOfWork.CategoryRepo.GetAll());
-            return new ViewResult(Views.Category.Form, model);
+            return new ViewResult(Views.Category.Default, model);
         }
 
+
+        public IControllerResult HandleCategoryGetList()
+        {
+            IEnumerable<CategorySearchResult> categories = _unitOfWork.CategoryRepo.GetAll();
+            CategoryListViewModel model = new CategoryListViewModel();
+            model.Categories.AddRange(categories);
+            return new ViewResult(Views.Category.ListPartial, model);
+        }
 
         public IControllerResult HandleCategoryPost(CategoryEntity category)
         {

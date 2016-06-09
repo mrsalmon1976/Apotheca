@@ -22,8 +22,12 @@ namespace Apotheca.Modules
         {
             Get[Actions.Category.Default] = (x) =>
             {
-                AddScript(Scripts.CategoryFormView);
+                AddScript(Scripts.CategoryView);
                 return this.HandleResult(categoryController.HandleCategoryGet());
+            };
+            Get[Actions.Category.List] = (x) =>
+            {
+                return this.HandleResult(categoryController.HandleCategoryGetList());
             };
             Post[Actions.Category.Default] = (x) =>
             {

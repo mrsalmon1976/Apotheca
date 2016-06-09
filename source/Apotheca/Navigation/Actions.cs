@@ -13,6 +13,9 @@ namespace Apotheca.Navigation
         public class Category
         {
             public const string Default = "/category";
+
+            public const string List = "/category/list";
+
         }
 
         public class Document
