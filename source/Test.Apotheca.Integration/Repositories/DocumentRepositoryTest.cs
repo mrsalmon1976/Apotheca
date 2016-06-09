@@ -76,5 +76,16 @@ namespace Test.Apotheca.Integration.Repositories
             Assert.GreaterOrEqual(results.Count(), 0);
         }
 
+        [Test]
+        public void Update()
+        {
+            DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
+            document.CreatedByUserId = _user.Id.Value;
+            _repo.Create(document);
+
+            document.Description = "Changed";
+            _repo.Update(document);
+        }
+
     }
 }

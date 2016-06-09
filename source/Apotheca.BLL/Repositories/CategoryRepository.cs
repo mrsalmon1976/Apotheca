@@ -60,7 +60,12 @@ namespace Apotheca.BLL.Repositories
 
         public void Update(CategoryEntity category)
         {
-            throw new NotImplementedException();
+            string sql = this.ReplaceSchemaPlaceholders(@"
+                UPDATE [{SCHEMA}].[Categories] 
+                SET Name = @Name, Description = @Description
+                    , CreatedOn = @CreatedOn
+                    WHERE Id = @Id");
+            this.Connection.Execute(sql, category, transaction: this.CurrentTransaction);
         }
 
     }

@@ -29,6 +29,7 @@ namespace Test.Apotheca.BLL.TestHelpers
             category.Id = Guid.NewGuid();
             category.Name = Guid.NewGuid().ToString();
             category.Description = Guid.NewGuid().ToString();
+            category.CreatedOn = DateTime.UtcNow;
             return category;
         }
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Test.Apotheca.BLL.TestHelpers;
 
 namespace Test.Apotheca.Integration.Repositories
 {
@@ -39,6 +40,17 @@ namespace Test.Apotheca.Integration.Repositories
             IEnumerable<CategorySearchResult> entities = _repo.GetAll();
             Assert.GreaterOrEqual(entities.Count(), 0);
         }
+
+        [Test]
+        public void Update()
+        {
+            CategoryEntity cat = TestEntityHelper.CreateCategoryWithData();
+            _repo.Create(cat);
+
+            cat.Description = "Changed";
+            _repo.Update(cat);
+        }
+
 
     }
 }
