@@ -16,6 +16,8 @@ namespace Apotheca.BLL.Data
 
         IDocumentRepository DocumentRepo { get; }
 
+        IDocumentCategoryAsscRepository DocumentCategoryAsscRepo { get; }
+
         IDocumentVersionRepository DocumentVersionRepo { get; }
 
         IUserRepository UserRepo { get; }
@@ -37,12 +39,13 @@ namespace Apotheca.BLL.Data
         private IDbConnection _conn;
         private IDbTransaction _tran;
 
-        public UnitOfWork(IDbConnection dbConnection, string schema, ICategoryRepository categoryRepo, IDocumentRepository documentRepo, IDocumentVersionRepository documentVersionRepo, IUserRepository userRepo)
+        public UnitOfWork(IDbConnection dbConnection, string schema, ICategoryRepository categoryRepo, IDocumentRepository documentRepo, IDocumentCategoryAsscRepository documentCategoryAsscRepo, IDocumentVersionRepository documentVersionRepo, IUserRepository userRepo)
         {
             this._conn = dbConnection;
             this.DbSchema = schema; 
             this.CategoryRepo = categoryRepo;
             this.DocumentRepo = documentRepo;
+            this.DocumentCategoryAsscRepo = documentCategoryAsscRepo;
             this.DocumentVersionRepo = documentVersionRepo;
             this.UserRepo = userRepo;
         }
@@ -54,6 +57,7 @@ namespace Apotheca.BLL.Data
 
         public ICategoryRepository CategoryRepo { get; private set; }
         public IDocumentRepository DocumentRepo { get; private set; }
+        public IDocumentCategoryAsscRepository DocumentCategoryAsscRepo { get; private set; }
         public IDocumentVersionRepository DocumentVersionRepo { get; private set; }
         public IUserRepository UserRepo { get; private set; }
 

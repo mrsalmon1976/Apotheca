@@ -27,6 +27,7 @@ namespace Test.Apotheca.BLL.Commands.Document
 
         private IDocumentValidator _documentValidator;
         private IDocumentRepository _documentRepo;
+        private IDocumentCategoryAsscRepository _documentCategoryAsscRepo;
         private IDocumentVersionRepository _documentVersionRepo;
 
         [SetUp]
@@ -36,10 +37,12 @@ namespace Test.Apotheca.BLL.Commands.Document
 
             _documentValidator = Substitute.For<IDocumentValidator>();
             _documentRepo = Substitute.For<IDocumentRepository>();
+            _documentCategoryAsscRepo = Substitute.For<IDocumentCategoryAsscRepository>();
             _documentVersionRepo = Substitute.For<IDocumentVersionRepository>();
 
             _unitOfWork = Substitute.For<IUnitOfWork>();
             _unitOfWork.DocumentRepo.Returns(_documentRepo);
+            _unitOfWork.DocumentCategoryAsscRepo.Returns(_documentCategoryAsscRepo);
             _unitOfWork.DocumentVersionRepo.Returns(_documentVersionRepo);
             
             _command = new SaveDocumentCommand(_unitOfWork, _documentValidator);
@@ -155,6 +158,37 @@ namespace Test.Apotheca.BLL.Commands.Document
             Guid result = _command.Execute();
 
             _documentVersionRepo.Received(1).Create(doc);
+        }
+
+        [Test]
+        public void Execute_WithNoCategories_DoesNotTrySaveCategoryAssociations()
+        {
+            Guid id = Guid.NewGuid();
+            DocumentEntity doc = TestEntityHelper.CreateDocumentWithData();
+
+            _command.Document = doc;
+            _command.Categories = null;
+            Guid result = _command.Execute();
+
+            _documentCategoryAsscRepo.DidNotReceive().Create(Arg.Any<DocumentCategoryAsscEntity>());
+        }
+
+        [Test]
+        public void Execute_WithCategories_SavesCategoryAssociations()
+        {
+            Guid id = Guid.NewGuid();
+            DocumentEntity doc = TestEntityHelper.CreateDocumentWithData();
+
+            var categories = new DocumentCategoryAsscEntity[] {
+                new DocumentCategoryAsscEntity(doc.Id, doc.VersionNo, Guid.NewGuid()),
+                new DocumentCategoryAsscEntity(doc.Id, doc.VersionNo, Guid.NewGuid()),
+            };
+
+            _command.Document = doc;
+            _command.Categories = categories.Select(x => x.CategoryId);
+            Guid result = _command.Execute();
+
+            _documentCategoryAsscRepo.Received(2).Create(Arg.Any<DocumentCategoryAsscEntity>());
         }
 
     }

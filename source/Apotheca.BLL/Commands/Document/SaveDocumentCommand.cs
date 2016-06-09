@@ -16,6 +16,8 @@ namespace Apotheca.BLL.Commands.Document
     public interface ISaveDocumentCommand : ICommand<Guid>
     {
         DocumentEntity Document { get; set; }
+        
+        IEnumerable<Guid> Categories { get; set; }
     }
 
     public class SaveDocumentCommand : Command<Guid>, ISaveDocumentCommand
@@ -30,6 +32,8 @@ namespace Apotheca.BLL.Commands.Document
         }
 
         public DocumentEntity Document { get; set; }
+
+        public IEnumerable<Guid> Categories { get; set; }
         
         public override Guid Execute()
         {
@@ -58,6 +62,16 @@ namespace Apotheca.BLL.Commands.Document
             else
             {
                 _unitOfWork.DocumentRepo.Create(this.Document);
+            }
+
+            // insert the categories if there are any
+            foreach (Guid catId in (this.Categories ?? Enumerable.Empty<Guid>()))
+            {
+                DocumentCategoryAsscEntity dca = new DocumentCategoryAsscEntity();
+                dca.CategoryId = catId;
+                dca.DocumentId = this.Document.Id;
+                dca.DocumentVersionNo = versionNo;
+                _unitOfWork.DocumentCategoryAsscRepo.Create(dca);
             }
 
             // create the version

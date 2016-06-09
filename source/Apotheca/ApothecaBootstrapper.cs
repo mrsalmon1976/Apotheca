@@ -110,6 +110,7 @@ namespace Apotheca
             IUnitOfWork unitOfWork = new UnitOfWork(conn, settings.DbSchema
                 , container.Resolve<ICategoryRepository>()
                 , container.Resolve<IDocumentRepository>()
+                , container.Resolve<IDocumentCategoryAsscRepository>()
                 , container.Resolve<IDocumentVersionRepository>()
                 , container.Resolve<IUserRepository>()
                 );
