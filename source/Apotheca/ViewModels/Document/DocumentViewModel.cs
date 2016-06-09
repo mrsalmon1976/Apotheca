@@ -34,5 +34,7 @@ namespace Apotheca.ViewModels.Document
 
         public string UploadedFileName { get; set; }
 
+        public int? CategoryId { get; set; }
+
     }
 }

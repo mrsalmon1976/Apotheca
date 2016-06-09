@@ -38,7 +38,11 @@ namespace Test.Apotheca.BLL.Data
             string script1 = Guid.NewGuid().ToString();
             string script2 = Guid.NewGuid().ToString();
             string script3 = Guid.NewGuid().ToString();
-            string[] scripts = { script1, script2, script3 };
+
+            IDictionary<string, string> scripts = new Dictionary<string, string>();
+            scripts.Add("script1", script1);
+            scripts.Add("script2", script2);
+            scripts.Add("script3", script3);
             const string schema = "dbo";
             //_dbConnection.Schema.Returns(schema);
 
@@ -57,8 +61,10 @@ namespace Test.Apotheca.BLL.Data
         public void Migrate_WhenExecuted_ReplacesSchema()
         {
             string s1 = "SELECT * FROM [{SCHEMA}].MyTable";
-            string[] scripts = { s1 };
             string schema = new Random().Next(1000, 9999).ToString();
+
+            IDictionary<string, string> scripts = new Dictionary<string, string>();
+            scripts.Add("s1", s1);
 
             _dbMigrator.Migrate(_dbConnection, schema, scripts);
 

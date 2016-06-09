@@ -30,11 +30,13 @@ namespace Test.Apotheca.BLL.Resources
         [Test]
         public void GetDbMigrationScripts_WhenExecuted_ReturnsScripts()
         {
-            string[] scripts = _resourceProvider.GetDbMigrationScripts();
-            Assert.Greater(scripts.Length, 0);
-            foreach (string script in scripts)
+            IDictionary<string, string> scripts = _resourceProvider.GetDbMigrationScripts();
+            Assert.Greater(scripts.Count, 0);
+            foreach (KeyValuePair<string, string> kvp in scripts)
             {
-                Assert.Greater(script.Trim().Length, 0);
+                Assert.Greater(kvp.Key.Length, 0);
+                Assert.Greater(kvp.Value.Trim().Length, 0);
+                Assert.AreNotEqual(kvp.Key, kvp.Value);
             }
         }
     }

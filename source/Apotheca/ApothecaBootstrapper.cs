@@ -73,9 +73,9 @@ namespace Apotheca
             using (IDbConnection conn = new SqlConnection(settings.ConnectionString))
             {
                 IDbScriptResourceProvider resourceProvider = container.Resolve<IDbScriptResourceProvider>();
-                Console.Write("Running migrations...");
+                Console.WriteLine("Running migrations...");
                 new DbMigrator().Migrate(conn, settings.DbSchema, resourceProvider.GetDbMigrationScripts());
-                Console.WriteLine("Done.");
+                Console.WriteLine("...Done.");
             }
 
             // delete old files

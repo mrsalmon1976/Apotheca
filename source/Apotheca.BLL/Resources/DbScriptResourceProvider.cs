@@ -10,18 +10,18 @@ namespace Apotheca.BLL.Resources
 {
     public interface IDbScriptResourceProvider
     {
-        string[] GetDbMigrationScripts();
+        IDictionary<string, string> GetDbMigrationScripts();
     }
 
     public class DbScriptResourceProvider : IDbScriptResourceProvider
     {
         public const string DbMigrationResourceNamespacePrefix = "Apotheca.BLL.Resources.DbMigrations.";
 
-        public string[] GetDbMigrationScripts()
+        public IDictionary<string, string> GetDbMigrationScripts()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(name => name.StartsWith(DbMigrationResourceNamespacePrefix)).OrderBy(x => x);
-            List<string> result = new List<string>();
+            IDictionary<string, string> result = new Dictionary<string, string>();
 
             foreach (string resourceName in resourceNames)
             {
@@ -29,12 +29,12 @@ namespace Apotheca.BLL.Resources
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
-                        result.Add(reader.ReadToEnd());
+                        result.Add(resourceName, reader.ReadToEnd());
                     }
                 }
             }
 
-            return result.ToArray();
+            return result;
         }
     }
 }

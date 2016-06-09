@@ -16,13 +16,14 @@ namespace Apotheca.BLL.Database
     public class DbMigrator
     {
 
-        public void Migrate(IDbConnection dbConnection, string schema, string[] scripts)
+        public void Migrate(IDbConnection dbConnection, string schema, IDictionary<string, string> scripts)
         {
             // NOTE: you can't use a transaction here due to full index catalogs needing to be created, but 
             // the scripts should be able to be rerun anyway
-            foreach (string script in scripts)
+            foreach (KeyValuePair<string, string> kvp in scripts)
             {
-                string sql = script.Replace("{SCHEMA}", schema);
+                Console.WriteLine("..." + kvp.Key);
+                string sql = kvp.Value.Replace("{SCHEMA}", schema);
                 dbConnection.Execute(sql, null, null, 0, null);
             }
         }
