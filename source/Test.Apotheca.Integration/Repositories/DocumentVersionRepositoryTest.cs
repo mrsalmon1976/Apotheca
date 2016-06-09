@@ -37,7 +37,7 @@ namespace Test.Apotheca.Integration.Repositories
         public void Create()
         {
             DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
-            document.CreatedByUserId = _user.Id.Value;
+            document.CreatedByUserId = _user.Id;
             _repo.Create(document);
         }
 
@@ -52,10 +52,10 @@ namespace Test.Apotheca.Integration.Repositories
         public void GetFileContents()
         {
             DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
-            document.CreatedByUserId = _user.Id.Value;
+            document.CreatedByUserId = _user.Id;
             _repo.Create(document);
 
-            byte[] fileContents = _repo.GetFileContents(document.Id.Value, 1);
+            byte[] fileContents = _repo.GetFileContents(document.Id, 1);
             Assert.AreEqual(document.FileContents, fileContents);
         }
 
@@ -63,13 +63,13 @@ namespace Test.Apotheca.Integration.Repositories
         public void GetVersionCount()
         {
             DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
-            document.CreatedByUserId = _user.Id.Value;
+            document.CreatedByUserId = _user.Id;
             _repo.Create(document);
 
             document.VersionNo = 2;
             _repo.Create(document);
 
-            int count = _repo.GetVersionCount(document.Id.Value);
+            int count = _repo.GetVersionCount(document.Id);
             Assert.AreEqual(2, count);
         }
 

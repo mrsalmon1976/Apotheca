@@ -52,7 +52,7 @@ namespace Apotheca.BLL.Commands.User
             this.User.CreatedOn = DateTime.UtcNow;
             _unitOfWork.UserRepo.Create(this.User);
 
-            return this.User.Id.Value;
+            return this.User.Id;
         }
 
     }

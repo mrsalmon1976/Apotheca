@@ -36,13 +36,13 @@ namespace Apotheca.BLL.Commands.Document
             if (this.Document == null) throw new NullReferenceException("Document property cannot be null");
             if (_unitOfWork.CurrentTransaction == null) throw new InvalidOperationException("Command must be executed as part of a transaction");
 
-            bool isExisting = this.Document.Id.HasValue;
+            bool isExisting = (this.Document.Id != Guid.Empty);
 
             // determine the version number
             int versionNo = 1;
             if (isExisting)
             {
-                versionNo = _unitOfWork.DocumentVersionRepo.GetVersionCount(this.Document.Id.Value) + 1;
+                versionNo = _unitOfWork.DocumentVersionRepo.GetVersionCount(this.Document.Id) + 1;
             }
             this.Document.VersionNo = versionNo;
 
@@ -63,7 +63,7 @@ namespace Apotheca.BLL.Commands.Document
             // create the version
             _unitOfWork.DocumentVersionRepo.Create(this.Document);
 
-            return this.Document.Id.Value;
+            return this.Document.Id;
         }
 
     }

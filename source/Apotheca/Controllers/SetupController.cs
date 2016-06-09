@@ -83,7 +83,7 @@ namespace Apotheca.Controllers
             }
 
             // if we've got here, we're all good - redirect to the dashboard
-            return new LoginAndRedirectResult(model.Id.Value, Actions.Dashboard);
+            return new LoginAndRedirectResult(model.Id, Actions.Dashboard);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Apotheca.BLL.Repositories
         {
             string sql = this.ReplaceSchemaPlaceholders(@"
                 SELECT Id AS CategoryId, Name, Description, CreatedOn
-                    , (SELECT COUNT(Id) FROM [{SCHEMA}].Documents WHERE CategoryId = c.Id) AS DocumentCount
+                    , (SELECT COUNT(DISTINCT DocumentId) FROM [{SCHEMA}].DocumentCategoryAssc WHERE CategoryId = c.Id) AS DocumentCount
                 FROM [{SCHEMA}].[Categories] c
                 ORDER BY Name");
             return this.Connection.Query<CategorySearchResult>(sql, this.CurrentTransaction);

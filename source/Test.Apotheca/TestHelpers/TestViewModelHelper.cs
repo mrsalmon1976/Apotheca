@@ -27,7 +27,7 @@ namespace Test.Apotheca.TestHelpers
         public static UserViewModel CreateUserViewModel(Guid? id = null, string email = null, string firstName = null, string surname = null, string password = null, string confirmPassword = null, string role = null, DateTime? createdOn = null, string apiKey = null)
         {
             UserViewModel model = new UserViewModel();
-            model.Id = id;
+            model.Id = (id ?? Guid.Empty);
             model.Email = email;
             model.FirstName = firstName;
             model.Surname = surname;

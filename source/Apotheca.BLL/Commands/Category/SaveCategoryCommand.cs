@@ -28,7 +28,7 @@ namespace Apotheca.BLL.Commands.Category
             if (this.Category == null) throw new NullReferenceException("Category property cannot be null");
             if (_unitOfWork.CurrentTransaction == null) throw new InvalidOperationException("SaveCategoryCommand must be executed as part of a transaction");
 
-            bool isExisting = this.Category.Id.HasValue;
+            bool isExisting = (this.Category.Id != Guid.Empty);
 
             // validate
             _categoryValidator.Validate(this.Category);
@@ -43,7 +43,7 @@ namespace Apotheca.BLL.Commands.Category
                 _unitOfWork.CategoryRepo.Create(this.Category);
             }
 
-            return this.Category.Id.Value;
+            return this.Category.Id;
         }
 
     }

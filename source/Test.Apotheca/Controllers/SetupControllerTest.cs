@@ -137,7 +137,7 @@ namespace Test.Apotheca.Controllers
             // assert
             _createUserCommand.Received(1).Execute();
             Assert.IsNotNull(result);
-            Assert.AreEqual(model.Id.Value, result.UserId);
+            Assert.AreEqual(model.Id, result.UserId);
             Assert.AreEqual(Actions.Dashboard, result.Location);
 
         }

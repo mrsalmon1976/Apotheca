@@ -93,13 +93,13 @@ namespace Test.Apotheca.BLL.Commands.Document
         {
             DocumentEntity doc = TestEntityHelper.CreateDocumentWithData();
             doc.VersionNo = 0;
-            _documentVersionRepo.GetVersionCount(doc.Id.Value).Returns(5);
+            _documentVersionRepo.GetVersionCount(doc.Id).Returns(5);
 
             _command.Document = doc;
             _command.Execute();
 
             Assert.AreEqual(6, doc.VersionNo);
-            _documentVersionRepo.Received(1).GetVersionCount(doc.Id.Value);
+            _documentVersionRepo.Received(1).GetVersionCount(doc.Id);
         }
 
         [Test]

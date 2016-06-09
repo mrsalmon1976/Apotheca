@@ -16,7 +16,7 @@ namespace Test.Apotheca.BLL.TestHelpers
         public static CategoryEntity CreateCategory(Guid? id = null, string name = null, string description = null, DateTime? createdOn = null)
         {
             CategoryEntity category = new CategoryEntity();
-            category.Id = id;
+            category.Id = (id ?? Guid.Empty);
             category.Name = name;
             category.Description = description;
             category.CreatedOn = createdOn;
@@ -36,7 +36,7 @@ namespace Test.Apotheca.BLL.TestHelpers
         public static DocumentEntity CreateDocument(Guid? id = null, int versionNo = 1, string name = null, string extension = null, string description = null, byte[] fileContents = null, DateTime? createdOn = null, Guid? createdByUserId = null)
         {
             DocumentEntity document = new DocumentEntity();
-            document.Id = id;
+            document.Id = (id ?? Guid.Empty);
             document.VersionNo = versionNo;
             document.FileName = name;
             document.Extension = extension;
@@ -64,10 +64,20 @@ namespace Test.Apotheca.BLL.TestHelpers
             return document;
         }
 
+        public static DocumentCategoryAsscEntity CreateDocumentCategoryAssc(int id = 0, Guid? documentId = null, int? documentVersionNo = null, Guid? categoryId = null)
+        {
+            DocumentCategoryAsscEntity docCatAssc = new DocumentCategoryAsscEntity();
+            docCatAssc.Id = id;
+            docCatAssc.DocumentId = (documentId ?? Guid.NewGuid());
+            docCatAssc.DocumentVersionNo = (documentVersionNo ?? 1);
+            docCatAssc.CategoryId = (categoryId ?? Guid.NewGuid());
+            return docCatAssc;
+        }
+
         public static UserEntity CreateUser(Guid? id = null, string email = null, string firstName = null, string surname = null, string password = null, string role = null, DateTime? createdOn = null, string apiKey = null)
         {
             UserEntity user = new UserEntity();
-            user.Id = id;
+            user.Id = (id ?? Guid.Empty);
             user.Email = email;
             user.FirstName = firstName;
             user.Surname = surname;

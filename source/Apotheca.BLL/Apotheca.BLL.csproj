@@ -59,9 +59,11 @@
     <Compile Include="Models\AuditLogDetailEntity.cs" />
     <Compile Include="Models\CategoryEntity.cs" />
     <Compile Include="Models\CategorySearchResult.cs" />
+    <Compile Include="Models\DocumentCategoryAsscEntity.cs" />
     <Compile Include="Models\DocumentEntity.cs" />
     <Compile Include="Models\DocumentSearchResult.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\DocumentCategoryAsscRepository.cs" />
     <Compile Include="Repositories\DocumentVersionRepository.cs" />
     <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Security\PasswordProvider.cs" />
@@ -92,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <EmbeddedResource Include="Resources\DbMigrations\0008.CreateDocumentCategoryAsscTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0007.CreateAuditLogDetailTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0003.CreateCategoryTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0006.CreateAuditLogTable.sql" />

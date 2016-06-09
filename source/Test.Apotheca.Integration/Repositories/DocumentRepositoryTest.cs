@@ -38,7 +38,7 @@ namespace Test.Apotheca.Integration.Repositories
         public void Create()
         {
             DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
-            document.CreatedByUserId = _user.Id.Value;
+            document.CreatedByUserId = _user.Id;
             _repo.Create(document);
         }
 
@@ -61,10 +61,10 @@ namespace Test.Apotheca.Integration.Repositories
         public void GetFileContents()
         {
             DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
-            document.CreatedByUserId = _user.Id.Value;
+            document.CreatedByUserId = _user.Id;
             _repo.Create(document);
 
-            byte[] fileContents = _repo.GetFileContents(document.Id.Value);
+            byte[] fileContents = _repo.GetFileContents(document.Id);
             Assert.AreEqual(document.FileContents, fileContents);
         }
 
@@ -80,7 +80,7 @@ namespace Test.Apotheca.Integration.Repositories
         public void Update()
         {
             DocumentEntity document = TestEntityHelper.CreateDocumentWithData();
-            document.CreatedByUserId = _user.Id.Value;
+            document.CreatedByUserId = _user.Id;
             _repo.Create(document);
 
             document.Description = "Changed";

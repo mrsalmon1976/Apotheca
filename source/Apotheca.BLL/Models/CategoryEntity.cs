@@ -8,7 +8,7 @@ namespace Apotheca.BLL.Models
 {
     public class CategoryEntity
     {
-        public Guid? Id { get; internal set; }
+        public Guid Id { get; internal set; }
 
         public string Name { get; set; }
 

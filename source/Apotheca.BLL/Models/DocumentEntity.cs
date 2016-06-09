@@ -8,7 +8,7 @@ namespace Apotheca.BLL.Models
 {
     public class DocumentEntity
     {
-        public Guid? Id { get; internal set; }
+        public Guid Id { get; internal set; }
 
         public int VersionNo { get; set; }
 

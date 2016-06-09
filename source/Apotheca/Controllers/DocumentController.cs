@@ -63,7 +63,7 @@ namespace Apotheca.Controllers
             
             // set up the entity
             DocumentEntity document = Mapper.Map<DocumentViewModel, DocumentEntity>(model);
-            document.CreatedByUserId = user.Id.Value;
+            document.CreatedByUserId = user.Id;
             document.FileContents = fileContents;
             document.MimeType = MimeMapping.GetMimeMapping(document.FileName);
 

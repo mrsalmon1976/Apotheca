@@ -12,7 +12,6 @@ BEGIN
 		[FileContents] varbinary(MAX) NOT NULL DEFAULT (0x),
 		Extension nvarchar(100) NOT NULL,
 		MimeType nvarchar(255) NOT NULL,
-		CategoryId uniqueidentifier NULL,
 		CreatedOn datetime NOT NULL,
 		CreatedByUserId uniqueidentifier NOT NULL,
 		CONSTRAINT [PK_DocumentVersions] PRIMARY KEY CLUSTERED 
@@ -21,7 +20,6 @@ BEGIN
 		) ON [PRIMARY]
 	)
 
-	ALTER TABLE [{SCHEMA}].[DocumentVersions] ADD CONSTRAINT [FK_DocumentVersions_CategoryId] FOREIGN KEY (CategoryId) REFERENCES [{SCHEMA}].[Categories](Id)
 	ALTER TABLE [{SCHEMA}].[DocumentVersions] ADD CONSTRAINT [FK_DocumentVersions_CreatedByUserId] FOREIGN KEY (CreatedByUserId) REFERENCES [{SCHEMA}].[Users](Id)
 
 END

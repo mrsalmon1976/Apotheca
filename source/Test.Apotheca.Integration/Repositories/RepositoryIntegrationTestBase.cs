@@ -45,6 +45,7 @@ namespace Test.Apotheca.Integration.Repositories
 
             this.Connection.Execute("DROP TABLE test.[AuditLogDetails]");
             this.Connection.Execute("DROP TABLE test.[AuditLogs]");
+            this.Connection.Execute("DROP TABLE test.[DocumentCategoryAssc]");
             this.Connection.Execute("DROP TABLE test.[DocumentVersions]");
             this.Connection.Execute("DROP TABLE test.[Documents]");
             this.Connection.Execute("DROP TABLE test.[Users]");

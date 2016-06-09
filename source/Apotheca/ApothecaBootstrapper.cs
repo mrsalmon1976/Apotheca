@@ -102,6 +102,7 @@ namespace Apotheca
             // BLL repositories
             container.Register<ICategoryRepository>(new CategoryRepository(conn, settings.DbSchema));
             container.Register<IDocumentRepository>(new DocumentRepository(conn, settings.DbSchema));
+            container.Register<IDocumentCategoryAsscRepository>(new DocumentCategoryAsscRepository(conn, settings.DbSchema));
             container.Register<IDocumentVersionRepository>(new DocumentVersionRepository(conn, settings.DbSchema));
             container.Register<IUserRepository>(new UserRepository(conn, settings.DbSchema));
 
