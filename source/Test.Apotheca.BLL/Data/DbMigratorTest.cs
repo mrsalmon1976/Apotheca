@@ -16,7 +16,6 @@ namespace Test.Apotheca.BLL.Data
     public class DbMigratorTest
     {
         private DbMigrator _dbMigrator;
-        private IDbContext _dbContext;
         private IDbConnection _dbConnection;
 
         public DbMigratorTest()
@@ -26,9 +25,7 @@ namespace Test.Apotheca.BLL.Data
         [SetUp]
         public void DbMigratorTest_SetUp()
         {
-            _dbContext = Substitute.For<IDbContext>();
             _dbConnection = Substitute.For<IDbConnection>();
-            _dbContext.GetConnection().Returns(_dbConnection);
             _dbMigrator = new DbMigrator();
         }
 
@@ -43,9 +40,9 @@ namespace Test.Apotheca.BLL.Data
             string script3 = Guid.NewGuid().ToString();
             string[] scripts = { script1, script2, script3 };
             const string schema = "dbo";
-            _dbContext.Schema.Returns(schema);
+            //_dbConnection.Schema.Returns(schema);
 
-            _dbMigrator.Migrate(_dbContext, scripts);
+            _dbMigrator.Migrate(_dbConnection, schema, scripts);
 
             _dbConnection.Received(3).Execute(Arg.Any<string>());
             _dbConnection.Received().Execute(script1, null, Arg.Any<IDbTransaction>(), 0, null);
@@ -62,9 +59,8 @@ namespace Test.Apotheca.BLL.Data
             string s1 = "SELECT * FROM [{SCHEMA}].MyTable";
             string[] scripts = { s1 };
             string schema = new Random().Next(1000, 9999).ToString();
-            _dbContext.Schema.Returns(schema);
 
-            _dbMigrator.Migrate(_dbContext, scripts);
+            _dbMigrator.Migrate(_dbConnection, schema, scripts);
 
             string expected = String.Format("SELECT * FROM [{0}].MyTable", schema);
             _dbConnection.Received(1).Execute(Arg.Any<string>());

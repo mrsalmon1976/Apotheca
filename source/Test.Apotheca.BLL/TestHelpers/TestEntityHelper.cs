@@ -12,6 +12,26 @@ namespace Test.Apotheca.BLL.TestHelpers
     /// </summary>
     public class TestEntityHelper
     {
+
+        public static CategoryEntity CreateCategory(Guid? id = null, string name = null, string description = null, DateTime? createdOn = null)
+        {
+            CategoryEntity category = new CategoryEntity();
+            category.Id = id;
+            category.Name = name;
+            category.Description = description;
+            category.CreatedOn = createdOn;
+            return category;
+        }
+
+        public static CategoryEntity CreateCategoryWithData()
+        {
+            CategoryEntity category = new CategoryEntity();
+            category.Id = Guid.NewGuid();
+            category.Name = Guid.NewGuid().ToString();
+            category.Description = Guid.NewGuid().ToString();
+            return category;
+        }
+
         public static DocumentEntity CreateDocument(Guid? id = null, int versionNo = 1, string name = null, string extension = null, string description = null, byte[] fileContents = null, DateTime? createdOn = null, Guid? createdByUserId = null)
         {
             DocumentEntity document = new DocumentEntity();

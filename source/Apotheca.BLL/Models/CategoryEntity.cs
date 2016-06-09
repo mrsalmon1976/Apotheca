@@ -14,7 +14,7 @@ namespace Apotheca.BLL.Models
 
         public string Description { get; set; }
 
-        public DateTime CreatedOn { get; set; }
+        public DateTime? CreatedOn { get; set; }
 
     }
 }

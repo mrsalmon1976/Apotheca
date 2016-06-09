@@ -1,21 +1,10 @@
-﻿using Apotheca.BLL.Repositories;
+﻿using Apotheca.BLL.Data;
+using Apotheca.BLL.Repositories;
 using Apotheca.Controllers;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NSubstitute;
-using Apotheca.Modules;
-using Nancy;
-using Apotheca.ViewModels.Login;
-using Apotheca.Web.Results;
-using Apotheca.Navigation;
-using SystemWrapper.IO;
-using System.Reflection;
-using System.IO;
 using Apotheca.ViewModels.Dashboard;
+using Apotheca.Web.Results;
+using NSubstitute;
+using NUnit.Framework;
 using Test.Apotheca.TestHelpers;
 
 namespace Test.Apotheca.Controllers
@@ -25,6 +14,7 @@ namespace Test.Apotheca.Controllers
     {
         private IDashboardController _dashboardController;
         private IUserRepository _userRepo;
+        private IUnitOfWork _unitOfWork;
 
         private IDocumentRepository _documentRepo;
 
@@ -33,7 +23,11 @@ namespace Test.Apotheca.Controllers
         {
             _userRepo = Substitute.For<IUserRepository>();
             _documentRepo = Substitute.For<IDocumentRepository>();
-            _dashboardController = new DashboardController(_userRepo, _documentRepo);
+
+            _unitOfWork = Substitute.For<IUnitOfWork>();
+            _unitOfWork.DocumentRepo.Returns(_documentRepo);
+            _unitOfWork.UserRepo.Returns(_userRepo);
+            _dashboardController = new DashboardController(_unitOfWork);
 
         }
 

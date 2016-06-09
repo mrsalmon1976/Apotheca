@@ -48,10 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Category\SaveCategoryCommandTest.cs" />
     <Compile Include="Commands\Document\SaveDocumentCommandTest.cs" />
     <Compile Include="Commands\User\CreateUserCommandTest.cs" />
     <Compile Include="Data\DbMigratorTest.cs" />
     <Compile Include="TestHelpers\TestEntityHelper.cs" />
+    <Compile Include="Validators\CategoryValidatorTest.cs" />
     <Compile Include="Validators\DocumentValidatorTest.cs" />
     <Compile Include="Validators\UserValidatorTest.cs" />
     <Compile Include="Validators\StringValidatorTest.cs" />
@@ -67,6 +69,7 @@
       <Name>Apotheca.BLL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

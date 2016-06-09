@@ -20,17 +20,15 @@ namespace Apotheca.BLL.Commands.User
 
     public class CreateUserCommand : Command<Guid>, ICreateUserCommand
     {
-        private IDbContext _dbContext;
+        private IUnitOfWork _unitOfWork;
         private IUserValidator _userValidator;
-        private IUserRepository _userRepo;
         private IRandomKeyGenerator _keyGenerator;
         private IPasswordProvider _passwordProvider;
 
-        public CreateUserCommand(IDbContext dbContext, IUserValidator userValidator, IUserRepository userRepo, IRandomKeyGenerator keyGenerator, IPasswordProvider passwordProvider)
+        public CreateUserCommand(IUnitOfWork unitOfWork, IUserValidator userValidator, IRandomKeyGenerator keyGenerator, IPasswordProvider passwordProvider)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
             _userValidator = userValidator;
-            _userRepo = userRepo;
             _keyGenerator = keyGenerator;
             _passwordProvider = passwordProvider;
         }
@@ -40,6 +38,7 @@ namespace Apotheca.BLL.Commands.User
         public override Guid Execute()
         {
             if (this.User == null) throw new NullReferenceException("User property cannot be null");
+            if (_unitOfWork.CurrentTransaction == null) throw new InvalidOperationException("Command must be executed as part of a transaction");
 
             // set values that are not set by the user: API Key, Salted Password, CreatedOn
             this.User.ApiKey = _keyGenerator.GenerateKey();
@@ -49,21 +48,10 @@ namespace Apotheca.BLL.Commands.User
             //validate
             _userValidator.Validate(this.User);
 
-            // start a transaction as now we're hitting the database
-            IDbTransaction txn = this._dbContext.BeginTransaction();
-            try
-            {
-                // set the CreatedOn and insert the new user
-                this.User.CreatedOn = DateTime.UtcNow;
-                _userRepo.Create(this.User);
+            // set the CreatedOn and insert the new user
+            this.User.CreatedOn = DateTime.UtcNow;
+            _unitOfWork.UserRepo.Create(this.User);
 
-                txn.Commit();
-            }
-            catch (Exception)
-            {
-                if (txn != null) txn.Rollback();
-                throw;
-            }
             return this.User.Id.Value;
         }
 

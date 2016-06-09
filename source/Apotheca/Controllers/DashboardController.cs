@@ -1,15 +1,8 @@
-﻿using Apotheca.BLL.Repositories;
+﻿using Apotheca.BLL.Data;
 using Apotheca.Navigation;
-using Apotheca.Modules;
 using Apotheca.ViewModels.Dashboard;
-using Nancy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Nancy.Responses.Negotiation;
 using Apotheca.Web.Results;
+using System.Threading.Tasks;
 
 namespace Apotheca.Controllers
 {
@@ -20,20 +13,18 @@ namespace Apotheca.Controllers
 
     public class DashboardController : IDashboardController
     {
-        private IUserRepository _userRepo;
-        private IDocumentRepository _documentRepo;
+        private IUnitOfWork _unitOfWork;
 
-        public DashboardController(IUserRepository userRepo, IDocumentRepository documentRepo)
+        public DashboardController(IUnitOfWork unitOfWork)
         {
-            _userRepo = userRepo;
-            _documentRepo = documentRepo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IControllerResult> HandleDashboardGetAsync()
         {
 
-            var userCount = _userRepo.GetUserCountAsync();
-            var docCount = _documentRepo.GetCountAsync();
+            var userCount = _unitOfWork.UserRepo.GetUserCountAsync();
+            var docCount = _unitOfWork.DocumentRepo.GetCountAsync();
 
             await Task.WhenAll(userCount, docCount);
 

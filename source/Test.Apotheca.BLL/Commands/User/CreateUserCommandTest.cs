@@ -21,8 +21,7 @@ namespace Test.Apotheca.BLL.Commands.User
     {
         private ICreateUserCommand _command;
 
-        private IDbContext _dbContext;
-        private IDbConnection _dbConnection;
+        private IUnitOfWork _unitOfWork;
         private IDbTransaction _dbTransaction;
 
         private IUserValidator _userValidator;
@@ -33,18 +32,17 @@ namespace Test.Apotheca.BLL.Commands.User
         [SetUp]
         public void CreateUserCommandTest_SetUp()
         {
-            _dbContext = Substitute.For<IDbContext>();
-            _dbConnection = Substitute.For<IDbConnection>();
-            _dbContext.GetConnection().Returns(_dbConnection);
             _dbTransaction = Substitute.For<IDbTransaction>();
-            _dbContext.BeginTransaction().Returns(_dbTransaction);
 
             _userValidator = Substitute.For<IUserValidator>();
             _userRepo = Substitute.For<IUserRepository>();
             _keyGenerator = Substitute.For<IRandomKeyGenerator>();
             _passwordProvider = Substitute.For<IPasswordProvider>();
-            
-            _command = new CreateUserCommand(_dbContext, _userValidator, _userRepo, _keyGenerator, _passwordProvider);
+
+            _unitOfWork = Substitute.For<IUnitOfWork>();
+            _unitOfWork.UserRepo.Returns(_userRepo);
+
+            _command = new CreateUserCommand(_unitOfWork, _userValidator, _keyGenerator, _passwordProvider);
         }
 
         [Test]
@@ -52,6 +50,15 @@ namespace Test.Apotheca.BLL.Commands.User
         {
             _command.User = null;
             Assert.Throws(typeof(NullReferenceException), () => _command.Execute());  
+        }
+
+        [Test]
+        public void Execute_NoTransaction_ThrowsException()
+        {
+            IDbTransaction transaction = null;
+            _unitOfWork.CurrentTransaction.Returns(transaction);
+            _command.User = TestEntityHelper.CreateUser();
+            Assert.Throws(typeof(InvalidOperationException), () => _command.Execute());
         }
 
         [Test]
@@ -137,20 +144,6 @@ namespace Test.Apotheca.BLL.Commands.User
 
             _userRepo.Received(1).Create(user);
             Assert.AreEqual(id, result);
-        }
-
-        [Test]
-        public void Execute_WithUser_UsesTransaction()
-        {
-            UserEntity user = TestEntityHelper.CreateUser();
-            _userRepo.When(x => x.Create(user)).Do((c) => { user.Id = Guid.NewGuid(); });
-
-            _command.User = user;
-            Guid result = _command.Execute();
-
-            _dbContext.Received(1).BeginTransaction();
-            _dbTransaction.Received(1).Commit();
-
         }
 
     }

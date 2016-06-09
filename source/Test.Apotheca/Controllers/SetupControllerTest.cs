@@ -19,6 +19,7 @@ using Apotheca.Validators;
 using Test.Apotheca.TestHelpers;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Exceptions;
+using Apotheca.BLL.Data;
 
 namespace Test.Apotheca.Controllers
 {
@@ -26,6 +27,7 @@ namespace Test.Apotheca.Controllers
     public class SetupControllerTest
     {
         private ISetupController _setupController;
+        private IUnitOfWork _unitOfWork;
         private IUserRepository _userRepo;
         private ICreateUserCommand _createUserCommand;
         private IUserViewModelValidator _userViewModelValidator;
@@ -37,7 +39,9 @@ namespace Test.Apotheca.Controllers
             _createUserCommand = Substitute.For<ICreateUserCommand>();
             _userViewModelValidator = Substitute.For<IUserViewModelValidator>();
 
-            _setupController = new SetupController(_userRepo, _createUserCommand, _userViewModelValidator);
+            _unitOfWork = Substitute.For<IUnitOfWork>();
+            _unitOfWork.UserRepo.Returns(_userRepo);
+            _setupController = new SetupController(_unitOfWork, _createUserCommand, _userViewModelValidator);
         }
 
         [Test]
@@ -135,6 +139,22 @@ namespace Test.Apotheca.Controllers
             Assert.IsNotNull(result);
             Assert.AreEqual(model.Id.Value, result.UserId);
             Assert.AreEqual(Actions.Dashboard, result.Location);
+
+        }
+
+        [Test]
+        public void DefaultPost_OnSuccess_UsesTransaction()
+        {
+            // setup
+            UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
+            this._userViewModelValidator.Validate(model).Returns(new List<string>());
+
+            // execute
+            _setupController.DefaultPost(model);
+
+            // assert
+            _unitOfWork.Received(1).BeginTransaction();
+            _unitOfWork.Received(1).Commit();
 
         }
 

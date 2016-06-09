@@ -1,4 +1,5 @@
-﻿using Apotheca.BLL.Exceptions;
+﻿using Apotheca.BLL.Data;
+using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
 using System;
@@ -17,11 +18,11 @@ namespace Apotheca.BLL.Validators
     public class UserValidator : IUserValidator
     {
         private IStringValidator _stringValidator;
-        private IUserRepository _userRepository;
+        private IUnitOfWork _unitOfWork;
 
-        public UserValidator(IUserRepository userRepository, IStringValidator stringValidator)
+        public UserValidator(IUnitOfWork unitOfWork, IStringValidator stringValidator)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _stringValidator = stringValidator;
         }
 
@@ -56,7 +57,7 @@ namespace Apotheca.BLL.Validators
             }
 
             // all the basic validation is done, if the user is new we need to check that it doesn't exist already
-            UserEntity existingUser = _userRepository.GetUserByEmailOrDefault(user.Email);
+            UserEntity existingUser = _unitOfWork.UserRepo.GetUserByEmailOrDefault(user.Email);
             if (existingUser != null && existingUser.Id != user.Id)
             {
                 errors.Add(String.Format("A user already exists with email address '{0}'", user.Email));

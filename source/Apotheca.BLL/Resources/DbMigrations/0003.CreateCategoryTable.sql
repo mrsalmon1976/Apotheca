@@ -7,7 +7,7 @@ BEGIN
 	CREATE TABLE [{SCHEMA}].[Categories](
 		[Id] [uniqueidentifier] NOT NULL,
 		[Name] [varchar](100) NOT NULL,
-		[Description] [varchar](255) NOT NULL,
+		[Description] [varchar](255) NULL,
 		[CreatedOn] [datetime] NOT NULL,
 	 CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED 
 	(

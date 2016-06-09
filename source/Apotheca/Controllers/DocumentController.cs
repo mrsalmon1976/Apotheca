@@ -1,4 +1,5 @@
 ﻿using Apotheca.BLL.Commands.Document;
+using Apotheca.BLL.Data;
 using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
@@ -36,19 +37,17 @@ namespace Apotheca.Controllers
 
     public class DocumentController : IDocumentController
     {
+        private IUnitOfWork _unitOfWork;
         private IDocumentViewModelValidator _documentViewModelValidator;
         private IFileUtilityService _fileUtilityService;
         private ISaveDocumentCommand _createDocumentCommand;
-        private IUserRepository _userRepository;
-        private IDocumentRepository _documentRepository;
 
-        public DocumentController(IDocumentViewModelValidator documentViewModelValidator, IFileUtilityService fileUtilityService, ISaveDocumentCommand createDocumentCommand, IUserRepository userRepository, IDocumentRepository documentRepository)
+        public DocumentController(IUnitOfWork unitOfWork, IDocumentViewModelValidator documentViewModelValidator, IFileUtilityService fileUtilityService, ISaveDocumentCommand createDocumentCommand)
         {
+            _unitOfWork = unitOfWork;
             _documentViewModelValidator = documentViewModelValidator;
             _fileUtilityService = fileUtilityService;
             _createDocumentCommand = createDocumentCommand;
-            _userRepository = userRepository;
-            _documentRepository = documentRepository;
         }
 
         public IControllerResult HandleDocumentAddGet()
@@ -59,7 +58,7 @@ namespace Apotheca.Controllers
 
         public IControllerResult HandleDocumentFormPost(string rootPath, string currentUserName, DocumentViewModel model)
         {
-            UserEntity user = _userRepository.GetUserByEmail(currentUserName);
+            UserEntity user = _unitOfWork.UserRepo.GetUserByEmail(currentUserName);
             byte[] fileContents = _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName);
             
             // set up the entity
@@ -79,8 +78,10 @@ namespace Apotheca.Controllers
             // try and execute the command 
             try
             {
+                _unitOfWork.BeginTransaction();
                 _createDocumentCommand.Document = document;
                 _createDocumentCommand.Execute();
+                _unitOfWork.Commit();
             }
             catch (ValidationException vex)
             {
@@ -100,7 +101,7 @@ namespace Apotheca.Controllers
             // TODO: check the current user has access to download the document 
 
             // get the document, with contents
-            DocumentEntity document = _documentRepository.GetByIdOrDefault(id, false);
+            DocumentEntity document = _unitOfWork.DocumentRepo.GetByIdOrDefault(id, false);
             if (document == null)
             {
                 return new NotFoundResult();
@@ -113,7 +114,7 @@ namespace Apotheca.Controllers
             }
             else
             {
-                byte[] fileContents = _documentRepository.GetFileContents(id);
+                byte[] fileContents = _unitOfWork.DocumentRepo.GetFileContents(id);
                 _fileUtilityService.SaveDownloadFile(fileInfo, fileContents);
                 result.FileContents = fileContents;
             }
@@ -133,7 +134,7 @@ namespace Apotheca.Controllers
 
         public IControllerResult HandleDocumentSearchPost(DocumentSearchViewModel model)
         {
-            model.Results.AddRange(_documentRepository.Search(model.SearchText, null));
+            model.Results.AddRange(_unitOfWork.DocumentRepo.Search(model.SearchText, null));
             model.IsResultGridVisible = true;
             return new ViewResult(Views.Document.Search, model);
         }
@@ -146,7 +147,7 @@ namespace Apotheca.Controllers
                 return new NotFoundResult();
             }
 
-            DocumentEntity document = _documentRepository.GetByIdOrDefault(documentId);
+            DocumentEntity document = _unitOfWork.DocumentRepo.GetByIdOrDefault(documentId);
             if (document == null)
             {
                 return new NotFoundResult();

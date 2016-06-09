@@ -11,18 +11,18 @@ using Apotheca.BLL.Exceptions;
 
 namespace Apotheca.BLL.Repositories
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepository
     {
-        void Create(CategoryEntity user);
+        void Create(CategoryEntity category);
         IEnumerable<CategorySearchResult> GetAll();
         CategoryEntity GetByNameOrDefault(string name);
-
+        void Update(CategoryEntity category);
     }
 
     public class CategoryRepository : BaseRepository, ICategoryRepository
     {
-        public CategoryRepository(IDbContext dbContext)
-            : base(dbContext)
+        public CategoryRepository(IDbConnection conn, string schema)
+            : base(conn, schema)
         {
         }
 
@@ -36,7 +36,7 @@ namespace Apotheca.BLL.Repositories
             VALUES
             (@Name, @Description, @CreatedOn);
             select r.id from @returnid r");
-            Guid id = this.Connection.ExecuteScalar<Guid>(sql, category, transaction: DbContext.CurrentTransaction);
+            Guid id = this.Connection.ExecuteScalar<Guid>(sql, category, transaction: this.CurrentTransaction);
             category.Id = id;
         }
 
@@ -47,15 +47,21 @@ namespace Apotheca.BLL.Repositories
                     , (SELECT COUNT(Id) FROM [{SCHEMA}].Documents WHERE CategoryId = c.Id) AS DocumentCount
                 FROM [{SCHEMA}].[Categories] c
                 ORDER BY Name");
-            return this.DbContext.GetConnection().Query<CategorySearchResult>(sql, this.DbContext.CurrentTransaction);
+            return this.Connection.Query<CategorySearchResult>(sql, this.CurrentTransaction);
         }
 
         public CategoryEntity GetByNameOrDefault(string name)
         {
             string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Categories] where Name = @Name");
-            return this.DbContext.GetConnection().Query<CategoryEntity>(sql
+            return this.Connection.Query<CategoryEntity>(sql
                 , new { Name = name }
-                , this.DbContext.CurrentTransaction).SingleOrDefault();
+                , this.CurrentTransaction).SingleOrDefault();
         }
+
+        public void Update(CategoryEntity category)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

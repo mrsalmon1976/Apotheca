@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Apotheca.BLL.Data;
 
 namespace Apotheca.Controllers
 {
@@ -29,20 +30,20 @@ namespace Apotheca.Controllers
 
     public class SetupController : ISetupController
     {
-        private IUserRepository _userRepo;
+        private IUnitOfWork _unitOfWork;
         private ICreateUserCommand _createUserCommand;
         private IUserViewModelValidator _userViewModelValidator;
 
-        public SetupController(IUserRepository userRepo, ICreateUserCommand createUserCommand, IUserViewModelValidator userViewModelValidator)
+        public SetupController(IUnitOfWork unitOfWork, ICreateUserCommand createUserCommand, IUserViewModelValidator userViewModelValidator)
         {
-            _userRepo = userRepo;
+            _unitOfWork = unitOfWork;
             _createUserCommand = createUserCommand;
             _userViewModelValidator = userViewModelValidator;
         }
 
         public IControllerResult DefaultGet()
         {
-            if (_userRepo.UsersExist())
+            if (_unitOfWork.UserRepo.UsersExist())
             {
                 return new RedirectResult(Actions.Login.Default);
             }
@@ -66,12 +67,14 @@ namespace Apotheca.Controllers
                 return new ViewResult(Views.Setup.Default, model);
             }
 
+            UserEntity user = Mapper.Map<UserViewModel, UserEntity>(model);
             // try and execute the command 
             try
             {
-                UserEntity user = Mapper.Map<UserViewModel, UserEntity>(model);
+                _unitOfWork.BeginTransaction();
                 _createUserCommand.User = user;
                 _createUserCommand.Execute();
+                _unitOfWork.Commit();
             }
             catch (ValidationException vex)
             {

@@ -12,40 +12,44 @@ using System.Configuration;
 using Test.Apotheca.Integration.Properties;
 using Apotheca.BLL.Database;
 using Dapper;
+using System.Data.SqlClient;
 
 namespace Test.Apotheca.Integration.Repositories
 {
     public class RepositoryIntegrationTestBase
     {
-        protected IDbContext DbContext { get; private set; }
+        protected IDbConnection Connection { get; set; }
+
+        protected string DbSchema { get; set; }
 
         [TestFixtureSetUp]
         public void RepositoryIntegrationTestBase_TestFixtureSetUp()
         {
-            // set up the database connection
             var connString = Settings.Default.TestDatabaseConnectionString;
-            this.DbContext = new DbContext(connString, "test");
+            this.DbSchema = "test";
+
+            // set up the database connection
+            this.Connection = new SqlConnection(connString);
+            this.Connection.Open();
 
             // make sure migrations have run on the test database
             IDbScriptResourceProvider resourceProvider = new DbScriptResourceProvider();
-            new DbMigrator().Migrate(this.DbContext, resourceProvider.GetDbMigrationScripts());
+            new DbMigrator().Migrate(this.Connection, this.DbSchema, resourceProvider.GetDbMigrationScripts());
         }
 
         [TestFixtureTearDown]
         public void RepositoryIntegrationTestBase_TestFixtureTearDown()
         {
-            using (IDbConnection conn = this.DbContext.GetConnection())
-            {
-                conn.Execute("DROP FULLTEXT INDEX ON test.[Documents]");
-                conn.Execute("DROP FULLTEXT CATALOG [DocumentCatalog]");
+            this.Connection.Execute("DROP FULLTEXT INDEX ON test.[Documents]");
+            this.Connection.Execute("DROP FULLTEXT CATALOG [DocumentCatalog]");
 
-                conn.Execute("DROP TABLE test.[AuditLogDetails]");
-                conn.Execute("DROP TABLE test.[AuditLogs]");
-                conn.Execute("DROP TABLE test.[DocumentVersions]");
-                conn.Execute("DROP TABLE test.[Documents]");
-                conn.Execute("DROP TABLE test.[Users]");
-                conn.Execute("DROP TABLE test.[Categories]");
-            }
+            this.Connection.Execute("DROP TABLE test.[AuditLogDetails]");
+            this.Connection.Execute("DROP TABLE test.[AuditLogs]");
+            this.Connection.Execute("DROP TABLE test.[DocumentVersions]");
+            this.Connection.Execute("DROP TABLE test.[Documents]");
+            this.Connection.Execute("DROP TABLE test.[Users]");
+            this.Connection.Execute("DROP TABLE test.[Categories]");
+            this.Connection.Dispose();
         }
 
     }

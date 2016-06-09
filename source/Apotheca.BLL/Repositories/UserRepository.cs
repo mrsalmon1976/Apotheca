@@ -11,7 +11,7 @@ using Apotheca.BLL.Exceptions;
 
 namespace Apotheca.BLL.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository
     {
         Task<int> GetUserCountAsync();
 
@@ -26,7 +26,7 @@ namespace Apotheca.BLL.Repositories
 
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IDbContext dbContext) : base(dbContext)
+        public UserRepository(IDbConnection connection, string schema) : base(connection, schema)
         {
         }
 
@@ -40,7 +40,7 @@ namespace Apotheca.BLL.Repositories
             VALUES
             (@Email, @Password, @Salt, @FirstName, @Surname, @Role, @ApiKey, @CreatedOn);
             select r.id from @returnid r");
-            Guid id = this.Connection.ExecuteScalar<Guid>(sql, user, transaction: DbContext.CurrentTransaction);
+            Guid id = this.Connection.ExecuteScalar<Guid>(sql, user, transaction: this.CurrentTransaction);
             user.Id = id;
         }
 
@@ -54,9 +54,9 @@ namespace Apotheca.BLL.Repositories
         public UserEntity GetUserByEmailOrDefault(string email)
         {
             string sql = this.ReplaceSchemaPlaceholders("select * from [{SCHEMA}].[Users] where Email = @Email");
-            return this.DbContext.GetConnection().Query<UserEntity>(sql
+            return this.Connection.Query<UserEntity>(sql
                 , new { Email = email }
-                , this.DbContext.CurrentTransaction).SingleOrDefault();
+                , this.CurrentTransaction).SingleOrDefault();
         }
 
         public UserEntity GetUserById(Guid id)

@@ -8,8 +8,13 @@ var CategoryFormVew = function () {
         $('#btn-submit').on('click', that.submitForm);
     };
 
-    this.showError = function (msg) {
-        $("#msg-error").html(msg);
+    this.showError = function (error) {
+        //debugger;
+        var err = error;
+        if ($.isArray(err)) {
+            err = Collections.displayList(err);
+        }
+        $("#msg-error").html(err);
         $("#msg-error").removeClass('hidden');
     };
 
@@ -37,7 +42,7 @@ var CategoryFormVew = function () {
                 $('#dlg-add').modal('hide');
             }
             else {
-                that.showError(response.message);
+                that.showError(response.messages);
             }
         });
 

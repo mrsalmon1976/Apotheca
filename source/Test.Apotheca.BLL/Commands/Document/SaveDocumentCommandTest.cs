@@ -22,8 +22,7 @@ namespace Test.Apotheca.BLL.Commands.Document
     {
         private ISaveDocumentCommand _command;
 
-        private IDbContext _dbContext;
-        private IDbConnection _dbConnection;
+        private IUnitOfWork _unitOfWork;
         private IDbTransaction _dbTransaction;
 
         private IDocumentValidator _documentValidator;
@@ -33,25 +32,35 @@ namespace Test.Apotheca.BLL.Commands.Document
         [SetUp]
         public void CreateDocumentCommandTest_SetUp()
         {
-            _dbContext = Substitute.For<IDbContext>();
-            _dbConnection = Substitute.For<IDbConnection>();
-            _dbContext.GetConnection().Returns(_dbConnection);
             _dbTransaction = Substitute.For<IDbTransaction>();
-            _dbContext.BeginTransaction().Returns(_dbTransaction);
 
             _documentValidator = Substitute.For<IDocumentValidator>();
             _documentRepo = Substitute.For<IDocumentRepository>();
             _documentVersionRepo = Substitute.For<IDocumentVersionRepository>();
+
+            _unitOfWork = Substitute.For<IUnitOfWork>();
+            _unitOfWork.DocumentRepo.Returns(_documentRepo);
+            _unitOfWork.DocumentVersionRepo.Returns(_documentVersionRepo);
             
-            _command = new SaveDocumentCommand(_dbContext, _documentValidator, _documentRepo, _documentVersionRepo);
+            _command = new SaveDocumentCommand(_unitOfWork, _documentValidator);
         }
 
         [Test]
-        public void Execute_UserDocument_ThrowsException()
+        public void Execute_NoDocument_ThrowsException()
         {
             _command.Document = null;
             Assert.Throws(typeof(NullReferenceException), () => _command.Execute());  
         }
+
+        [Test]
+        public void Execute_NoTransaction_ThrowsException()
+        {
+            IDbTransaction transaction = null;
+            _unitOfWork.CurrentTransaction.Returns(transaction);
+            _command.Document = TestEntityHelper.CreateDocument();
+            Assert.Throws(typeof(InvalidOperationException), () => _command.Execute());
+        }
+
 
         [Test]
         public void Execute_WithDocument_Validate()
@@ -146,19 +155,6 @@ namespace Test.Apotheca.BLL.Commands.Document
             Guid result = _command.Execute();
 
             _documentVersionRepo.Received(1).Create(doc);
-        }
-
-        [Test]
-        public void Execute_WithDocument_UsesTransaction()
-        {
-            DocumentEntity doc = TestEntityHelper.CreateDocument();
-            _documentRepo.When(x => x.Create(doc)).Do((c) => { doc.Id = Guid.NewGuid(); });
-
-            _command.Document = doc;
-            Guid result = _command.Execute();
-
-            _dbContext.Received(1).BeginTransaction();
-            _dbTransaction.Received(1).Commit();
         }
 
     }

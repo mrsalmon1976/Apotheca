@@ -20,7 +20,7 @@ namespace Test.Apotheca.Integration.Repositories
         [SetUp]
         public void CategoryRepositoryTest_SetUp()
         {
-            _repo = new CategoryRepository(this.DbContext);
+            _repo = new CategoryRepository(this.Connection, this.DbSchema);
         }
 
         [Test]

@@ -10,6 +10,7 @@ using Apotheca.BLL.Models;
 using Test.Apotheca.BLL.TestHelpers;
 using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Repositories;
+using Apotheca.BLL.Data;
 
 namespace Test.Apotheca.BLL.Validators
 {
@@ -17,15 +18,20 @@ namespace Test.Apotheca.BLL.Validators
     public class UserValidatorTest
     {
         private IStringValidator _stringValidator;
-        private IUserRepository _userRepository;
+        private IUserRepository _userRepo;
         private IUserValidator _userValidator;
+        private IUnitOfWork _unitOfWork;
 
         [SetUp]
         public void UserValidatorTest_SetUp()
         {
-            _userRepository = Substitute.For<IUserRepository>();
+            _userRepo = Substitute.For<IUserRepository>();
             _stringValidator = Substitute.For<IStringValidator>();
-            _userValidator = new UserValidator(_userRepository, _stringValidator);
+
+            _unitOfWork = Substitute.For<IUnitOfWork>();
+            _unitOfWork.UserRepo.Returns(_userRepo);
+
+            _userValidator = new UserValidator(_unitOfWork, _stringValidator);
         }
 
         [Test]
@@ -81,7 +87,7 @@ namespace Test.Apotheca.BLL.Validators
             UserEntity user = TestEntityHelper.CreateUserWithData();
             UserEntity existingUser = TestEntityHelper.CreateUserWithData();
             _stringValidator.IsValidEmailAddress(user.Email).Returns(true);
-            _userRepository.GetUserByEmailOrDefault(user.Email).Returns(existingUser);
+            _userRepo.GetUserByEmailOrDefault(user.Email).Returns(existingUser);
             AssertValidationFailed(user, "user already exists");
         }
 
@@ -101,7 +107,7 @@ namespace Test.Apotheca.BLL.Validators
             _userValidator.Validate(user);
 
             _stringValidator.Received(1).IsValidEmailAddress(user.Email);
-            _userRepository.Received(1).GetUserByEmailOrDefault(user.Email);
+            _userRepo.Received(1).GetUserByEmailOrDefault(user.Email);
         }
 
         /// <summary>

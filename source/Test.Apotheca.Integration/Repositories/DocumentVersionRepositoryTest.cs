@@ -21,7 +21,7 @@ namespace Test.Apotheca.Integration.Repositories
         public void DocumentRepositoryTest_FixtureSetUp()
         {
             // create a user up front
-            IUserRepository userRepo = new UserRepository(this.DbContext);
+            IUserRepository userRepo = new UserRepository(this.Connection, this.DbSchema);
             _user = TestEntityHelper.CreateUserWithData();
             userRepo.Create(_user);
 
@@ -30,7 +30,7 @@ namespace Test.Apotheca.Integration.Repositories
         [SetUp]
         public void DocumentRepositoryTest_SetUp()
         {
-            _repo = new DocumentVersionRepository(this.DbContext);
+            _repo = new DocumentVersionRepository(this.Connection, this.DbSchema);
         }
 
         [Test]

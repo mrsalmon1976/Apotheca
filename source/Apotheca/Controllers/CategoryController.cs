@@ -1,4 +1,6 @@
-﻿using Apotheca.BLL.Commands.Document;
+﻿using Apotheca.BLL.Commands.Category;
+using Apotheca.BLL.Commands.Document;
+using Apotheca.BLL.Data;
 using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
@@ -25,25 +27,45 @@ namespace Apotheca.Controllers
 
     public class CategoryController : ICategoryController
     {
-        private ICategoryRepository _categoryRepo;
+        private IUnitOfWork _unitOfWork;
+        private ISaveCategoryCommand _saveCategoryCommand;
 
-        public CategoryController(ICategoryRepository categoryRepo)
+        public CategoryController(IUnitOfWork unitOfWork, ISaveCategoryCommand saveCategoryCommand)
         {
-            _categoryRepo = categoryRepo;
+            _unitOfWork = unitOfWork;
+            _saveCategoryCommand = saveCategoryCommand;
         }
 
         public IControllerResult HandleCategoryGet()
         {
             CategoryViewModel model = new CategoryViewModel();
-            model.Categories.AddRange(_categoryRepo.GetAll());
+            model.Categories.AddRange(_unitOfWork.CategoryRepo.GetAll());
             return new ViewResult(Views.Category.Form, model);
         }
 
 
         public IControllerResult HandleCategoryPost(CategoryEntity category)
         {
-            
-            return new JsonResult(new BasicResult(false, "Sorry, this hasn't been implemented yet"));
+
+            // try and execute the command 
+            BasicResult result = new BasicResult(true);
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                _saveCategoryCommand.Category = category;
+                _saveCategoryCommand.Execute();
+                _unitOfWork.Commit();
+            }
+            catch (ValidationException vex)
+            {
+                result = new BasicResult(false, vex.Errors.ToArray());
+            }
+            catch (Exception ex)
+            {
+                result = new BasicResult(false, ex.Message);
+            }
+                        
+            return new JsonResult(result);
         }
 
     }

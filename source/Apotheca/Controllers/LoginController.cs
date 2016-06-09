@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Apotheca.Web;
 using Nancy.Security;
+using Apotheca.BLL.Data;
 
 namespace Apotheca.Controllers
 {
@@ -21,16 +22,16 @@ namespace Apotheca.Controllers
 
     public class LoginController : ILoginController
     {
-        private IUserRepository _userRepo;
+        private IUnitOfWork _unitOfWork;
 
-        public LoginController(IUserRepository userRepo)
+        public LoginController(IUnitOfWork unitOfWork)
         {
-            _userRepo = userRepo;
+            _unitOfWork = unitOfWork;
         }
 
         public IControllerResult LoginGet(IUserIdentity currentUser, LoginViewModel model)
         {
-            if (!_userRepo.UsersExist())
+            if (!_unitOfWork.UserRepo.UsersExist())
             {
                 return new RedirectResult(Actions.Setup.Default);
             }

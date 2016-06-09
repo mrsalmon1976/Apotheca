@@ -10,7 +10,7 @@ using Apotheca.BLL.Models;
 
 namespace Apotheca.BLL.Repositories
 {
-    public interface IDocumentRepository
+    public interface IDocumentRepository : IRepository
     {
         Task<int> GetCountAsync();
 
@@ -28,8 +28,7 @@ namespace Apotheca.BLL.Repositories
 
     public class DocumentRepository : BaseRepository, IDocumentRepository
     {
-        public DocumentRepository(IDbContext dbContext)
-            : base(dbContext)
+        public DocumentRepository(IDbConnection dbConnection, string schema) : base(dbConnection, schema)
         {
         }
 
@@ -43,7 +42,7 @@ namespace Apotheca.BLL.Repositories
                 VALUES
                 (@VersionNo, @FileName, @Extension, @Description, @FileContents, @MimeType, @CreatedOn, @CreatedByUserId) 
                 select r.id from @returnid r");
-            Guid id = this.Connection.ExecuteScalar<Guid>(sql, document, transaction: DbContext.CurrentTransaction);
+            Guid id = this.Connection.ExecuteScalar<Guid>(sql, document, transaction: this.CurrentTransaction);
             document.Id = id;
         }
 
@@ -96,7 +95,7 @@ namespace Apotheca.BLL.Repositories
                     , Description = @Description, FileContents = @FileContents, MimeType = @MimeType
                     , CreatedOn = @CreatedOn, CreatedByUserId = @CreatedByUserId 
                     WHERE Id = @Id");
-            this.Connection.Execute(sql, document, transaction: DbContext.CurrentTransaction);
+            this.Connection.Execute(sql, document, transaction: this.CurrentTransaction);
         }
 
 

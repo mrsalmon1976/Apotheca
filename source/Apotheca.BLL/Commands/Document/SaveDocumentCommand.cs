@@ -20,17 +20,13 @@ namespace Apotheca.BLL.Commands.Document
 
     public class SaveDocumentCommand : Command<Guid>, ISaveDocumentCommand
     {
-        private IDbContext _dbContext;
+        private IUnitOfWork _unitOfWork;
         private IDocumentValidator _documentValidator;
-        private IDocumentRepository _documentRepo;
-        private IDocumentVersionRepository _documentVersionRepo;
 
-        public SaveDocumentCommand(IDbContext dbContext, IDocumentValidator documentValidator, IDocumentRepository documentRepo, IDocumentVersionRepository documentVersionRepo)
+        public SaveDocumentCommand(IUnitOfWork unitOfWork, IDocumentValidator documentValidator)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
             _documentValidator = documentValidator;
-            _documentRepo = documentRepo;
-            _documentVersionRepo = documentVersionRepo;
         }
 
         public DocumentEntity Document { get; set; }
@@ -38,45 +34,35 @@ namespace Apotheca.BLL.Commands.Document
         public override Guid Execute()
         {
             if (this.Document == null) throw new NullReferenceException("Document property cannot be null");
+            if (_unitOfWork.CurrentTransaction == null) throw new InvalidOperationException("Command must be executed as part of a transaction");
 
             bool isExisting = this.Document.Id.HasValue;
 
-            // start a transaction as now we're hitting the database
-            IDbTransaction txn = this._dbContext.BeginTransaction();
-            try
+            // determine the version number
+            int versionNo = 1;
+            if (isExisting)
             {
-                // determine the version number
-                int versionNo = 1;
-                if (isExisting)
-                {
-                    versionNo = _documentVersionRepo.GetVersionCount(this.Document.Id.Value) + 1;
-                }
-                this.Document.VersionNo = versionNo;
-
-                // validate
-                _documentValidator.Validate(this.Document);
-
-                // set the CreatedOn and insert the new document
-                this.Document.CreatedOn = DateTime.UtcNow;
-                if (isExisting)
-                {
-                    _documentRepo.Update(this.Document);
-                }
-                else
-                {
-                    _documentRepo.Create(this.Document);
-                }
-
-                // create the version
-                _documentVersionRepo.Create(this.Document);
-
-                txn.Commit();
+                versionNo = _unitOfWork.DocumentVersionRepo.GetVersionCount(this.Document.Id.Value) + 1;
             }
-            catch (Exception)
+            this.Document.VersionNo = versionNo;
+
+            // validate
+            _documentValidator.Validate(this.Document);
+
+            // set the CreatedOn and insert the new document
+            this.Document.CreatedOn = DateTime.UtcNow;
+            if (isExisting)
             {
-                if (txn != null) txn.Rollback();
-                throw;
+                _unitOfWork.DocumentRepo.Update(this.Document);
             }
+            else
+            {
+                _unitOfWork.DocumentRepo.Create(this.Document);
+            }
+
+            // create the version
+            _unitOfWork.DocumentVersionRepo.Create(this.Document);
+
             return this.Document.Id.Value;
         }
 

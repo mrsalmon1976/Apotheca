@@ -14,6 +14,7 @@ using Apotheca.Web.Results;
 using Apotheca.Navigation;
 using Apotheca.Web;
 using Nancy.Security;
+using Apotheca.BLL.Data;
 
 namespace Test.Apotheca.Controllers
 {
@@ -21,14 +22,17 @@ namespace Test.Apotheca.Controllers
     public class LoginControllerTest
     {
         private ILoginController _loginController;
+        private IUnitOfWork _unitOfWork;
         private IUserRepository _userRepo;
 
         [SetUp]
         public void LoginControllerTest_SetUp()
         {
             _userRepo = Substitute.For<IUserRepository>();
+            _unitOfWork = Substitute.For<IUnitOfWork>();
+            _unitOfWork.UserRepo.Returns(_userRepo);
 
-            _loginController = new LoginController(_userRepo);
+            _loginController = new LoginController(_unitOfWork);
         }
 
         [Test]

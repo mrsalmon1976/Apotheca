@@ -10,7 +10,7 @@ using Apotheca.BLL.Models;
 
 namespace Apotheca.BLL.Repositories
 {
-    public interface IDocumentVersionRepository
+    public interface IDocumentVersionRepository : IRepository
     {
         void Create(DocumentEntity document);
 
@@ -24,8 +24,7 @@ namespace Apotheca.BLL.Repositories
 
     public class DocumentVersionRepository : BaseRepository, IDocumentVersionRepository
     {
-        public DocumentVersionRepository(IDbContext dbContext)
-            : base(dbContext)
+        public DocumentVersionRepository(IDbConnection dbConnection, string schema) : base(dbConnection, schema)
         {
         }
 
@@ -39,7 +38,7 @@ namespace Apotheca.BLL.Repositories
                 VALUES
                 (@Id, @VersionNo, @FileName, @Extension, @Description, @FileContents, @MimeType, @CreatedOn, @CreatedByUserId) 
                 select r.id from @returnid r");
-            Guid id = this.Connection.ExecuteScalar<Guid>(sql, document, transaction: DbContext.CurrentTransaction);
+            Guid id = this.Connection.ExecuteScalar<Guid>(sql, document, transaction: this.CurrentTransaction);
             document.Id = id;
         }
 
@@ -63,7 +62,7 @@ namespace Apotheca.BLL.Repositories
         public int GetVersionCount(Guid id)
         {
             string sql = this.ReplaceSchemaPlaceholders("select Count(Id) from [{SCHEMA}].[DocumentVersions] where Id = @Id");
-            return this.Connection.Query<int>(sql, new { Id = id }, this.DbContext.CurrentTransaction).Single();
+            return this.Connection.Query<int>(sql, new { Id = id }, this.CurrentTransaction).Single();
         }
 
 

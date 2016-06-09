@@ -8,14 +8,23 @@ namespace Apotheca.ViewModels
 {
     public class BasicResult
     {
-        public BasicResult(bool success, string message)
+
+        public BasicResult(bool success) : this(success, new string[] { })
+        {
+        }
+
+        public BasicResult(bool success, string message) : this(success, new string[] { message })
+        {
+        }
+
+        public BasicResult(bool success, string[] messages)
         {
             this.Success = success;
-            this.Message = message;
+            this.Messages = messages;
         }
 
         public bool Success { get; set; }
 
-        public string Message { get; set; }
+        public string[] Messages { get; set; }
     }
 }

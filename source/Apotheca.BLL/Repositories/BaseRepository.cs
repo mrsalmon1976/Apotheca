@@ -9,44 +9,38 @@ using System.Threading.Tasks;
 
 namespace Apotheca.BLL.Repositories
 {
-    public class BaseRepository
+    public interface IRepository
     {
-        private IDbContext _dbContext;
+        IDbConnection Connection { get; set; }
 
-        public BaseRepository(IDbContext dbContext)
+        IDbTransaction CurrentTransaction { get; set; }
+
+    }
+
+    public class BaseRepository : IRepository
+    {
+
+        public BaseRepository(IDbConnection conn, string schema)
         {
-            _dbContext = dbContext;
-            _dbContext.Schema = CleanseSchema(_dbContext.Schema);
+            this.Connection = conn;
+            this.DbSchema = schema;
         }
 
-        protected virtual IDbContext DbContext
-        {
-            get
-            {
-                return _dbContext;
-            }
+        public virtual IDbConnection Connection { get; set; }
 
-        }
+        public virtual IDbTransaction CurrentTransaction { get; set; }
 
-        protected virtual IDbConnection Connection
-        {
-            get
-            {
-                IDbConnection conn = _dbContext.GetConnection();
-                if (conn == null) throw new NullReferenceException("Connection has not been set on the DbContext");
-                return conn;
-            }
-        }
+        protected virtual string DbSchema { get; private set; }
 
-        protected virtual string CleanseSchema(string schema)
-        {
-            Regex rgx = new Regex("[^a-zA-Z0-9]");
-            return rgx.Replace(schema, "");
-        }
+        //protected virtual string CleanseSchema(string schema)
+        //{
+        //    Regex rgx = new Regex("[^a-zA-Z0-9]");
+        //    return rgx.Replace(schema, "");
+        //}
 
         protected virtual string ReplaceSchemaPlaceholders(string sql)
         {
-            return sql.Replace("{SCHEMA}", this.DbContext.Schema);
+            return sql.Replace("{SCHEMA}", this.DbSchema);
         }
     }
 }

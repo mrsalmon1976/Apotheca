@@ -1,4 +1,5 @@
-﻿using Apotheca.BLL.Commands.Document;
+﻿using Apotheca.BLL.Commands.Category;
+using Apotheca.BLL.Commands.Document;
 using Apotheca.BLL.Commands.User;
 using Apotheca.BLL.Data;
 using Apotheca.BLL.Database;
@@ -19,6 +20,8 @@ using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Reflection;
 using SystemWrapper.IO;
 
@@ -60,7 +63,6 @@ namespace Apotheca
             // apotheca services
             container.Register<IFileUtilityService, FileUtilityService>();
 
-
             // set up mappings
             Mapper.Initialize((cfg) => {
                 cfg.CreateMap<DocumentViewModel, DocumentEntity>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.DocumentId));
@@ -68,11 +70,11 @@ namespace Apotheca
             });
 
             // at this point, run in any database changes if there are any
-            using (IDbContext dbContext = new DbContext(settings.ConnectionString, settings.DbSchema))
+            using (IDbConnection conn = new SqlConnection(settings.ConnectionString))
             {
                 IDbScriptResourceProvider resourceProvider = container.Resolve<IDbScriptResourceProvider>();
                 Console.Write("Running migrations...");
-                new DbMigrator().Migrate(dbContext, resourceProvider.GetDbMigrationScripts());
+                new DbMigrator().Migrate(conn, settings.DbSchema, resourceProvider.GetDbMigrationScripts());
                 Console.WriteLine("Done.");
             }
 
@@ -82,6 +84,7 @@ namespace Apotheca
             Console.Write("Cleaning user uploads...");
             int files = fileUtilityService.CleanUploadedFiles(rootPathProvider.GetRootPath());
             Console.WriteLine("{0} file(s) deleted.", files);
+
         }
 
         protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
@@ -89,6 +92,27 @@ namespace Apotheca
             base.ConfigureRequestContainer(container, context);
             
             IAppSettings settings = container.Resolve<IAppSettings>();
+
+            // set up a new DB Connection per request
+            IDbConnection conn = new SqlConnection();
+            conn.ConnectionString = settings.ConnectionString;
+            conn.Open();
+            container.Register<IDbConnection>(conn);
+
+            // BLL repositories
+            container.Register<ICategoryRepository>(new CategoryRepository(conn, settings.DbSchema));
+            container.Register<IDocumentRepository>(new DocumentRepository(conn, settings.DbSchema));
+            container.Register<IDocumentVersionRepository>(new DocumentVersionRepository(conn, settings.DbSchema));
+            container.Register<IUserRepository>(new UserRepository(conn, settings.DbSchema));
+
+            // set up the unit of work which will be used for database access
+            IUnitOfWork unitOfWork = new UnitOfWork(conn, settings.DbSchema
+                , container.Resolve<ICategoryRepository>()
+                , container.Resolve<IDocumentRepository>()
+                , container.Resolve<IDocumentVersionRepository>()
+                , container.Resolve<IUserRepository>()
+                );
+            container.Register<IUnitOfWork>(unitOfWork);
 
             // Apotheca classes and controllers
             container.Register<IUserMapper, UserMapper>();
@@ -99,21 +123,15 @@ namespace Apotheca
             container.Register<ISetupController, SetupController>();
 
             // BLL commands
+            container.Register<ISaveCategoryCommand, SaveCategoryCommand>();
             container.Register<ISaveDocumentCommand, SaveDocumentCommand>();
             container.Register<ICreateUserCommand, CreateUserCommand>();
 
-            // BLL repositories
-            container.Register<ICategoryRepository, CategoryRepository>();
-            container.Register<IDocumentRepository, DocumentRepository>();
-            container.Register<IDocumentVersionRepository, DocumentVersionRepository>();
-            container.Register<IUserRepository, UserRepository>();
-
             // other BLL classes
+            container.Register<ICategoryValidator, CategoryValidator>();
             container.Register<IDocumentValidator, DocumentValidator>();
             container.Register<IUserValidator, UserValidator>();
 
-            // register a DB context
-            container.Register<IDbContext>(new DbContext(settings.ConnectionString, settings.DbSchema));
         }
 
         protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
@@ -130,6 +148,13 @@ namespace Apotheca
             // set shared ViewBag details here
             context.ViewBag.AppVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             context.ViewBag.Scripts = new List<string>();
+
+            // clean up anything that needs to be
+            pipelines.AfterRequest.AddItemToEndOfPipeline((ctx) =>
+                {
+                    IUnitOfWork uow = container.Resolve<IUnitOfWork>();
+                    uow.Dispose();
+                });
         }
 
     }

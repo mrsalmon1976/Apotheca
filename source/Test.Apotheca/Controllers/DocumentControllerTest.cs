@@ -1,4 +1,5 @@
 ﻿using Apotheca.BLL.Commands.Document;
+using Apotheca.BLL.Data;
 using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
@@ -27,6 +28,8 @@ namespace Test.Apotheca.Controllers
         private IFileUtilityService _fileUtilityService;
         private IDocumentViewModelValidator _documentViewModelValidator;
         private ISaveDocumentCommand _createDocumentCommand;
+
+        private IUnitOfWork _unitOfWork;
         private IUserRepository _userRepository;
         private IDocumentRepository _documentRepository;
 
@@ -39,12 +42,16 @@ namespace Test.Apotheca.Controllers
             _userRepository = Substitute.For<IUserRepository>();
             _documentRepository = Substitute.For<IDocumentRepository>();
 
+            _unitOfWork = Substitute.For<IUnitOfWork>();
+            _unitOfWork.UserRepo.Returns(_userRepository);
+            _unitOfWork.DocumentRepo.Returns(_documentRepository);
+
             Mapper.Reset();
             Mapper.Initialize((cfg) =>
             {
                 cfg.CreateMap<DocumentViewModel, DocumentEntity>();
             });
-            _documentController = new DocumentController(_documentViewModelValidator, _fileUtilityService, _createDocumentCommand, _userRepository, _documentRepository);
+            _documentController = new DocumentController(_unitOfWork, _documentViewModelValidator, _fileUtilityService, _createDocumentCommand);
 
         }
 
@@ -148,6 +155,28 @@ namespace Test.Apotheca.Controllers
             Assert.AreEqual(Actions.Dashboard, result.Location);
             _createDocumentCommand.Received(1).Execute();
             _userRepository.Received(1).GetUserByEmail(currentUserName);
+        }
+
+        [Test]
+        public void HandleDocumentFormPost_OnSuccess_UsesTransaction()
+        {
+            // setup 
+            string rootPath = Environment.CurrentDirectory;
+            DocumentViewModel model = TestViewModelHelper.CreateDocumentViewModelWithData();
+            byte[] fileContents = TestRandomHelper.GetFileContents(100);
+
+            UserEntity user = TestEntityHelper.CreateUserWithData();
+            _userRepository.GetUserByEmail(user.Email).Returns(user);
+
+            _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
+            _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
+
+            // execute
+            _documentController.HandleDocumentFormPost(rootPath, "test@test.com", model);
+
+            // assert
+            _unitOfWork.Received(1).BeginTransaction();
+            _unitOfWork.Received(1).Commit();
         }
 
         #endregion

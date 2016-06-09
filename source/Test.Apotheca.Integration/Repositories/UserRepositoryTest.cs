@@ -20,7 +20,7 @@ namespace Test.Apotheca.Integration.Repositories
         [SetUp]
         public void UserRepositoryTest_SetUp()
         {
-            _repo = new UserRepository(this.DbContext);
+            _repo = new UserRepository(this.Connection, this.DbSchema);
         }
 
         [Test]
