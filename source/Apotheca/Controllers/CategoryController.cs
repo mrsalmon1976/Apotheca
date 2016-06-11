@@ -47,7 +47,7 @@ namespace Apotheca.Controllers
 
         public IControllerResult HandleCategoryGetList()
         {
-            IEnumerable<CategorySearchResult> categories = _unitOfWork.CategoryRepo.GetAll();
+            IEnumerable<CategorySearchResult> categories = _unitOfWork.CategoryRepo.GetAllExtended();
             CategoryListViewModel model = new CategoryListViewModel();
             model.Categories.AddRange(categories);
             return new ViewResult(Views.Category.ListPartial, model);

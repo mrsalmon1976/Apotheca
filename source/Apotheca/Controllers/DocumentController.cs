@@ -6,12 +6,14 @@ using Apotheca.BLL.Repositories;
 using Apotheca.Navigation;
 using Apotheca.Services;
 using Apotheca.Validators;
+using Apotheca.ViewModels;
 using Apotheca.ViewModels.Document;
 using Apotheca.Web.Results;
 using AutoMapper;
 using Nancy;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using SystemWrapper.IO;
 
@@ -53,6 +55,9 @@ namespace Apotheca.Controllers
         public IControllerResult HandleDocumentAddGet()
         {
             DocumentViewModel model = new DocumentViewModel();
+            var categories = this._unitOfWork.CategoryRepo.GetAll();
+            var options = categories.Select(x => new MultiSelectItem(x.Id.ToString(), x.Name, false));
+            model.Categories.AddRange(options);
             return new ViewResult(Views.Document.Add, model);
         }
 
@@ -80,6 +85,7 @@ namespace Apotheca.Controllers
             {
                 _unitOfWork.BeginTransaction();
                 _createDocumentCommand.Document = document;
+                _createDocumentCommand.Categories = model.CategoryIds;
                 _createDocumentCommand.Execute();
                 _unitOfWork.Commit();
             }
@@ -153,7 +159,13 @@ namespace Apotheca.Controllers
                 return new NotFoundResult();
             }
 
+            IEnumerable<Guid> documentCategoryIds = _unitOfWork.DocumentCategoryAsscRepo.GetByDocumentVersion(document.Id, document.VersionNo).Select(x => x.CategoryId);
+
+            var categories = this._unitOfWork.CategoryRepo.GetAll();
+            var options = categories.Select(x => new MultiSelectItem(x.Id.ToString(), x.Name, documentCategoryIds.Contains(x.Id)));
+
             DocumentViewModel model = Mapper.Map<DocumentEntity, DocumentViewModel>(document);
+            model.Categories.AddRange(options);
             return new ViewResult(Views.Document.Update, model);
         }
 

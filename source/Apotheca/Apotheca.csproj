@@ -108,6 +108,7 @@
     <Compile Include="ViewModels\Document\DocumentSearchViewModel.cs" />
     <Compile Include="ViewModels\Document\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
+    <Compile Include="ViewModels\MultiSelectItem.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
     <Compile Include="Web\Results\FileResult.cs" />
     <Compile Include="Web\Results\NotFoundResult.cs" />

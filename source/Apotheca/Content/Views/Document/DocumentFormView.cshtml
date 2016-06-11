@@ -1,5 +1,6 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @using Apotheca.Navigation
+@using Apotheca.BLL.Models
 @model Apotheca.ViewModels.Document.DocumentViewModel
 @{
     Layout = "Content/Layouts/MainLayout.cshtml";
@@ -30,6 +31,35 @@
                     <input class="form-control" placeholder="Description" name="Description" type="text" value="@Model.Description">
                     <p class="help-block">Provide some details about this document that may help others.  Or don't.</p>
                 </div>
+                @if (Model.Categories.Count > 0)
+                {
+                    <div class="form-group">
+                        <label>Categories</label>
+                    </div>
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                      <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                          <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#categories-panel" aria-expanded="false" aria-controls="categories-panel">
+                              <i id="category-names">No categories selected</i>
+                            </a>
+                          </h4>
+                        </div>
+                        <div id="categories-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                          <div class="panel-body">
+                              @foreach (var cat in Model.Categories)
+                              {
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="CategoryIds" class="category-checkbox" type="checkbox" value="@cat.Value" data-text="@cat.Text" @{if (cat.IsSelected) { <text>checked="checked"</text> }}> @cat.Text
+                                    </label>
+                                </div>
+                              }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
                 <input type="hidden" id="hid-filename" name="UploadedFileName" value="" />
                 <input type="hidden" name="DocumentId" value="@Model.DocumentId" />
                 <button id="btn-submit-document" type="submit" class="btn btn-lg btn-primary btn-block" disabled="disabled">@(Model.DocumentId.HasValue ? "Update document" : "Add document")</button>

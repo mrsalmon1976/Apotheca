@@ -74,6 +74,7 @@ namespace Apotheca.BLL.Data
             _tran = _conn.BeginTransaction();
             this.CategoryRepo.CurrentTransaction = _tran;
             this.DocumentRepo.CurrentTransaction = _tran;
+            this.DocumentCategoryAsscRepo.CurrentTransaction = _tran;
             this.DocumentVersionRepo.CurrentTransaction = _tran;
             this.UserRepo.CurrentTransaction = _tran;
         }

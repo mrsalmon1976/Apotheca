@@ -12,6 +12,7 @@ namespace Apotheca.ViewModels.Document
     {
         public DocumentViewModel() : base()
         {
+            this.Categories = new List<MultiSelectItem>();
         }
 
         /// <summary>
@@ -34,7 +35,9 @@ namespace Apotheca.ViewModels.Document
 
         public string UploadedFileName { get; set; }
 
-        public int? CategoryId { get; set; }
+        public List<MultiSelectItem> Categories { get; private set; }
+
+        public Guid[] CategoryIds { get; set; }
 
     }
 }

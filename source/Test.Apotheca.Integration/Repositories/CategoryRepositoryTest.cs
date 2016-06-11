@@ -37,7 +37,14 @@ namespace Test.Apotheca.Integration.Repositories
         [Test]
         public void GetAll()
         {
-            IEnumerable<CategorySearchResult> entities = _repo.GetAll();
+            IEnumerable<CategoryEntity> entities = _repo.GetAll();
+            Assert.GreaterOrEqual(entities.Count(), 0);
+        }
+
+        [Test]
+        public void GetAllExtended()
+        {
+            IEnumerable<CategorySearchResult> entities = _repo.GetAllExtended();
             Assert.GreaterOrEqual(entities.Count(), 0);
         }
 

@@ -14,7 +14,8 @@ namespace Apotheca.BLL.Repositories
     public interface ICategoryRepository : IRepository
     {
         void Create(CategoryEntity category);
-        IEnumerable<CategorySearchResult> GetAll();
+        IEnumerable<CategoryEntity> GetAll();
+        IEnumerable<CategorySearchResult> GetAllExtended();
         CategoryEntity GetByNameOrDefault(string name);
         void Update(CategoryEntity category);
     }
@@ -40,7 +41,16 @@ namespace Apotheca.BLL.Repositories
             category.Id = id;
         }
 
-        public IEnumerable<CategorySearchResult> GetAll()
+        public IEnumerable<CategoryEntity> GetAll()
+        {
+            string sql = this.ReplaceSchemaPlaceholders(@"
+                SELECT Id, Name, Description, CreatedOn
+                FROM [{SCHEMA}].[Categories] c
+                ORDER BY Name");
+            return this.Connection.Query<CategoryEntity>(sql, this.CurrentTransaction);
+        }
+
+        public IEnumerable<CategorySearchResult> GetAllExtended()
         {
             string sql = this.ReplaceSchemaPlaceholders(@"
                 SELECT Id AS CategoryId, Name, Description, CreatedOn
