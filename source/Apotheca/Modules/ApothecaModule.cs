@@ -44,6 +44,16 @@ namespace Apotheca.Modules
                 return this.LoginAndRedirect(lrr.UserId, DateTime.Now.AddDays(1), lrr.Location);
             }
 
+            LoginResult lr = result as LoginResult;
+            if (lr != null)
+            {
+                if (lr.Success)
+                {
+                    return this.Login(lr.UserId, DateTime.Now.AddDays(1));
+                }
+                return this.Response.AsJson(lr);
+            }
+
             JsonResult jr = result as JsonResult;
             if (jr != null)
             {
@@ -76,6 +86,12 @@ namespace Apotheca.Modules
             if (nfr != null)
             {
                 return HttpStatusCode.NotFound;
+            }
+
+            ErrorResult er = result as ErrorResult;
+            if (er != null)
+            {
+                return er.HttpStatusCode;
             }
 
             throw new NotSupportedException("Results of type " + result.GetType().Name + " not supported");

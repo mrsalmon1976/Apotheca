@@ -110,6 +110,8 @@
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
     <Compile Include="ViewModels\MultiSelectItem.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
+    <Compile Include="Web\Results\ErrorResult.cs" />
+    <Compile Include="Web\Results\LoginResult.cs" />
     <Compile Include="Web\Results\FileResult.cs" />
     <Compile Include="Web\Results\NotFoundResult.cs" />
     <Compile Include="Web\Results\TextResult.cs" />
@@ -217,6 +219,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Js\Views\CategoryView.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Js\Views\LoginView.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Js\Views\DocumentFormView.js">

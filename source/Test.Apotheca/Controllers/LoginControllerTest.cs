@@ -15,6 +15,9 @@ using Apotheca.Navigation;
 using Apotheca.Web;
 using Nancy.Security;
 using Apotheca.BLL.Data;
+using Apotheca.BLL.Security;
+using Apotheca.BLL.Models;
+using Test.Apotheca.BLL.TestHelpers;
 
 namespace Test.Apotheca.Controllers
 {
@@ -23,20 +26,24 @@ namespace Test.Apotheca.Controllers
     {
         private ILoginController _loginController;
         private IUnitOfWork _unitOfWork;
+        private IPasswordProvider _passwordProvider;
         private IUserRepository _userRepo;
 
         [SetUp]
         public void LoginControllerTest_SetUp()
         {
             _userRepo = Substitute.For<IUserRepository>();
+            _passwordProvider = Substitute.For<IPasswordProvider>();
             _unitOfWork = Substitute.For<IUnitOfWork>();
             _unitOfWork.UserRepo.Returns(_userRepo);
 
-            _loginController = new LoginController(_unitOfWork);
+            _loginController = new LoginController(_unitOfWork, _passwordProvider);
         }
 
+        #region LoginGet Tests
+
         [Test]
-        public void HandleLoginGet_NoUsers_RedirectsToSetup()
+        public void LoginGet_NoUsers_RedirectsToSetup()
         {
             // setup 
             _userRepo.UsersExist().Returns(false);
@@ -52,7 +59,7 @@ namespace Test.Apotheca.Controllers
         }
 
         [Test]
-        public void HandleLoginGet_AlreadyLoggedIn_RedirectsToDashboard()
+        public void LoginGet_AlreadyLoggedIn_RedirectsToDashboard()
         {
             // setup 
             IUserIdentity currentUser = Substitute.For<IUserIdentity>();
@@ -69,7 +76,7 @@ namespace Test.Apotheca.Controllers
         }
 
         [Test]
-        public void HandleLoginGet_UsersExist_ReturnsView()
+        public void LoginGet_UsersExist_ReturnsView()
         {
             // setup 
             _userRepo.UsersExist().Returns(true);
@@ -87,6 +94,102 @@ namespace Test.Apotheca.Controllers
             _userRepo.Received(1).UsersExist();
 
         }
+
+        #endregion
+
+        #region LoginPost Tests
+
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("     ")]
+        public void LoginPost_EmailEmpty_Fails(string email)
+        {
+            LoginViewModel model = new LoginViewModel();
+            model.Email = email;
+            model.Password = "testpassword";
+
+            LoginResult result = _loginController.LoginPost(model) as LoginResult;
+            
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Success);
+            _userRepo.DidNotReceive().GetUserByEmailOrDefault(Arg.Any<string>());
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("     ")]
+        public void LoginPost_PasswordEmpty_Fails(string password)
+        {
+            LoginViewModel model = new LoginViewModel();
+            model.Email = "test@test.com";
+            model.Password = password;
+
+            LoginResult result = _loginController.LoginPost(model) as LoginResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Success);
+            _userRepo.DidNotReceive().GetUserByEmailOrDefault(Arg.Any<string>());
+        }
+
+        [Test]
+        public void LoginPost_UserNotFound_Fails()
+        {
+            LoginViewModel model = new LoginViewModel();
+            model.Email = "test@test.com";
+            model.Password = "password";
+            UserEntity user = null;
+            _userRepo.GetUserByEmailOrDefault(model.Email).Returns(user);
+
+            LoginResult result = _loginController.LoginPost(model) as LoginResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Success);
+            _userRepo.Received(1).GetUserByEmailOrDefault(model.Email);
+            _passwordProvider.DidNotReceive().CheckPassword(Arg.Any<string>(), Arg.Any<string>());
+        }
+
+        [Test]
+        public void LoginPost_PasswordIncorrect_Fails()
+        {
+            LoginViewModel model = new LoginViewModel();
+            model.Email = "test@test.com";
+            model.Password = "password";
+            UserEntity user = TestEntityHelper.CreateUser(email: model.Email);
+            user.Password = "dsdsdsdsdsdfdf";
+
+            _userRepo.GetUserByEmailOrDefault(model.Email).Returns(user);
+            _passwordProvider.CheckPassword(model.Password, user.Password).Returns(false);
+
+            LoginResult result = _loginController.LoginPost(model) as LoginResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Success);
+            _userRepo.Received(1).GetUserByEmailOrDefault(model.Email);
+            _passwordProvider.Received(1).CheckPassword(model.Password, user.Password);
+        }
+
+        [Test]
+        public void LoginPost_ValidLogin_Succeeds()
+        {
+            LoginViewModel model = new LoginViewModel();
+            model.Email = "test@test.com";
+            model.Password = "password";
+
+            UserEntity user = TestEntityHelper.CreateUserWithData();
+            user.Email = model.Email;
+
+            _userRepo.GetUserByEmailOrDefault(model.Email).Returns(user);
+            _passwordProvider.CheckPassword(model.Password, user.Password).Returns(true);
+
+            LoginResult result = _loginController.LoginPost(model) as LoginResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Success);
+            _userRepo.Received(1).GetUserByEmailOrDefault(model.Email);
+            _passwordProvider.Received(1).CheckPassword(model.Password, user.Password);
+        }
+
+        #endregion
 
     }
 }

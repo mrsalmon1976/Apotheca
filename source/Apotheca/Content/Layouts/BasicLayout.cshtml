@@ -33,6 +33,11 @@
     <script src="/Content/Js/bootstrap.min.js"></script>
     <script src="/Content/Js/metisMenu.min.js"></script>
     <script src="/Content/Js/sb-admin-2.js"></script>
+    <script src="/Content/Js/apotheca.js"></script>
+    @foreach (string script in ViewBag.Scripts)
+    {
+        <script src="@script"></script>
+    }
 
 </body>
 </html>

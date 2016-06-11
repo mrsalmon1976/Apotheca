@@ -23,17 +23,20 @@ namespace Apotheca.Modules
 
             Get["/login"] = x =>
             {
+                AddScript(Scripts.LoginView);
                 var model = this.Bind<LoginViewModel>();
                 return this.HandleResult(loginController.LoginGet(this.Context.CurrentUser, model));
             };
 
             Post["/login"] = x =>
             {
+
+
                 // TODO: Complete authentication
                 // TODO: Move logic into controller
                 var model = this.Bind<LoginViewModel>();
-                if (String.IsNullOrEmpty(model.ReturnUrl)) model.ReturnUrl = Actions.Dashboard;
-                return this.LoginAndRedirect(new Guid("18699321-362E-E611-BFE4-506313A3F1A1"), DateTime.Now.AddDays(1), model.ReturnUrl);
+                return this.HandleResult(loginController.LoginPost(model));
+                //return this.LoginAndRedirect(new Guid("18699321-362E-E611-BFE4-506313A3F1A1"), DateTime.Now.AddDays(1), model.ReturnUrl);
             };
 
             Get["/logout"] = x =>
