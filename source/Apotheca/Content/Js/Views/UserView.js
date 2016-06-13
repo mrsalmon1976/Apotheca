@@ -1,24 +1,24 @@
 ﻿
-var CategoryFormVew = function () {
+var UserView = function () {
 
     var that = this;
 
     this.init = function () {
-        this.loadCategories();
+        this.loadUsers();
         $('#btn-add').on('click', that.showForm);
         $('#btn-submit').on('click', that.submitForm);
     };
 
-    this.loadCategories = function () {
+    this.loadUsers = function () {
         var request = $.ajax({
-            url: "/category/list",
+            url: "/user/list",
             method: "GET",
             dataType: 'html'
         });
 
         request.done(function (response) {
             //debugger;
-            $('#category-list').html(response);
+            $('#user-list').html(response);
         });
 
         request.fail(function (xhr, textStatus) {
@@ -48,7 +48,7 @@ var CategoryFormVew = function () {
             description: $('#description').val(),
         };
         var request = $.ajax({
-            url: "/category",
+            url: "/user",
             method: "POST",
             data: formData,
             dataType: 'json'
@@ -80,6 +80,6 @@ var CategoryFormVew = function () {
 
 $(document).ready(function()
 {
-    var cfv = new CategoryFormVew();
-    cfv.init();
+    var uv = new UserView();
+    uv.init();
 });

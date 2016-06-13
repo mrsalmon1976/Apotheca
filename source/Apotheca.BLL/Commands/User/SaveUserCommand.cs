@@ -13,19 +13,19 @@ using Apotheca.BLL.Data;
 
 namespace Apotheca.BLL.Commands.User
 {
-    public interface ICreateUserCommand : ICommand<Guid>
+    public interface ISaveUserCommand : ICommand<Guid>
     {
         UserEntity User { get; set; }
     }
 
-    public class CreateUserCommand : Command<Guid>, ICreateUserCommand
+    public class SaveUserCommand : Command<Guid>, ISaveUserCommand
     {
         private IUnitOfWork _unitOfWork;
         private IUserValidator _userValidator;
         private IRandomKeyGenerator _keyGenerator;
         private IPasswordProvider _passwordProvider;
 
-        public CreateUserCommand(IUnitOfWork unitOfWork, IUserValidator userValidator, IRandomKeyGenerator keyGenerator, IPasswordProvider passwordProvider)
+        public SaveUserCommand(IUnitOfWork unitOfWork, IUserValidator userValidator, IRandomKeyGenerator keyGenerator, IPasswordProvider passwordProvider)
         {
             _unitOfWork = unitOfWork;
             _userValidator = userValidator;

@@ -29,14 +29,14 @@ namespace Test.Apotheca.Controllers
         private ISetupController _setupController;
         private IUnitOfWork _unitOfWork;
         private IUserRepository _userRepo;
-        private ICreateUserCommand _createUserCommand;
+        private ISaveUserCommand _createUserCommand;
         private IUserViewModelValidator _userViewModelValidator;
 
         [SetUp]
         public void SetupControllerTest_SetUp()
         {
             _userRepo = Substitute.For<IUserRepository>();
-            _createUserCommand = Substitute.For<ICreateUserCommand>();
+            _createUserCommand = Substitute.For<ISaveUserCommand>();
             _userViewModelValidator = Substitute.For<IUserViewModelValidator>();
 
             _unitOfWork = Substitute.For<IUnitOfWork>();
@@ -73,7 +73,6 @@ namespace Test.Apotheca.Controllers
 
             UserViewModel viewModel = result.Model as UserViewModel;
             Assert.IsNotNull(viewModel);
-            Assert.AreEqual(Actions.Setup.Default, viewModel.FormAction);
         }
 
         [Test]
@@ -86,7 +85,6 @@ namespace Test.Apotheca.Controllers
             _setupController.DefaultPost(model);
 
             Assert.AreEqual(Roles.Admin, model.Role);
-            Assert.AreEqual(Actions.Setup.Default, model.FormAction);
         }
 
         [Test]

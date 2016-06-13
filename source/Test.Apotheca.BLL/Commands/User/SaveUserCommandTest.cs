@@ -17,9 +17,9 @@ using System.Data;
 namespace Test.Apotheca.BLL.Commands.User
 {
     [TestFixture]
-    public class CreateUserCommandTest
+    public class SaveUserCommandTest
     {
-        private ICreateUserCommand _command;
+        private ISaveUserCommand _command;
 
         private IUnitOfWork _unitOfWork;
         private IDbTransaction _dbTransaction;
@@ -42,7 +42,7 @@ namespace Test.Apotheca.BLL.Commands.User
             _unitOfWork = Substitute.For<IUnitOfWork>();
             _unitOfWork.UserRepo.Returns(_userRepo);
 
-            _command = new CreateUserCommand(_unitOfWork, _userValidator, _keyGenerator, _passwordProvider);
+            _command = new SaveUserCommand(_unitOfWork, _userValidator, _keyGenerator, _passwordProvider);
         }
 
         [Test]

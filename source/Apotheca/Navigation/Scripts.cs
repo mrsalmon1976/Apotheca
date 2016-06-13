@@ -13,5 +13,7 @@ namespace Apotheca.Navigation
         public const string DocumentFormView = "/Content/Js/Views/DocumentFormView.js";
         
         public const string LoginView = "/Content/Js/Views/LoginView.js";
+        
+        public const string UserView = "/Content/Js/Views/UserView.js";
     }
 }

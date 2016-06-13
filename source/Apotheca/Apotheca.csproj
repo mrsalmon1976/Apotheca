@@ -78,7 +78,9 @@
     <Compile Include="ApothecaService.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Modules\CategoryModule.cs" />
+    <Compile Include="Modules\UserModule.cs" />
     <Compile Include="Navigation\PathHelper.cs" />
     <Compile Include="Navigation\Scripts.cs" />
     <Compile Include="Navigation\Views.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="ViewModels\Document\DocumentViewModel.cs" />
     <Compile Include="ViewModels\Login\LoginViewModel.cs" />
     <Compile Include="ViewModels\MultiSelectItem.cs" />
+    <Compile Include="ViewModels\User\UserListViewModel.cs" />
     <Compile Include="ViewModels\User\UserViewModel.cs" />
     <Compile Include="Web\Results\ErrorResult.cs" />
     <Compile Include="Web\Results\LoginResult.cs" />
@@ -159,6 +162,12 @@
     <None Include="Content\Views\Shared\_ValidationErrorPanel.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Views\User\UserView.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Views\User\_UserList.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Views\User\_UserForm.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -200,6 +209,9 @@
     <Content Include="Content\Fonts\fontawesome-webfont.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Images\apotheca_48x48.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Js\bootstrap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -221,10 +233,16 @@
     <Content Include="Content\Js\Views\CategoryView.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Js\Views\UserView.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Js\Views\LoginView.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Js\Views\DocumentFormView.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="favicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

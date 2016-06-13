@@ -31,10 +31,10 @@ namespace Apotheca.Controllers
     public class SetupController : ISetupController
     {
         private IUnitOfWork _unitOfWork;
-        private ICreateUserCommand _createUserCommand;
+        private ISaveUserCommand _createUserCommand;
         private IUserViewModelValidator _userViewModelValidator;
 
-        public SetupController(IUnitOfWork unitOfWork, ICreateUserCommand createUserCommand, IUserViewModelValidator userViewModelValidator)
+        public SetupController(IUnitOfWork unitOfWork, ISaveUserCommand createUserCommand, IUserViewModelValidator userViewModelValidator)
         {
             _unitOfWork = unitOfWork;
             _createUserCommand = createUserCommand;
@@ -49,7 +49,6 @@ namespace Apotheca.Controllers
             }
 
             UserViewModel model = new UserViewModel();
-            model.FormAction = Actions.Setup.Default;
             return new ViewResult(Views.Setup.Default, model);
 
         }
@@ -57,7 +56,6 @@ namespace Apotheca.Controllers
         public IControllerResult DefaultPost(UserViewModel model)
         {
             model.Role = Roles.Admin;
-            model.FormAction = Actions.Setup.Default;
 
             // do first level validation - if it fails then we need to exit
             List<string> validationErrors = this._userViewModelValidator.Validate(model);

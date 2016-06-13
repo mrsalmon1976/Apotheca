@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="Commands\Category\SaveCategoryCommandTest.cs" />
     <Compile Include="Commands\Document\SaveDocumentCommandTest.cs" />
-    <Compile Include="Commands\User\CreateUserCommandTest.cs" />
+    <Compile Include="Commands\User\SaveUserCommandTest.cs" />
     <Compile Include="Data\DbMigratorTest.cs" />
     <Compile Include="TestHelpers\TestEntityHelper.cs" />
     <Compile Include="Validators\CategoryValidatorTest.cs" />

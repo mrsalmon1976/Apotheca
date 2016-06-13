@@ -13,7 +13,7 @@
         @foreach (var r in Model.Categories)
         {
             <tr>
-                <td><a href="@(Actions.Document.Download)?id=@r.CategoryId">@r.Name</a></td>
+                <td>@r.Name</td>
                 <td>@r.Description</td>
                 <td>@r.CreatedOn</td>
                 <td>@r.DocumentCount</td>

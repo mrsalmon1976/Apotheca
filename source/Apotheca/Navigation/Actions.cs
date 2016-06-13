@@ -44,5 +44,12 @@ namespace Apotheca.Navigation
         {
             public const string Default = "/setup";
         }
+        public class User
+        {
+            public const string Default = "/user";
+
+            public const string List = "/user/list";
+
+        }
     }
 }

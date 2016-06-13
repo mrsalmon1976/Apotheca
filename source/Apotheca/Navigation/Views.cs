@@ -29,5 +29,10 @@ namespace Apotheca.Navigation
         {
             public const string Default = "Content/Views/Setup/SetupView.cshtml";
         }
+        public class User
+        {
+            public const string ListPartial = "Content/Views/User/_UserList.cshtml";
+            public const string Default = "Content/Views/User/UserView.cshtml";
+        }
     }
 }

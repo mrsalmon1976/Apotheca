@@ -16,6 +16,7 @@ namespace Apotheca.BLL.Repositories
         Task<int> GetUserCountAsync();
 
         void Create(UserEntity user);
+        IEnumerable<UserSearchResult> GetAllExtended();
         UserEntity GetUserByEmail(string email);
         UserEntity GetUserByEmailOrDefault(string email);
         UserEntity GetUserById(Guid id);
@@ -42,6 +43,15 @@ namespace Apotheca.BLL.Repositories
             select r.id from @returnid r");
             Guid id = this.Connection.ExecuteScalar<Guid>(sql, user, transaction: this.CurrentTransaction);
             user.Id = id;
+        }
+
+        public IEnumerable<UserSearchResult> GetAllExtended()
+        {
+            string sql = this.ReplaceSchemaPlaceholders(@"
+                SELECT Id AS UserId, Email, FirstName, Surname, Role, ApiKey, CreatedOn
+                FROM [{SCHEMA}].[Users] u
+                ORDER BY FirstName, Surname");
+            return this.Connection.Query<UserSearchResult>(sql, this.CurrentTransaction);
         }
 
         public UserEntity GetUserByEmail(string email)

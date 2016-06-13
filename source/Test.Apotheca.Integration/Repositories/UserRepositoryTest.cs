@@ -43,6 +43,12 @@ namespace Test.Apotheca.Integration.Repositories
         }
 
         [Test]
+        public void GetAllExtended()
+        {
+            _repo.GetAllExtended();
+        }
+
+        [Test]
         public void GetUserByEmail()
         {
             try

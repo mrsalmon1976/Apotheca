@@ -40,6 +40,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <img src="/Content/Images/apotheca_48x48.png" class="pull-left" />
                 <a class="navbar-brand" href="/">Apotheca v@(ViewBag.AppVersion)</a>
             </div>
             <!-- /.navbar-header -->
@@ -97,16 +98,7 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-users fa-fw"></i> Users<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="morris.html">Add new user</a>
-                                </li>
-                                <li>
-                                    <a href="flot.html">View users</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
+                            <a href="@Actions.User.Default"><i class="fa fa-users fa-fw"></i> Users</a>
                         </li>
                     </ul>
                 </div>

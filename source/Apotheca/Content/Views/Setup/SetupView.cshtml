@@ -14,7 +14,13 @@
                     <h3 class="panel-title">Welcome! Let's set up an administrator for Apotheca.</h3>
                 </div>
                 <div class="panel-body">
-                    @Html.Partial("Content/Views/User/_UserForm.cshtml", Model)
+                    @Html.Partial("Content/Views/Shared/_ValidationErrorPanel.cshtml", Model.ValidationErrors)
+                    <form role="form" method="post" action="@Actions.Setup.Default">
+                        <fieldset>
+                            @Html.Partial("Content/Views/User/_UserForm.cshtml", Model)
+                            <button type="submit" class="btn btn-lg btn-primary btn-block">Create account</button>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>

@@ -1,29 +1,23 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @model Apotheca.ViewModels.User.UserViewModel
-@Html.Partial("Content/Views/Shared/_ValidationErrorPanel.cshtml", Model.ValidationErrors)
-<form role="form" method="post" action="@Model.FormAction">
-    <fieldset>
-        <div class="form-group">
-            <label>Email</label>
-            <input class="form-control" placeholder="Email" name="email" type="email" value="@Model.Email" autofocus="autofocus" />
-            <p class="help-block">Note: your email address will also be your user name.</p>
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input class="form-control" placeholder="Password" name="password" type="password" value="@Model.Password">
-        </div>
-        <div class="form-group">
-            <label>Confirm Password</label>
-            <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value="@Model.ConfirmPassword">
-        </div>
-        <div class="form-group">
-            <label>First Name</label>
-            <input class="form-control" placeholder="First Name" name="FirstName" type="text" value="@Model.FirstName" />
-        </div>
-        <div class="form-group">
-            <label>Surname</label>
-            <input class="form-control" placeholder="Surname" name="Surname" type="text" value="@Model.Surname" />
-        </div>
-        <button type="submit" class="btn btn-lg btn-primary btn-block">Create account</button>
-    </fieldset>
-</form>
+<div class="form-group">
+    <label>Email</label>
+    <input class="form-control" placeholder="Email" name="email" type="email" value="@Model.Email" autofocus="autofocus" />
+    <p class="help-block">Note: your email address will also be your user name.</p>
+</div>
+<div class="form-group">
+    <label>Password</label>
+    <input class="form-control" placeholder="Password" name="password" type="password" value="@Model.Password">
+</div>
+<div class="form-group">
+    <label>Confirm Password</label>
+    <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value="@Model.ConfirmPassword">
+</div>
+<div class="form-group">
+    <label>First Name</label>
+    <input class="form-control" placeholder="First Name" name="FirstName" type="text" value="@Model.FirstName" />
+</div>
+<div class="form-group">
+    <label>Surname</label>
+    <input class="form-control" placeholder="Surname" name="Surname" type="text" value="@Model.Surname" />
+</div>

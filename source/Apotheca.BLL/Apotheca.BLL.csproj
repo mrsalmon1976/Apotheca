@@ -51,7 +51,7 @@
     <Compile Include="Commands\CommandFactory.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Document\SaveDocumentCommand.cs" />
-    <Compile Include="Commands\User\CreateUserCommand.cs" />
+    <Compile Include="Commands\User\SaveUserCommand.cs" />
     <Compile Include="Data\DbMigrator.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="Exceptions\EntityDoesNotExistException.cs" />
@@ -59,6 +59,7 @@
     <Compile Include="Models\AuditLogDetailEntity.cs" />
     <Compile Include="Models\CategoryEntity.cs" />
     <Compile Include="Models\CategorySearchResult.cs" />
+    <Compile Include="Models\UserSearchResult.cs" />
     <Compile Include="Models\DocumentCategoryAsscEntity.cs" />
     <Compile Include="Models\DocumentEntity.cs" />
     <Compile Include="Models\DocumentSearchResult.cs" />

@@ -123,11 +123,12 @@ namespace Apotheca
             container.Register<IDocumentController, DocumentController>();
             container.Register<ILoginController, LoginController>();
             container.Register<ISetupController, SetupController>();
+            container.Register<IUserController, UserController>();
 
             // BLL commands
             container.Register<ISaveCategoryCommand, SaveCategoryCommand>();
             container.Register<ISaveDocumentCommand, SaveDocumentCommand>();
-            container.Register<ICreateUserCommand, CreateUserCommand>();
+            container.Register<ISaveUserCommand, SaveUserCommand>();
 
             // other BLL classes
             container.Register<ICategoryValidator, CategoryValidator>();
