@@ -50,12 +50,14 @@ var UserView = function () {
 
     this.submitForm = function () {
         $("#msg-error").addClass('hidden');
+        debugger;
         var formData = $('#form-user').serializeForm();
         var request = $.ajax({
             url: "/user",
             method: "POST",
             data: formData,
-            dataType: 'json'
+            dataType: 'json',
+            traditional: true
         });
 
         request.done(function (response) {

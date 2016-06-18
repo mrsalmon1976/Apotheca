@@ -57,7 +57,7 @@ namespace Apotheca.Controllers
             DocumentViewModel model = new DocumentViewModel();
             var categories = this._unitOfWork.CategoryRepo.GetAll();
             var options = categories.Select(x => new MultiSelectItem(x.Id.ToString(), x.Name, false));
-            model.Categories.AddRange(options);
+            model.CategoryOptions.AddRange(options);
             return new ViewResult(Views.Document.Add, model);
         }
 
@@ -165,7 +165,7 @@ namespace Apotheca.Controllers
             var options = categories.Select(x => new MultiSelectItem(x.Id.ToString(), x.Name, documentCategoryIds.Contains(x.Id)));
 
             DocumentViewModel model = Mapper.Map<DocumentEntity, DocumentViewModel>(document);
-            model.Categories.AddRange(options);
+            model.CategoryOptions.AddRange(options);
             return new ViewResult(Views.Document.Update, model);
         }
 

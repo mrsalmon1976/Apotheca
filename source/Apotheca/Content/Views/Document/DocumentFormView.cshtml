@@ -22,42 +22,25 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>File Name</label>
-                    <input id="txt-name" class="form-control" placeholder="Name" name="FileName" type="text" value="@Model.FileName" readonly="readonly" />
-                    <p class="help-block">The file name (this will automatically populate once the file has been uploaded).</p>
+                    <input id="txt-name" class="form-control" placeholder="File name" name="FileName" type="text" value="@Model.FileName" readonly="readonly" />
                 </div>
                 <div class="form-group">
                     <label>Description</label>
                     <input class="form-control" placeholder="Description" name="Description" type="text" value="@Model.Description">
                     <p class="help-block">Provide some details about this document that may help others.  Or don't.</p>
                 </div>
-                @if (Model.Categories.Count > 0)
+                @if (Model.CategoryOptions.Count > 0)
                 {
                     <div class="form-group">
-                        <label>Categories</label>
-                    </div>
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                      <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                          <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#categories-panel" aria-expanded="false" aria-controls="categories-panel">
-                              <i id="category-names">No categories selected</i>
-                            </a>
-                          </h4>
+                        <label class="control-label">Categories</label>
+                        <div>
+                            <select class="form-control" id="categories" name="CategoryIds" multiple="multiple">
+                                @foreach (var cat in Model.CategoryOptions) 
+                                {
+                                    <option value="@cat.Value" @if (cat.IsSelected) { <text>selected="selected"</text> }>@cat.Text</option>
+                                }
+                            </select>
                         </div>
-                        <div id="categories-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                          <div class="panel-body">
-                              @foreach (var cat in Model.Categories)
-                              {
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="CategoryIds" class="category-checkbox" type="checkbox" value="@cat.Value" data-text="@cat.Text" @{if (cat.IsSelected) { <text>checked="checked"</text> }}> @cat.Text
-                                    </label>
-                                </div>
-                              }
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   }
                 <input type="hidden" id="hid-filename" name="UploadedFileName" value="" />

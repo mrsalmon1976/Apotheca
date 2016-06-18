@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nancy.ModelBinding;
+using Apotheca.BLL.Utils;
 
 namespace Apotheca.Modules
 {
@@ -27,7 +28,8 @@ namespace Apotheca.Modules
 
             Post[Actions.Document.Add] = (x) =>
             {
-                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, this.Bind<DocumentViewModel>()));
+                var model = this.Bind<DocumentViewModel>();
+                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, model));
             };
 
             Get[Actions.Document.Download] = (x) =>
@@ -55,7 +57,8 @@ namespace Apotheca.Modules
 
             Post[Actions.Document.Update] = (x) =>
             {
-                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, this.Bind<DocumentViewModel>()));
+                var model = this.Bind<DocumentViewModel>();
+                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, model));
             };
             Post[Actions.Document.Upload] = x =>
             {

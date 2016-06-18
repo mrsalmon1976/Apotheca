@@ -34,7 +34,6 @@ namespace Apotheca.Modules
             Post[Actions.User.Default] = (x) =>
             {
                 var model = this.Bind<UserViewModel>();
-                model.CategoryIds = StringUtils.ConvertToGuidArray(Request.Form["CategoryIds[]"].ToString(), ',');
                 return this.HandleResult(userController.HandleUserPost(model));
             };
         }
