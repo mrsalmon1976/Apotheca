@@ -12,7 +12,11 @@ namespace Apotheca.ViewModels.User
         public UserViewModel()
         {
             this.ValidationErrors = new List<string>();
+            this.CategoryOptions = new List<MultiSelectItem>();
+            this.Roles = new List<string>();
         }
+
+        public string FormAction { get; set; }
 
         public string ConfirmPassword { get; set; }
 
@@ -22,6 +26,14 @@ namespace Apotheca.ViewModels.User
         public bool IsPermissionPanelVisible { get; set; }
 
         public List<string> ValidationErrors { get; private set; }
+
+        public List<MultiSelectItem> CategoryOptions { get; private set; }
+        
+        public List<string> Roles { get; private set; }
+
+        public Guid[] CategoryIds { get; set; }
+
+        public string SelectedRole { get; set; }
 
     }
 }

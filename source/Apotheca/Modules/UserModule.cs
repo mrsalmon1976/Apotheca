@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Nancy.ModelBinding;
 using Apotheca.BLL.Models;
+using Apotheca.ViewModels.User;
+using Apotheca.BLL.Utils;
 
 namespace Apotheca.Modules
 {
@@ -23,7 +25,7 @@ namespace Apotheca.Modules
             Get[Actions.User.Default] = (x) =>
             {
                 AddScript(Scripts.UserView);
-                return this.HandleResult(userController.HandleUserGet());
+                return this.HandleResult(userController.HandleUserGet(Request.Query["id"]));
             };
             Get[Actions.User.List] = (x) =>
             {
@@ -31,7 +33,9 @@ namespace Apotheca.Modules
             };
             Post[Actions.User.Default] = (x) =>
             {
-                return this.HandleResult(userController.HandleUserPost(this.Bind<UserEntity>()));
+                var model = this.Bind<UserViewModel>();
+                model.CategoryIds = StringUtils.ConvertToGuidArray(Request.Form["CategoryIds[]"].ToString(), ',');
+                return this.HandleResult(userController.HandleUserPost(model));
             };
         }
     }

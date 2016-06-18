@@ -15,12 +15,8 @@
                 </div>
                 <div class="panel-body">
                     @Html.Partial("Content/Views/Shared/_ValidationErrorPanel.cshtml", Model.ValidationErrors)
-                    <form role="form" method="post" action="@Actions.Setup.Default">
-                        <fieldset>
-                            @Html.Partial("Content/Views/User/_UserForm.cshtml", Model)
-                            <button type="submit" class="btn btn-lg btn-primary btn-block">Create account</button>
-                        </fieldset>
-                    </form>
+                    @Html.Partial("Content/Views/User/_UserForm.cshtml", Model)
+                    <button type="button" class="btn btn-lg btn-primary btn-block" onclick="document.forms[0].submit()">Create account</button>
                 </div>
             </div>
         </div>

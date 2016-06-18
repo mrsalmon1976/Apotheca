@@ -24,12 +24,8 @@
         <h4 class="modal-title" id="dlg-title">Add User</h4>
       </div>
       <div class="modal-body">
-        @Html.Partial("Content/Views/Shared/_ValidationErrorPanel.cshtml", Model.ValidationErrors)
-        <form role="form" method="post" action="@Actions.Setup.Default">
-            <fieldset>
-                @Html.Partial("Content/Views/User/_UserForm.cshtml", Model)
-            </fieldset>
-        </form>
+        <div id="msg-error" class="alert alert-danger hidden" role="alert">An error occurred.</div>
+        @Html.Partial("Content/Views/User/_UserForm.cshtml", Model)
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

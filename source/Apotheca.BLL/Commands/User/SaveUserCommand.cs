@@ -16,6 +16,8 @@ namespace Apotheca.BLL.Commands.User
     public interface ISaveUserCommand : ICommand<Guid>
     {
         UserEntity User { get; set; }
+
+        Guid[] CategoryIds { get; set; }
     }
 
     public class SaveUserCommand : Command<Guid>, ISaveUserCommand
@@ -34,6 +36,8 @@ namespace Apotheca.BLL.Commands.User
         }
 
         public UserEntity User { get; set; }
+
+        public Guid[] CategoryIds { get; set; }
         
         public override Guid Execute()
         {
@@ -51,6 +55,15 @@ namespace Apotheca.BLL.Commands.User
             // set the CreatedOn and insert the new user
             this.User.CreatedOn = DateTime.UtcNow;
             _unitOfWork.UserRepo.Create(this.User);
+
+            // add category ids
+            if (this.CategoryIds != null)
+            {
+                foreach (Guid categoryId in this.CategoryIds)
+                {
+                    _unitOfWork.UserCategoryAsscRepo.Create(new UserCategoryAsscEntity(this.User.Id, categoryId));
+                }
+            }
 
             return this.User.Id;
         }

@@ -22,6 +22,8 @@ namespace Apotheca.BLL.Data
 
         IUserRepository UserRepo { get; }
 
+        IUserCategoryAsscRepository UserCategoryAsscRepo { get; }
+
         void BeginTransaction();
 
         void Commit();
@@ -39,7 +41,7 @@ namespace Apotheca.BLL.Data
         private IDbConnection _conn;
         private IDbTransaction _tran;
 
-        public UnitOfWork(IDbConnection dbConnection, string schema, ICategoryRepository categoryRepo, IDocumentRepository documentRepo, IDocumentCategoryAsscRepository documentCategoryAsscRepo, IDocumentVersionRepository documentVersionRepo, IUserRepository userRepo)
+        public UnitOfWork(IDbConnection dbConnection, string schema, ICategoryRepository categoryRepo, IDocumentRepository documentRepo, IDocumentCategoryAsscRepository documentCategoryAsscRepo, IDocumentVersionRepository documentVersionRepo, IUserRepository userRepo, IUserCategoryAsscRepository userCategoryAsscRepo)
         {
             this._conn = dbConnection;
             this.DbSchema = schema; 
@@ -48,6 +50,7 @@ namespace Apotheca.BLL.Data
             this.DocumentCategoryAsscRepo = documentCategoryAsscRepo;
             this.DocumentVersionRepo = documentVersionRepo;
             this.UserRepo = userRepo;
+            this.UserCategoryAsscRepo = userCategoryAsscRepo;
         }
 
         /// <summary>
@@ -60,6 +63,7 @@ namespace Apotheca.BLL.Data
         public IDocumentCategoryAsscRepository DocumentCategoryAsscRepo { get; private set; }
         public IDocumentVersionRepository DocumentVersionRepo { get; private set; }
         public IUserRepository UserRepo { get; private set; }
+        public IUserCategoryAsscRepository UserCategoryAsscRepo { get; private set; }
 
         public IDbTransaction CurrentTransaction
         {
@@ -77,6 +81,7 @@ namespace Apotheca.BLL.Data
             this.DocumentCategoryAsscRepo.CurrentTransaction = _tran;
             this.DocumentVersionRepo.CurrentTransaction = _tran;
             this.UserRepo.CurrentTransaction = _tran;
+            this.UserCategoryAsscRepo.CurrentTransaction = _tran;
         }
 
         public void Commit()

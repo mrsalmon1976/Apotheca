@@ -105,6 +105,7 @@ namespace Apotheca
             container.Register<IDocumentCategoryAsscRepository>(new DocumentCategoryAsscRepository(conn, settings.DbSchema));
             container.Register<IDocumentVersionRepository>(new DocumentVersionRepository(conn, settings.DbSchema));
             container.Register<IUserRepository>(new UserRepository(conn, settings.DbSchema));
+            container.Register<IUserCategoryAsscRepository>(new UserCategoryAsscRepository(conn, settings.DbSchema));
 
             // set up the unit of work which will be used for database access
             IUnitOfWork unitOfWork = new UnitOfWork(conn, settings.DbSchema
@@ -113,6 +114,7 @@ namespace Apotheca
                 , container.Resolve<IDocumentCategoryAsscRepository>()
                 , container.Resolve<IDocumentVersionRepository>()
                 , container.Resolve<IUserRepository>()
+                , container.Resolve<IUserCategoryAsscRepository>()
                 );
             container.Register<IUnitOfWork>(unitOfWork);
 

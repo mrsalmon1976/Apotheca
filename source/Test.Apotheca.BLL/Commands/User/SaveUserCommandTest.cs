@@ -26,6 +26,7 @@ namespace Test.Apotheca.BLL.Commands.User
 
         private IUserValidator _userValidator;
         private IUserRepository _userRepo;
+        private IUserCategoryAsscRepository _userCategoryAsscRepo;
         private IRandomKeyGenerator _keyGenerator;
         private IPasswordProvider _passwordProvider;
 
@@ -36,11 +37,13 @@ namespace Test.Apotheca.BLL.Commands.User
 
             _userValidator = Substitute.For<IUserValidator>();
             _userRepo = Substitute.For<IUserRepository>();
+            _userCategoryAsscRepo = Substitute.For<IUserCategoryAsscRepository>();
             _keyGenerator = Substitute.For<IRandomKeyGenerator>();
             _passwordProvider = Substitute.For<IPasswordProvider>();
 
             _unitOfWork = Substitute.For<IUnitOfWork>();
             _unitOfWork.UserRepo.Returns(_userRepo);
+            _unitOfWork.UserCategoryAsscRepo.Returns(_userCategoryAsscRepo);
 
             _command = new SaveUserCommand(_unitOfWork, _userValidator, _keyGenerator, _passwordProvider);
         }
@@ -144,6 +147,45 @@ namespace Test.Apotheca.BLL.Commands.User
 
             _userRepo.Received(1).Create(user);
             Assert.AreEqual(id, result);
+        }
+
+        [Test]
+        public void Execute_NoCategories_DoesNotCreateAnyAssociations()
+        {
+            Guid id = Guid.NewGuid();
+            UserEntity user = TestEntityHelper.CreateUser();
+            _userRepo.When(x => x.Create(user)).Do((c) => { user.Id = id; });
+
+            _command.User = user;
+            Guid result = _command.Execute();
+
+            _userCategoryAsscRepo.DidNotReceive().Create(Arg.Any<UserCategoryAsscEntity>());
+        }
+
+        [Test]
+        public void Execute_WithCategories_CreatesAssociations()
+        {
+            Guid userId = Guid.NewGuid();
+            Guid[] categoryIds = { Guid.NewGuid(), Guid.NewGuid() };
+            List<Guid> createdCategoryIds = categoryIds.ToList();
+            UserEntity user = TestEntityHelper.CreateUser();
+            _userRepo.When(x => x.Create(user)).Do((c) => { user.Id = userId; });
+            // set up the repo so that whenever it receives a call, if the user id matches, remove the category id
+            _userCategoryAsscRepo.When(x => x.Create(Arg.Any<UserCategoryAsscEntity>())).Do((c) => {
+                UserCategoryAsscEntity ucae = c.Args()[0] as UserCategoryAsscEntity;
+                if (userId == ucae.UserId)
+                {
+                    createdCategoryIds.Remove(ucae.CategoryId);
+                }
+            });
+
+            // execute
+            _command.User = user;
+            _command.CategoryIds = categoryIds;
+            Guid result = _command.Execute();
+
+            // the list count should be equal to zero because we should have removed all items in the Do callback above
+            Assert.AreEqual(0, createdCategoryIds.Count);
         }
 
     }

@@ -1,4 +1,8 @@
 /* Bootstrap overrides */
+help-block {
+    font-size: 90%;
+    margin-bottom: 5px;
+}
 .navbar-brand {
     margin-top: 5px;
     font-style: italic;

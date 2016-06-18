@@ -5,8 +5,15 @@ var UserView = function () {
 
     this.init = function () {
         this.loadUsers();
+        $('#categories').multiselect({
+            //includeSelectAllOption: true,
+            //buttonClass: "col-sm-12"
+        });
         $('#btn-add').on('click', that.showForm);
         $('#btn-submit').on('click', that.submitForm);
+        $('#dlg-add').on('shown.bs.modal', function () {
+            $('#email').focus();
+        });
     };
 
     this.loadUsers = function () {
@@ -43,10 +50,7 @@ var UserView = function () {
 
     this.submitForm = function () {
         $("#msg-error").addClass('hidden');
-        var formData = {
-            name: $('#name').val(),
-            description: $('#description').val(),
-        };
+        var formData = $('#form-user').serializeForm();
         var request = $.ajax({
             url: "/user",
             method: "POST",
@@ -58,7 +62,7 @@ var UserView = function () {
             //debugger;
             if (response.success) {
                 $('#dlg-add').modal('hide');
-                that.loadCategories();
+                that.loadUsers();
             }
             else {
                 that.showError(response.messages);

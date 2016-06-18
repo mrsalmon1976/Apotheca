@@ -88,6 +88,15 @@ namespace Test.Apotheca.BLL.TestHelpers
             return user;
         }
 
+        public static UserCategoryAsscEntity CreateUserCategoryAssc(int id = 0, Guid? userId = null, Guid? categoryId = null)
+        {
+            UserCategoryAsscEntity userCatAssc = new UserCategoryAsscEntity();
+            userCatAssc.Id = id;
+            userCatAssc.UserId = (userId ?? Guid.NewGuid());
+            userCatAssc.CategoryId = (categoryId ?? Guid.NewGuid());
+            return userCatAssc;
+        }
+
         public static UserEntity CreateUserWithData()
         {
             UserEntity user = new UserEntity();

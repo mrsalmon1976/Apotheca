@@ -20,91 +20,77 @@ using Test.Apotheca.TestHelpers;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Data;
+using Apotheca.ViewModels;
+using Test.Apotheca.BLL.TestHelpers;
 
 namespace Test.Apotheca.Controllers
 {
     [TestFixture]
-    public class SetupControllerTest
+    public class UserControllerTest
     {
-        private ISetupController _setupController;
+        private IUserController _userController;
         private IUnitOfWork _unitOfWork;
         private IUserRepository _userRepo;
+        private ICategoryRepository _categoryRepo;
         private ISaveUserCommand _createUserCommand;
         private IUserViewModelValidator _userViewModelValidator;
 
         [SetUp]
-        public void SetupControllerTest_SetUp()
+        public void UserControllerTest_User()
         {
             _userRepo = Substitute.For<IUserRepository>();
+            _categoryRepo = Substitute.For<ICategoryRepository>();
             _createUserCommand = Substitute.For<ISaveUserCommand>();
             _userViewModelValidator = Substitute.For<IUserViewModelValidator>();
 
             _unitOfWork = Substitute.For<IUnitOfWork>();
             _unitOfWork.UserRepo.Returns(_userRepo);
-            _setupController = new SetupController(_unitOfWork, _createUserCommand, _userViewModelValidator);
+            _unitOfWork.CategoryRepo.Returns(_categoryRepo);
+            _userController = new UserController(_unitOfWork, _createUserCommand, _userViewModelValidator);
         }
 
         [Test]
-        public void DefaultGet_UsersExist_Redirects()
+        public void HandleUserGet_OnExecute_SetsUpModel()
         {
-            // setup 
-            _userRepo.UsersExist().Returns(true);
+            Guid userId = Guid.NewGuid();
+            CategoryEntity[] categories = { TestEntityHelper.CreateCategoryWithData(), TestEntityHelper.CreateCategoryWithData(), TestEntityHelper.CreateCategoryWithData() };
+            _categoryRepo.GetAll().Returns(categories);
 
             // execute
-            RedirectResult result = _setupController.DefaultGet() as RedirectResult;
-
-            // assert
+            ViewResult result = _userController.HandleUserGet(userId) as ViewResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(Actions.Login.Default, result.Location);
-        }
-
-        [Test]
-        public void DefaultGet_NoUsersExist_DisplaysView()
-        {
-            // setup 
-            _userRepo.UsersExist().Returns(false);
-
-            // execute
-            ViewResult result = _setupController.DefaultGet() as ViewResult;
-
-            // assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(Views.Setup.Default, result.ViewName);
 
             UserViewModel viewModel = result.Model as UserViewModel;
             Assert.IsNotNull(viewModel);
+
+            // check mode values
+            Assert.AreEqual(Roles.AllRoles, viewModel.Roles);
+            Assert.IsTrue(viewModel.IsPermissionPanelVisible);
+            Assert.AreEqual(Roles.User, viewModel.SelectedRole);
+            Assert.AreEqual(categories.Length, viewModel.CategoryOptions.Count);
+
+            _categoryRepo.Received(1).GetAll();
         }
 
         [Test]
-        public void DefaultPost_OnExecute_SetsModelValues()
-        {
-            UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
-            model.Role = "";
-            this._userViewModelValidator.Validate(model).Returns(new List<string>());
-
-            _setupController.DefaultPost(model);
-
-            Assert.AreEqual(Roles.Admin, model.Role);
-            Assert.AreEqual(Actions.Setup.Default, model.FormAction);
-        }
-
-        [Test]
-        public void DefaultPost_OnModelValidationFailure_ExitsToSetupView()
+        public void HandleUserPost_OnModelValidationFailure_ExitsToUserView()
         {
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             List<string> errors = new List<string>() { "error" };
             this._userViewModelValidator.Validate(model).Returns(errors);
 
-            ViewResult result = _setupController.DefaultPost(model) as ViewResult;
+            JsonResult result = _userController.HandleUserPost(model) as JsonResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(Views.Setup.Default, result.ViewName);
+            
+            BasicResult basicResult = result.Model as BasicResult;
+            Assert.IsNotNull(basicResult);
 
             // command should not have been executed
             _createUserCommand.DidNotReceive().Execute();
         }
 
         [Test]
-        public void DefaultPost_OnDbValidationFailure_ExitsToSetupView()
+        public void HandleUserPost_OnDbValidationFailure_ExitsToUserView()
         {
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             this._userViewModelValidator.Validate(model).Returns(new List<string>());
@@ -114,42 +100,49 @@ namespace Test.Apotheca.Controllers
             _createUserCommand.When(x => x.Execute()).Throw(new ValidationException(errors));
 
             // execute
-            ViewResult result = _setupController.DefaultPost(model) as ViewResult;
+            JsonResult result = _userController.HandleUserPost(model) as JsonResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(Views.Setup.Default, result.ViewName);
+
+            BasicResult basicResult = result.Model as BasicResult;
+            Assert.IsNotNull(basicResult);
 
             // command should have been executed
             _createUserCommand.Received(1).Execute();
-            Assert.AreEqual(errors.Count, model.ValidationErrors.Count);
+            Assert.AreEqual(errors.Count, basicResult.Messages.Length);
         }
 
         [Test]
-        public void DefaultPost_OnValidationSuccess_RedirectsToDashboard()
+        public void HandleUserPost_OnValidationSuccess_ReturnsSuccess()
         {
-            // setup
+            // User
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             this._userViewModelValidator.Validate(model).Returns(new List<string>());
 
             // execute
-            LoginAndRedirectResult result = _setupController.DefaultPost(model) as LoginAndRedirectResult;
+            JsonResult result = _userController.HandleUserPost(model) as JsonResult;
+            Assert.IsNotNull(result);
+
+            BasicResult basicResult = result.Model as BasicResult;
+            Assert.IsNotNull(basicResult);
 
             // assert
             _createUserCommand.Received(1).Execute();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(model.Id, result.UserId);
-            Assert.AreEqual(Actions.Dashboard, result.Location);
+            _createUserCommand.Received(1).CategoryIds = model.CategoryIds;
+            _createUserCommand.Received(1).User = Arg.Any<UserEntity>();
+            Assert.AreEqual(0, basicResult.Messages.Length);
+            Assert.IsTrue(basicResult.Success);
 
         }
 
         [Test]
-        public void DefaultPost_OnSuccess_UsesTransaction()
+        public void HandleUserPost_OnSuccess_UsesTransaction()
         {
-            // setup
+            // User
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             this._userViewModelValidator.Validate(model).Returns(new List<string>());
 
             // execute
-            _setupController.DefaultPost(model);
+            _userController.HandleUserPost(model);
 
             // assert
             _unitOfWork.Received(1).BeginTransaction();

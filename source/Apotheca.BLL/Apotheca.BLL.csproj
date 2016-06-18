@@ -59,16 +59,19 @@
     <Compile Include="Models\AuditLogDetailEntity.cs" />
     <Compile Include="Models\CategoryEntity.cs" />
     <Compile Include="Models\CategorySearchResult.cs" />
+    <Compile Include="Models\UserCategoryAsscEntity.cs" />
     <Compile Include="Models\UserSearchResult.cs" />
     <Compile Include="Models\DocumentCategoryAsscEntity.cs" />
     <Compile Include="Models\DocumentEntity.cs" />
     <Compile Include="Models\DocumentSearchResult.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\UserCategoryAsscRepository.cs" />
     <Compile Include="Repositories\DocumentCategoryAsscRepository.cs" />
     <Compile Include="Repositories\DocumentVersionRepository.cs" />
     <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Security\PasswordProvider.cs" />
     <Compile Include="Security\RandomKeyGenerator.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Validators\CategoryValidator.cs" />
     <Compile Include="Validators\DocumentValidator.cs" />
     <Compile Include="Validators\StringValidator.cs" />
@@ -95,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <EmbeddedResource Include="Resources\DbMigrations\0009.CreateUserCategoryAsscTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0008.CreateDocumentCategoryAsscTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0007.CreateAuditLogDetailTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0003.CreateCategoryTable.sql" />
