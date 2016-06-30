@@ -22,6 +22,7 @@ using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Data;
 using Apotheca.ViewModels;
 using Test.Apotheca.BLL.TestHelpers;
+using Apotheca.Security;
 
 namespace Test.Apotheca.Controllers
 {
@@ -78,8 +79,9 @@ namespace Test.Apotheca.Controllers
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             List<string> errors = new List<string>() { "error" };
             this._userViewModelValidator.Validate(model).Returns(errors);
+            UserIdentity currentUser = new UserIdentity() { Id = Guid.NewGuid() };
 
-            JsonResult result = _userController.HandleUserPost(model) as JsonResult;
+            JsonResult result = _userController.HandleUserPost(model, currentUser) as JsonResult;
             Assert.IsNotNull(result);
             
             BasicResult basicResult = result.Model as BasicResult;
@@ -94,13 +96,14 @@ namespace Test.Apotheca.Controllers
         {
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             this._userViewModelValidator.Validate(model).Returns(new List<string>());
+            UserIdentity currentUser = new UserIdentity() { Id = Guid.NewGuid() };
 
             List<string> errors = new List<string>() { "error1", "error2" };
 
             _createUserCommand.When(x => x.Execute()).Throw(new ValidationException(errors));
 
             // execute
-            JsonResult result = _userController.HandleUserPost(model) as JsonResult;
+            JsonResult result = _userController.HandleUserPost(model, currentUser) as JsonResult;
             Assert.IsNotNull(result);
 
             BasicResult basicResult = result.Model as BasicResult;
@@ -117,9 +120,10 @@ namespace Test.Apotheca.Controllers
             // User
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             this._userViewModelValidator.Validate(model).Returns(new List<string>());
+            UserIdentity currentUser = new UserIdentity() { Id = Guid.NewGuid() };
 
             // execute
-            JsonResult result = _userController.HandleUserPost(model) as JsonResult;
+            JsonResult result = _userController.HandleUserPost(model, currentUser) as JsonResult;
             Assert.IsNotNull(result);
 
             BasicResult basicResult = result.Model as BasicResult;
@@ -128,6 +132,7 @@ namespace Test.Apotheca.Controllers
             // assert
             _createUserCommand.Received(1).Execute();
             _createUserCommand.Received(1).CategoryIds = model.CategoryIds;
+            _createUserCommand.Received(1).CurrentUserId = currentUser.Id;
             _createUserCommand.Received(1).User = Arg.Any<UserEntity>();
             Assert.AreEqual(0, basicResult.Messages.Length);
             Assert.IsTrue(basicResult.Success);
@@ -140,9 +145,10 @@ namespace Test.Apotheca.Controllers
             // User
             UserViewModel model = TestViewModelHelper.CreateUserViewModelWithData();
             this._userViewModelValidator.Validate(model).Returns(new List<string>());
+            UserIdentity currentUser = new UserIdentity() { Id = Guid.NewGuid() };
 
             // execute
-            _userController.HandleUserPost(model);
+            _userController.HandleUserPost(model, currentUser);
 
             // assert
             _unitOfWork.Received(1).BeginTransaction();

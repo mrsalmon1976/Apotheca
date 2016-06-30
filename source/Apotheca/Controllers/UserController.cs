@@ -17,16 +17,18 @@ using System;
 using System.Collections.Generic;
 using Apotheca.ViewModels.Category;
 using System.Linq;
+using Nancy.Security;
+using Apotheca.Security;
 
 namespace Apotheca.Controllers
 {
-    public interface IUserController
+    public interface IUserController 
     {
         IControllerResult HandleUserGet(Guid? userId);
 
         IControllerResult HandleUserGetList();
 
-        IControllerResult HandleUserPost(UserViewModel model);
+        IControllerResult HandleUserPost(UserViewModel model, IUserIdentity currentUser);
     }
 
     public class UserController : IUserController
@@ -63,7 +65,7 @@ namespace Apotheca.Controllers
             return new ViewResult(Views.User.ListPartial, model);
         }
 
-        public IControllerResult HandleUserPost(UserViewModel model)
+        public IControllerResult HandleUserPost(UserViewModel model, IUserIdentity currentUser)
         {
 
             // do first level validation - if it fails then we need to exit
@@ -81,6 +83,7 @@ namespace Apotheca.Controllers
             {
                 _unitOfWork.BeginTransaction();
                 _saveUserCommand.User = user;
+                _saveUserCommand.CurrentUserId = ((UserIdentity)currentUser).Id;
                 _saveUserCommand.CategoryIds = model.CategoryIds;
                 _saveUserCommand.Execute();
                 _unitOfWork.Commit();

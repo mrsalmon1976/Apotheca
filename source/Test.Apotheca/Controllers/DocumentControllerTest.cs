@@ -5,6 +5,7 @@ using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
 using Apotheca.Controllers;
 using Apotheca.Navigation;
+using Apotheca.Security;
 using Apotheca.Services;
 using Apotheca.Validators;
 using Apotheca.ViewModels.Document;
@@ -30,7 +31,6 @@ namespace Test.Apotheca.Controllers
         private ISaveDocumentCommand _createDocumentCommand;
 
         private IUnitOfWork _unitOfWork;
-        private IUserRepository _userRepository;
         private IDocumentRepository _documentRepository;
 
         [SetUp]
@@ -39,11 +39,9 @@ namespace Test.Apotheca.Controllers
             _fileUtilityService = Substitute.For<IFileUtilityService>();
             _documentViewModelValidator = Substitute.For<IDocumentViewModelValidator>();
             _createDocumentCommand = Substitute.For<ISaveDocumentCommand>();
-            _userRepository = Substitute.For<IUserRepository>();
             _documentRepository = Substitute.For<IDocumentRepository>();
 
             _unitOfWork = Substitute.For<IUnitOfWork>();
-            _unitOfWork.UserRepo.Returns(_userRepository);
             _unitOfWork.DocumentRepo.Returns(_documentRepository);
 
             Mapper.Reset();
@@ -90,15 +88,13 @@ namespace Test.Apotheca.Controllers
             string currentUserName = Path.GetRandomFileName() + "@test.com";
             DocumentViewModel model = TestViewModelHelper.CreateDocumentViewModelWithData();
             byte[] fileContents = TestRandomHelper.GetFileContents(100);
-
-            UserEntity user = new UserEntity() { Email = currentUserName, Id = Guid.NewGuid() };
-            _userRepository.GetUserByEmail(currentUserName).Returns(user);
+            UserIdentity user = new UserIdentity() { Email = currentUserName, Id = Guid.NewGuid() };
 
             _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>() { "error" });
 
             // execute
-            ViewResult result = _documentController.HandleDocumentFormPost(rootPath, currentUserName, model) as ViewResult;
+            ViewResult result = _documentController.HandleDocumentFormPost(rootPath, user, model) as ViewResult;
 
             // assert
             Assert.IsNotNull(result);
@@ -114,9 +110,7 @@ namespace Test.Apotheca.Controllers
             string currentUserName = Path.GetRandomFileName() + "@test.com";
             DocumentViewModel model = TestViewModelHelper.CreateDocumentViewModelWithData();
             byte[] fileContents = TestRandomHelper.GetFileContents(100);
-
-            UserEntity user = new UserEntity() { Email = currentUserName, Id = Guid.NewGuid() };
-            _userRepository.GetUserByEmail(currentUserName).Returns(user);
+            UserIdentity user = new UserIdentity() { Email = currentUserName, Id = Guid.NewGuid() };
 
             _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
@@ -124,7 +118,7 @@ namespace Test.Apotheca.Controllers
             _createDocumentCommand.When(x => x.Execute()).Do((args) => { throw new ValidationException("error"); });
 
             // execute
-            ViewResult result = _documentController.HandleDocumentFormPost(rootPath, currentUserName, model) as ViewResult;
+            ViewResult result = _documentController.HandleDocumentFormPost(rootPath, user, model) as ViewResult;
 
             // assert
             Assert.IsNotNull(result);
@@ -140,21 +134,18 @@ namespace Test.Apotheca.Controllers
             string currentUserName = Path.GetRandomFileName() + "@test.com";
             DocumentViewModel model = TestViewModelHelper.CreateDocumentViewModelWithData();
             byte[] fileContents = TestRandomHelper.GetFileContents(100);
-
-            UserEntity user = new UserEntity() { Email = currentUserName, Id = Guid.NewGuid() };
-            _userRepository.GetUserByEmail(currentUserName).Returns(user);
+            UserIdentity user = new UserIdentity() { Email = currentUserName, Id = Guid.NewGuid() };
 
             _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
 
             // execute
-            RedirectResult result = _documentController.HandleDocumentFormPost(rootPath, currentUserName, model) as RedirectResult;
+            RedirectResult result = _documentController.HandleDocumentFormPost(rootPath, user, model) as RedirectResult;
             
             // assert
             Assert.IsNotNull(result);
             Assert.AreEqual(Actions.Dashboard, result.Location);
             _createDocumentCommand.Received(1).Execute();
-            _userRepository.Received(1).GetUserByEmail(currentUserName);
         }
 
         [Test]
@@ -165,14 +156,13 @@ namespace Test.Apotheca.Controllers
             DocumentViewModel model = TestViewModelHelper.CreateDocumentViewModelWithData();
             byte[] fileContents = TestRandomHelper.GetFileContents(100);
 
-            UserEntity user = TestEntityHelper.CreateUserWithData();
-            _userRepository.GetUserByEmail(user.Email).Returns(user);
+            UserIdentity user = new UserIdentity() { Email = "test@test.com", Id = Guid.NewGuid() };
 
             _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName).Returns(fileContents);
             _documentViewModelValidator.Validate(model).Returns(new System.Collections.Generic.List<string>());
 
             // execute
-            _documentController.HandleDocumentFormPost(rootPath, "test@test.com", model);
+            _documentController.HandleDocumentFormPost(rootPath, user, model);
 
             // assert
             _unitOfWork.Received(1).BeginTransaction();

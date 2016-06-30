@@ -49,6 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
@@ -70,6 +73,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Repositories\CategoryRepositoryTest.cs" />
+    <Compile Include="Repositories\AuditLogRepositoryTest.cs" />
     <Compile Include="Repositories\UserCategoryAsscRepositoryTest.cs" />
     <Compile Include="Repositories\DocumentCategoryAsscRepositoryTest.cs" />
     <Compile Include="Repositories\DocumentVersionRepositoryTest.cs" />

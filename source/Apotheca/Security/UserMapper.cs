@@ -20,13 +20,14 @@ namespace Apotheca.Security
             this._userRepo = userRepo;
         }
 
-        public IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context)
+        public virtual IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context)
         {
             UserIdentity ui = null;
             UserEntity user = _userRepo.GetUserById(identifier);
             if (user != null)
             {
                 ui = new UserIdentity();
+                ui.Id = user.Id;
                 ui.Claims = new string[] { user.Role };
                 ui.UserName = user.Email;
             }

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace Apotheca.Controllers
 {
-    public interface ICategoryController
+    public interface ICategoryController 
     {
         IControllerResult HandleCategoryGet();
 

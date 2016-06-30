@@ -4,6 +4,7 @@ using Apotheca.BLL.Exceptions;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
 using Apotheca.Navigation;
+using Apotheca.Security;
 using Apotheca.Services;
 using Apotheca.Validators;
 using Apotheca.ViewModels;
@@ -11,6 +12,7 @@ using Apotheca.ViewModels.Document;
 using Apotheca.Web.Results;
 using AutoMapper;
 using Nancy;
+using Nancy.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +25,7 @@ namespace Apotheca.Controllers
     {
         IControllerResult HandleDocumentAddGet();
 
-        IControllerResult HandleDocumentFormPost(string rootPath, string currentUserName, DocumentViewModel model);
+        IControllerResult HandleDocumentFormPost(string rootPath, IUserIdentity userIdentity, DocumentViewModel model);
 
         IControllerResult HandleDocumentDownloadGet(string rootPath, Guid id);
 
@@ -61,9 +63,9 @@ namespace Apotheca.Controllers
             return new ViewResult(Views.Document.Add, model);
         }
 
-        public IControllerResult HandleDocumentFormPost(string rootPath, string currentUserName, DocumentViewModel model)
+        public IControllerResult HandleDocumentFormPost(string rootPath, IUserIdentity userIdentity, DocumentViewModel model)
         {
-            UserEntity user = _unitOfWork.UserRepo.GetUserByEmail(currentUserName);
+            UserIdentity user = (UserIdentity)userIdentity;
             byte[] fileContents = _fileUtilityService.ReadUploadedFile(rootPath, model.UploadedFileName);
             
             // set up the entity

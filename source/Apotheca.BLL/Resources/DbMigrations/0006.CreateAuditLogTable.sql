@@ -6,10 +6,12 @@ BEGIN
 
 	CREATE TABLE [{SCHEMA}].[AuditLogs](
 		[Id] [int] IDENTITY (1,1) NOT NULL,
-		[Action] [varchar](50) NOT NULL,
-		[Table] [varchar](255) NOT NULL,
+		[Entity] [nvarchar](255) NOT NULL,
+		[Key] [nvarchar](75) NOT NULL,
+		[Action] [nvarchar](50) NOT NULL,
 		[AuditDateTime] [datetime] NOT NULL,
 		[UserId] uniqueidentifier NOT NULL,
+		[EntityDetail] [nvarchar](max) NULL,
 	 CONSTRAINT [PK_AuditLog] PRIMARY KEY CLUSTERED 
 	(
 		[Id] ASC

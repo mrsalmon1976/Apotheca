@@ -83,9 +83,12 @@
                         <li>
                             <a href="@Actions.Dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
-                        <li>
-                            <a href="@Actions.Category.Default"><i class="fa fa-tags fa-fw"></i> Categories</a>
-                        </li>
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <li>
+                                <a href="@Actions.Category.Default"><i class="fa fa-tags fa-fw"></i> Categories</a>
+                            </li>
+                        }
                         <li>
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> Documents<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -98,9 +101,12 @@
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
-                        <li>
-                            <a href="@Actions.User.Default"><i class="fa fa-users fa-fw"></i> Users</a>
-                        </li>
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <li>
+                                <a href="@Actions.User.Default"><i class="fa fa-users fa-fw"></i> Users</a>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

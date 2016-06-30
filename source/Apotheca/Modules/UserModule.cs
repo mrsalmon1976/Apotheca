@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nancy.ModelBinding;
+using Nancy.Security;
 using Apotheca.BLL.Models;
 using Apotheca.ViewModels.User;
 using Apotheca.BLL.Utils;
@@ -22,6 +23,8 @@ namespace Apotheca.Modules
     {
         public UserModule(IRootPathProvider pathProvider, IUserController userController) : base()
         {
+            this.RequiresClaims(new[] { Roles.Admin });
+
             Get[Actions.User.Default] = (x) =>
             {
                 AddScript(Scripts.UserView);
@@ -34,7 +37,7 @@ namespace Apotheca.Modules
             Post[Actions.User.Default] = (x) =>
             {
                 var model = this.Bind<UserViewModel>();
-                return this.HandleResult(userController.HandleUserPost(model));
+                return this.HandleResult(userController.HandleUserPost(model, this.Context.CurrentUser));
             };
         }
     }

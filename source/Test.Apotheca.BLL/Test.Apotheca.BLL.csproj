@@ -33,6 +33,9 @@
     <Reference Include="Dapper">
       <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.10.0.0\lib\net45\NSubstitute.dll</HintPath>
     </Reference>
@@ -48,12 +51,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AuditLog\SaveAuditLogCommandTest.cs" />
     <Compile Include="Commands\Category\SaveCategoryCommandTest.cs" />
     <Compile Include="Commands\Document\SaveDocumentCommandTest.cs" />
     <Compile Include="Commands\User\SaveUserCommandTest.cs" />
     <Compile Include="Data\DbMigratorTest.cs" />
     <Compile Include="TestHelpers\TestEntityHelper.cs" />
     <Compile Include="Validators\CategoryValidatorTest.cs" />
+    <Compile Include="Validators\AuditLogValidatorTest.cs" />
     <Compile Include="Validators\DocumentValidatorTest.cs" />
     <Compile Include="Validators\UserValidatorTest.cs" />
     <Compile Include="Validators\StringValidatorTest.cs" />

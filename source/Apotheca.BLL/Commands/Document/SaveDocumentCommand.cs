@@ -67,10 +67,7 @@ namespace Apotheca.BLL.Commands.Document
             // insert the categories if there are any
             foreach (Guid catId in (this.Categories ?? Enumerable.Empty<Guid>()))
             {
-                DocumentCategoryAsscEntity dca = new DocumentCategoryAsscEntity();
-                dca.CategoryId = catId;
-                dca.DocumentId = this.Document.Id;
-                dca.DocumentVersionNo = versionNo;
+                DocumentCategoryAsscEntity dca = new DocumentCategoryAsscEntity(this.Document.Id, versionNo, catId);
                 _unitOfWork.DocumentCategoryAsscRepo.Create(dca);
             }
 

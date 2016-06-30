@@ -18,7 +18,7 @@ namespace Apotheca.Modules
 {
     public class DocumentModule : ApothecaSecureFormModule
     {
-        public DocumentModule(IRootPathProvider pathProvider, IDocumentController documentController) : base()//, documentController)
+        public DocumentModule(IRootPathProvider pathProvider, IDocumentController documentController) : base()
         {
             Get[Actions.Document.Add] = (x) =>
             {
@@ -29,7 +29,7 @@ namespace Apotheca.Modules
             Post[Actions.Document.Add] = (x) =>
             {
                 var model = this.Bind<DocumentViewModel>();
-                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, model));
+                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser, model));
             };
 
             Get[Actions.Document.Download] = (x) =>
@@ -58,7 +58,7 @@ namespace Apotheca.Modules
             Post[Actions.Document.Update] = (x) =>
             {
                 var model = this.Bind<DocumentViewModel>();
-                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser.UserName, model));
+                return base.HandleResult(documentController.HandleDocumentFormPost(pathProvider.GetRootPath(), this.Context.CurrentUser, model));
             };
             Post[Actions.Document.Upload] = x =>
             {

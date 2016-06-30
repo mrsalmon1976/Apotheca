@@ -45,5 +45,20 @@ namespace Apotheca.Modules
             };
 
         }
+
+        private int TestInt(int factor)
+        {
+            return 5 * factor;
+        }
+
+        private string TestString()
+        {
+            return "string";
+        }
+
+        private LoginModule TestClass()
+        {
+            return new LoginModule(new LoginController(null, null));
+        }
     }
 }

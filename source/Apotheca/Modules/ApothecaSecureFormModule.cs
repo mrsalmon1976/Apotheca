@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 using Nancy.Security;
 using Nancy.Authentication.Forms;
 using Apotheca.Controllers;
+using Apotheca.BLL.Models;
 
 namespace Apotheca.Modules
 {
     public class ApothecaSecureFormModule : ApothecaModule
     {
-        public ApothecaSecureFormModule()//, IController controller)
+        public ApothecaSecureFormModule()
         {
             this.RequiresAuthentication();
-            //controller.CurrentUser = this.Context.CurrentUser;
             
             //this.RequiresClaims(new[] { "Admin" });
-            //Before += ctx =>
+            //this.Before += ctx =>
             //{
-              //  return (this.Context.CurrentUser == null) ? new HtmlResponse(HttpStatusCode.Unauthorized) : null;
+            //    return (this.Context.CurrentUser == null) ? new HtmlResponse(HttpStatusCode.Unauthorized) : null;
             //};
 
             // Your routes here

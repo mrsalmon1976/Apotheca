@@ -43,7 +43,6 @@ namespace Test.Apotheca.Integration.Repositories
             this.Connection.Execute("DROP FULLTEXT INDEX ON test.[Documents]");
             this.Connection.Execute("DROP FULLTEXT CATALOG [DocumentCatalog]");
 
-            this.Connection.Execute("DROP TABLE test.[AuditLogDetails]");
             this.Connection.Execute("DROP TABLE test.[AuditLogs]");
             this.Connection.Execute("DROP TABLE test.[DocumentCategoryAssc]");
             this.Connection.Execute("DROP TABLE test.[DocumentVersions]");

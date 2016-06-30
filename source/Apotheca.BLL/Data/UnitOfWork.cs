@@ -14,6 +14,8 @@ namespace Apotheca.BLL.Data
 
         ICategoryRepository CategoryRepo { get; }
 
+        IAuditLogRepository AuditLogRepo { get; }
+
         IDocumentRepository DocumentRepo { get; }
 
         IDocumentCategoryAsscRepository DocumentCategoryAsscRepo { get; }
@@ -41,10 +43,11 @@ namespace Apotheca.BLL.Data
         private IDbConnection _conn;
         private IDbTransaction _tran;
 
-        public UnitOfWork(IDbConnection dbConnection, string schema, ICategoryRepository categoryRepo, IDocumentRepository documentRepo, IDocumentCategoryAsscRepository documentCategoryAsscRepo, IDocumentVersionRepository documentVersionRepo, IUserRepository userRepo, IUserCategoryAsscRepository userCategoryAsscRepo)
+        public UnitOfWork(IDbConnection dbConnection, string schema, IAuditLogRepository auditLogRepo, ICategoryRepository categoryRepo, IDocumentRepository documentRepo, IDocumentCategoryAsscRepository documentCategoryAsscRepo, IDocumentVersionRepository documentVersionRepo, IUserRepository userRepo, IUserCategoryAsscRepository userCategoryAsscRepo)
         {
             this._conn = dbConnection;
-            this.DbSchema = schema; 
+            this.DbSchema = schema;
+            this.AuditLogRepo = auditLogRepo;
             this.CategoryRepo = categoryRepo;
             this.DocumentRepo = documentRepo;
             this.DocumentCategoryAsscRepo = documentCategoryAsscRepo;
@@ -58,6 +61,7 @@ namespace Apotheca.BLL.Data
         /// </summary>
         public string DbSchema { get; set; }
 
+        public IAuditLogRepository AuditLogRepo { get; private set; }
         public ICategoryRepository CategoryRepo { get; private set; }
         public IDocumentRepository DocumentRepo { get; private set; }
         public IDocumentCategoryAsscRepository DocumentCategoryAsscRepo { get; private set; }
@@ -76,6 +80,7 @@ namespace Apotheca.BLL.Data
         public void BeginTransaction()
         {
             _tran = _conn.BeginTransaction();
+            this.AuditLogRepo.CurrentTransaction = _tran;
             this.CategoryRepo.CurrentTransaction = _tran;
             this.DocumentRepo.CurrentTransaction = _tran;
             this.DocumentCategoryAsscRepo.CurrentTransaction = _tran;

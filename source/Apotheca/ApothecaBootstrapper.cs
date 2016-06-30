@@ -24,6 +24,10 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using SystemWrapper.IO;
+using System.Linq;
+using Apotheca.Caching;
+using Apotheca.BLL.Caching;
+using Apotheca.BLL.Commands.AuditLog;
 
 namespace Apotheca
 {
@@ -61,6 +65,7 @@ namespace Apotheca
             container.Register<IDbScriptResourceProvider, DbScriptResourceProvider>();
 
             // apotheca services
+            container.Register<ICacheProvider, CacheProvider>();
             container.Register<IFileUtilityService, FileUtilityService>();
 
             // set up mappings
@@ -100,6 +105,7 @@ namespace Apotheca
             container.Register<IDbConnection>(conn);
 
             // BLL repositories
+            container.Register<IAuditLogRepository>(new AuditLogRepository(conn, settings.DbSchema));
             container.Register<ICategoryRepository>(new CategoryRepository(conn, settings.DbSchema));
             container.Register<IDocumentRepository>(new DocumentRepository(conn, settings.DbSchema));
             container.Register<IDocumentCategoryAsscRepository>(new DocumentCategoryAsscRepository(conn, settings.DbSchema));
@@ -109,6 +115,7 @@ namespace Apotheca
 
             // set up the unit of work which will be used for database access
             IUnitOfWork unitOfWork = new UnitOfWork(conn, settings.DbSchema
+                , container.Resolve<IAuditLogRepository>()
                 , container.Resolve<ICategoryRepository>()
                 , container.Resolve<IDocumentRepository>()
                 , container.Resolve<IDocumentCategoryAsscRepository>()
@@ -119,7 +126,7 @@ namespace Apotheca
             container.Register<IUnitOfWork>(unitOfWork);
 
             // Apotheca classes and controllers
-            container.Register<IUserMapper, UserMapper>();
+            container.Register<IUserMapper, CacheUserMapper>();
             container.Register<ICategoryController, CategoryController>();
             container.Register<IDashboardController, DashboardController>();
             container.Register<IDocumentController, DocumentController>();
@@ -128,14 +135,18 @@ namespace Apotheca
             container.Register<IUserController, UserController>();
 
             // BLL commands
+            container.Register<ISaveAuditLogCommand, SaveAuditLogCommand>();
             container.Register<ISaveCategoryCommand, SaveCategoryCommand>();
             container.Register<ISaveDocumentCommand, SaveDocumentCommand>();
             container.Register<ISaveUserCommand, SaveUserCommand>();
 
             // other BLL classes
+            container.Register<IAuditLogValidator, AuditLogValidator>();
             container.Register<ICategoryValidator, CategoryValidator>();
             container.Register<IDocumentValidator, DocumentValidator>();
             container.Register<IUserValidator, UserValidator>();
+
+            //container.Register<IUserValidator, UserValidator>().
 
         }
 
@@ -153,6 +164,17 @@ namespace Apotheca
             // set shared ViewBag details here
             context.ViewBag.AppVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             context.ViewBag.Scripts = new List<string>();
+            context.ViewBag.IsAdmin = false;
+
+            // before the request builds up, if there is a logged in user then set the admin info
+            pipelines.BeforeRequest += (ctx) =>
+            {
+                if (ctx.CurrentUser != null)
+                {
+                    ctx.ViewBag.IsAdmin = ctx.CurrentUser.Claims.Contains(Roles.Admin);
+                }
+                return null;
+            };
 
             // clean up anything that needs to be
             pipelines.AfterRequest.AddItemToEndOfPipeline((ctx) =>

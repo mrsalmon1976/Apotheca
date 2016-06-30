@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nancy.ModelBinding;
+using Nancy.Security;
 using Apotheca.BLL.Models;
 
 namespace Apotheca.Modules
@@ -20,6 +21,8 @@ namespace Apotheca.Modules
     {
         public CategoryModule(IRootPathProvider pathProvider, ICategoryController categoryController) : base()//, documentController)
         {
+            this.RequiresClaims(new[] { Roles.Admin });
+
             Get[Actions.Category.Default] = (x) =>
             {
                 AddScript(Scripts.CategoryView);

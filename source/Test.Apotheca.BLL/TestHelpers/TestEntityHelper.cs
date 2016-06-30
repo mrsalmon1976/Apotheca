@@ -1,4 +1,5 @@
 ﻿using Apotheca.BLL.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,18 @@ namespace Test.Apotheca.BLL.TestHelpers
     /// </summary>
     public class TestEntityHelper
     {
+
+        public static AuditLogEntity CreateAuditLogWithData()
+        {
+            AuditLogEntity auditLog = new AuditLogEntity();
+            auditLog.Action = "INSERT";
+            auditLog.AuditDateTime = DateTime.Now;
+            auditLog.Entity = typeof(CategoryEntity).Name;
+            auditLog.Key = Guid.NewGuid().ToString();
+            auditLog.UserId = Guid.NewGuid();
+            auditLog.EntityDetail = JsonConvert.SerializeObject(CreateCategoryWithData());
+            return auditLog;
+        }
 
         public static CategoryEntity CreateCategory(Guid? id = null, string name = null, string description = null, DateTime? createdOn = null)
         {

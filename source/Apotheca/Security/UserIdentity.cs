@@ -18,5 +18,13 @@ namespace Apotheca.Security
 
         public string UserName { get; set; }
 
+        public Guid Id { get; set; }
+
+        public string Email
+        {
+            get { return UserName; }
+            set { UserName = value; }
+        }
+
     }
 }

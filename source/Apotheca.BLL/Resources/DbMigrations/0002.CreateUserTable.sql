@@ -6,13 +6,13 @@ BEGIN
 
 	CREATE TABLE [{SCHEMA}].[Users](
 		[Id] [uniqueidentifier] NOT NULL,
-		[Email] [varchar](200) NOT NULL,
-		[Password] [varchar](255) NOT NULL,
-		[Salt] [varchar](100) NOT NULL,
-		[FirstName] [varchar](100) NOT NULL,
-		[Surname] [varchar](100) NOT NULL,
-		[Role] [varchar](50) NOT NULL,
-		[ApiKey] [varchar](100) NOT NULL,
+		[Email] [nvarchar](200) NOT NULL,
+		[Password] [nvarchar](255) NOT NULL,
+		[Salt] [nvarchar](100) NOT NULL,
+		[FirstName] [nvarchar](100) NOT NULL,
+		[Surname] [nvarchar](100) NOT NULL,
+		[Role] [nvarchar](50) NOT NULL,
+		[ApiKey] [nvarchar](100) NOT NULL,
 		[CreatedOn] [datetime] NOT NULL,
 	 CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
 	(

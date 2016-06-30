@@ -37,9 +37,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CacheProvider.cs" />
+    <Compile Include="Commands\AuditLog\SaveAuditLogCommand.cs" />
     <Compile Include="Commands\Category\SaveCategoryCommand.cs" />
     <Compile Include="Commands\CommandFactory.cs" />
     <Compile Include="Commands\Command.cs" />
@@ -56,7 +62,6 @@
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="Exceptions\EntityDoesNotExistException.cs" />
     <Compile Include="Models\AuditLogEntity.cs" />
-    <Compile Include="Models\AuditLogDetailEntity.cs" />
     <Compile Include="Models\CategoryEntity.cs" />
     <Compile Include="Models\CategorySearchResult.cs" />
     <Compile Include="Models\UserCategoryAsscEntity.cs" />
@@ -65,6 +70,7 @@
     <Compile Include="Models\DocumentEntity.cs" />
     <Compile Include="Models\DocumentSearchResult.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\AuditLogRepository.cs" />
     <Compile Include="Repositories\UserCategoryAsscRepository.cs" />
     <Compile Include="Repositories\DocumentCategoryAsscRepository.cs" />
     <Compile Include="Repositories\DocumentVersionRepository.cs" />
@@ -73,6 +79,7 @@
     <Compile Include="Security\RandomKeyGenerator.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Validators\CategoryValidator.cs" />
+    <Compile Include="Validators\AuditLogValidator.cs" />
     <Compile Include="Validators\DocumentValidator.cs" />
     <Compile Include="Validators\StringValidator.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
@@ -100,7 +107,6 @@
     <Content Include="LICENSE.txt" />
     <EmbeddedResource Include="Resources\DbMigrations\0009.CreateUserCategoryAsscTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0008.CreateDocumentCategoryAsscTable.sql" />
-    <EmbeddedResource Include="Resources\DbMigrations\0007.CreateAuditLogDetailTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0003.CreateCategoryTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0006.CreateAuditLogTable.sql" />
     <EmbeddedResource Include="Resources\DbMigrations\0005.CreateDocumentVersionTable.sql" />
