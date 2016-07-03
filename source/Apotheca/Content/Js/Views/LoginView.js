@@ -4,6 +4,12 @@
 
     this.init = function () {
         $('#btn-login').on('click', that.submitForm);
+        $('#password').on('keypress', function (e) {
+            if (e.which == 13) {
+                that.submitForm();
+                return false; 
+            }
+        });
     };
 
     this.showError = function (error) {

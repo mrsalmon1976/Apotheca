@@ -29,9 +29,7 @@ namespace Apotheca.Controllers
 
         IControllerResult HandleDocumentDownloadGet(string rootPath, Guid id);
 
-        IControllerResult HandleDocumentSearchGet();
-
-        IControllerResult HandleDocumentSearchPost(DocumentSearchViewModel model);
+        IControllerResult HandleDocumentSearchGet(string searchText);
 
         void HandleDocumentUploadPost(string rootPath, IEnumerable<HttpFile> files);
 
@@ -134,16 +132,15 @@ namespace Apotheca.Controllers
             return result;
         }
 
-        public IControllerResult HandleDocumentSearchGet()
+        public IControllerResult HandleDocumentSearchGet(string searchText)
         {
             DocumentSearchViewModel model = new DocumentSearchViewModel();
-            return new ViewResult(Views.Document.Search, model);
-        }
-
-        public IControllerResult HandleDocumentSearchPost(DocumentSearchViewModel model)
-        {
-            model.Results.AddRange(_unitOfWork.DocumentRepo.Search(model.SearchText, null));
-            model.IsResultGridVisible = true;
+            model.SearchText = searchText;
+            if (!String.IsNullOrWhiteSpace(searchText))
+            {
+                model.Results.AddRange(_unitOfWork.DocumentRepo.Search(model.SearchText, null));
+                model.IsResultGridVisible = true;
+            }
             return new ViewResult(Views.Document.Search, model);
         }
 

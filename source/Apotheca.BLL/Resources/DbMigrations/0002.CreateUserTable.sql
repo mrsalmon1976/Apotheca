@@ -10,7 +10,7 @@ BEGIN
 		[Password] [nvarchar](255) NOT NULL,
 		[Salt] [nvarchar](100) NOT NULL,
 		[FirstName] [nvarchar](100) NOT NULL,
-		[Surname] [nvarchar](100) NOT NULL,
+		[Surname] [nvarchar](100) NULL,
 		[Role] [nvarchar](50) NOT NULL,
 		[ApiKey] [nvarchar](100) NOT NULL,
 		[CreatedOn] [datetime] NOT NULL,

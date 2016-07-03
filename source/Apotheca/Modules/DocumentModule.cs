@@ -40,12 +40,8 @@ namespace Apotheca.Modules
 
             Get[Actions.Document.Search] = (x) =>
             {
-                return this.HandleResult(documentController.HandleDocumentSearchGet());
-            };
-
-            Post[Actions.Document.Search] = (x) =>
-            {
-                return base.HandleResult(documentController.HandleDocumentSearchPost(this.Bind<DocumentSearchViewModel>()));
+                string searchText = Request.Query["q"];
+                return this.HandleResult(documentController.HandleDocumentSearchGet(searchText));
             };
 
             Get[Actions.Document.Update] = (x) =>

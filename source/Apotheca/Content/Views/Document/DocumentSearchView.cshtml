@@ -12,10 +12,10 @@
 </div>
 <div class="row">
     <div class="col-md-8">
-        <form class="margin-bottom-15px" role="form" method="post" action="@Actions.Document.Search">
+        <form class="margin-bottom-15px" role="form" method="get" action="@Actions.Document.Search">
             <fieldset>
                 <div class="form-group">
-                    <input id="txt-name" class="form-control" placeholder="Search for..." name="SearchText" type="text" value="@Model.SearchText" aria-describedby="helpSearchText" />
+                    <input id="txt-name" class="form-control" placeholder="Search for..." name="q" type="text" value="@Model.SearchText" aria-describedby="helpSearchText" />
                     <span id="helpSearchText" class="help-block">The document name, title, description and contents (for supported document types) will be searched.</span>
                 </div>
                 <button id="btn-submit-document" type="submit" class="btn btn-lg btn-primary" adisabled="disabled">Search</button>
