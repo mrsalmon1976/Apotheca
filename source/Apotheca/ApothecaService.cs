@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Nancy;
 using Nancy.Hosting.Self;
 using System.Net.Sockets;
-using NLog; 
+using NLog;
+using Apotheca.Configuration; 
 
 namespace Apotheca
 {
@@ -18,23 +19,19 @@ namespace Apotheca
         public void Start()
         {
             _logger.Info("Apotheca Windows Service starting");
+            IAppSettings appSettings = new AppSettings();
             var hostConfiguration = new HostConfiguration
             {
                 UrlReservations = new UrlReservations() { CreateAutomatically = true }
-                
             };
 
-            string url = "http://localhost:8910";
+            string url = String.Format("http://localhost:{0}", appSettings.Port);
             _host = new NancyHost(hostConfiguration, new Uri(url));
             _host.Start();
-            // code that runs when the Windows Service starts up
-            //_webServer = WebApp.Start<Startup>("http://localhost:8084");
         }
 
         public void Stop()
         {
-            // code that runs when the Windows Service stops
-            //_webServer.Dispose();
             _logger.Info("Apotheca Windows Service shutting down");
             _host.Stop();
             _host.Dispose();

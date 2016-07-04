@@ -15,6 +15,11 @@ namespace Apotheca.Configuration
         /// Gets the name of the schema to where the Apotheca objects are added in the database.
         /// </summary>
         string DbSchema { get; }
+
+        /// <summary>
+        /// Gets the port used for the application.
+        /// </summary>
+        int Port { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -35,6 +40,17 @@ namespace Apotheca.Configuration
             get
             {
                 return ConfigurationManager.AppSettings["DbSchema"];
+            }
+        }
+
+        /// <summary>
+        /// Gets the port used for the application.
+        /// </summary>
+        public int Port 
+        {
+            get
+            {
+                return Int32.Parse(ConfigurationManager.AppSettings["Port"]);
             }
         }
 
