@@ -17,6 +17,9 @@ var UserView = function () {
     };
 
     this.loadUsers = function () {
+
+        $('#pnl-loading').show();
+
         var request = $.ajax({
             url: "/user/list",
             method: "GET",
@@ -28,8 +31,12 @@ var UserView = function () {
             $('#user-list').html(response);
         });
 
-        request.fail(function (xhr, textStatus) {
+        request.fail(function (xhr, textStatus, errorThrown) {
             alert('error: ' + xhr.responseText);
+        });
+        request.always(function (xhr, textStatus) {
+            //debugger;
+            $('#pnl-loading').hide();
         });
     };
 
