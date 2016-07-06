@@ -13,6 +13,9 @@ namespace Apotheca.BLL.Repositories
     public interface IAuditLogRepository : IRepository
     {
         void Create(AuditLogEntity auditLog);
+
+        Task<IEnumerable<AuditLogDetailModel>> GetLatest(int count);
+
     }
 
     public class AuditLogRepository : BaseRepository, IAuditLogRepository
@@ -34,6 +37,18 @@ namespace Apotheca.BLL.Repositories
             auditLog.Id = id;
         }
 
+
+        public async Task<IEnumerable<AuditLogDetailModel>> GetLatest(int count)
+        {
+            string sql = String.Format(this.ReplaceSchemaPlaceholders(@"
+                SELECT TOP {0} al.*
+                , LTRIM(RTRIM(ISNULL(u.FirstName, '') + ' ' + ISNULL(u.Surname , ''))) AS UserName
+                FROM [{SCHEMA}].[AuditLogs] al
+                INNER JOIN [{SCHEMA}].[Users] u ON al.UserId = u.Id
+                ORDER BY AuditDateTime DESC"), count);
+            Task<IEnumerable<AuditLogDetailModel>> result = this.Connection.QueryAsync<AuditLogDetailModel>(sql, null, transaction: this.CurrentTransaction);
+            return await result;
+        }
 
     }
 }

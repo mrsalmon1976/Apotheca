@@ -1,5 +1,6 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @using Apotheca.Navigation
+@using Apotheca.Utils
 @model Apotheca.ViewModels.Dashboard.DashboardViewModel
 @{
     // See here for layout examples: /lib/startbootstrap-sb-admin-2-1.0.8/pages
@@ -59,3 +60,25 @@
         </div>
     </div>
 </div>
+@if (Model.Notifications.Count > 0)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-bell fa-fw"></i> Recent Updates
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <div class="list-group">
+                @foreach (var notification in Model.Notifications)
+                {
+                <a href="#" class="list-group-item">
+                    <i class="fa fa-arrow-circle-o-right fa-fw"></i> @DisplayUtils.FormatAuditLog(notification)
+                    <span class="pull-right text-muted small"><em>@DisplayUtils.ElapsedTime(notification.AuditDateTime)</em>
+                    </span>
+                </a>
+                }
+            </div>
+        </div>
+        <!-- /.panel-body -->
+    </div>
+}

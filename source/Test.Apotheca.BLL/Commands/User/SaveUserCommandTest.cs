@@ -229,7 +229,7 @@ namespace Test.Apotheca.BLL.Commands.User
             Assert.AreEqual(typeof(UserEntity).Name, auditLog.Entity);
             Assert.AreEqual(user.Id.ToString(), auditLog.Key);
             Assert.AreEqual(_command.CurrentUserId, auditLog.UserId);
-            Assert.AreEqual(AuditLogEntity.Actions.Insert, auditLog.Action);
+            Assert.AreEqual(DbAction.Insert, auditLog.Action);
         }
 
 

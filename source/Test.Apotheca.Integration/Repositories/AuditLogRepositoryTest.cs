@@ -43,6 +43,15 @@ namespace Test.Apotheca.Integration.Repositories
             Assert.Greater(auditLog.Id, 0);
         }
 
+        [Test]
+        public async void GetLatest()
+        {
+            Task<IEnumerable<AuditLogDetailModel>> result = _repo.GetLatest(10);
+            await result;
+            Assert.GreaterOrEqual(result.Result.Count(), 0);
+        }
+
+
 
     }
 }

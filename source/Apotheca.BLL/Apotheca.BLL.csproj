@@ -58,9 +58,11 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Document\SaveDocumentCommand.cs" />
     <Compile Include="Commands\User\SaveUserCommand.cs" />
+    <Compile Include="Data\DbAction.cs" />
     <Compile Include="Data\DbMigrator.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="Exceptions\EntityDoesNotExistException.cs" />
+    <Compile Include="Models\AuditLogDetailModel.cs" />
     <Compile Include="Models\AuditLogEntity.cs" />
     <Compile Include="Models\CategoryEntity.cs" />
     <Compile Include="Models\CategorySearchResult.cs" />

@@ -74,7 +74,7 @@ namespace Apotheca.BLL.Commands.User
             }
             
             // audit the changes
-            _saveAuditLogCommand.AuditLog = AuditLogEntity.Create(typeof(UserEntity).Name, this.User.Id, AuditLogEntity.Actions.Insert, this.CurrentUserId, this.User);
+            _saveAuditLogCommand.AuditLog = AuditLogEntity.Create(typeof(UserEntity).Name, this.User.Id, DbAction.Insert, this.CurrentUserId, this.User);
             _saveAuditLogCommand.Execute();
 
             return this.User.Id;

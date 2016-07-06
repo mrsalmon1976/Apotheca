@@ -25,12 +25,14 @@ namespace Apotheca.Controllers
 
             var userCount = _unitOfWork.UserRepo.GetUserCountAsync();
             var docCount = _unitOfWork.DocumentRepo.GetCountAsync();
+            var notifications = _unitOfWork.AuditLogRepo.GetLatest(10);
 
-            await Task.WhenAll(userCount, docCount);
+            await Task.WhenAll(userCount, docCount, notifications);
 
             DashboardViewModel model = new DashboardViewModel();
             model.UserCount = userCount.Result;
             model.DocumentCount = docCount.Result;
+            model.Notifications.AddRange(notifications.Result);
             return new ViewResult(Views.Dashboard, model);
 
         }

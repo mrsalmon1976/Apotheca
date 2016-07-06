@@ -103,8 +103,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\UserIdentity.cs" />
-    <Compile Include="Security\UserMapper.cs" />
+    <Compile Include="Controllers\UserMapper.cs" />
     <Compile Include="Services\FileUtilityService.cs" />
+    <Compile Include="Utils\DisplayUtils.cs" />
     <Compile Include="Validators\DocumentViewModelValidator.cs" />
     <Compile Include="Validators\UserViewModelValidator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
