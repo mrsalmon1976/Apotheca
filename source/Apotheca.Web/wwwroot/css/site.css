@@ -1,0 +1,13 @@
+/* fixes alignment of checkbox items in forms (e.g. register page) */
+.box-terms input[type="checkbox"] {
+    position: relative;
+    margin-left: 0px;
+}
+.home-header {
+    margin: 0px;
+    margin-bottom: 20px;
+}
+
+.home-text {
+    font-size: 18px;
+}

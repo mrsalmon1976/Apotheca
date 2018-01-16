@@ -170,3 +170,8 @@ $RECYCLE.BIN/
 
 # Visual Studio temp something
 .vs/
+
+# appsettings files
+**/appsettings.development.json
+**/appsettings.staging.json
+**/appsettings.production.json
