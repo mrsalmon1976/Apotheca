@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Apotheca.Web.Data;
 using Apotheca.Web.Services;
+using AspNetCore.Identity.MongoDbCore.Infrastructure;
+using MongoDB.Driver;
 
 namespace Apotheca.Web
 {
@@ -29,18 +30,15 @@ namespace Apotheca.Web
             IApplicationConfig appConfig = new ApplicationConfig(this.Configuration);
             services.AddSingleton<IApplicationConfig>(appConfig);
 
-            IDbContextFactory contextFactory = new DbContextFactory(this.Configuration);
-            services.AddSingleton<IDbContextFactory>(contextFactory);
-            
-            // run database migrations
-            if (appConfig.AutoRunMigrations)
-            {
-                DbMigrator.RunMigrations(contextFactory.GetConnectionString(AppConnection.Admin));
-            }
+            var mongoDbSettings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
 
-            // create identity Db context
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            var client = new MongoClient(mongoDbSettings.ConnectionString);
+            services.AddSingleton<IMongoClient>(client);
+            // TODO: still not sure if this is necessary - we may want separate collections per account, with only users 
+            // and global data stored in the apotheca database
+            var database = client.GetDatabase(mongoDbSettings.DatabaseName);
+            services.AddSingleton<IMongoDatabase>(database);
+
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -57,7 +55,8 @@ namespace Apotheca.Web
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = false;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            })//.AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDbSettings.ConnectionString, mongoDbSettings.DatabaseName)
                 .AddDefaultTokenProviders();
 
             services.AddMvc()
