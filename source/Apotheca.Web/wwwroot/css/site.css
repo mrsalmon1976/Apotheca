@@ -1,3 +1,7 @@
+.bg-word {
+    background-color: rgb(43,87,151) !important;
+    color: white;
+}
 /* fixes alignment of checkbox items in forms (e.g. register page) */
 .box-terms input[type="checkbox"] {
     position: relative;
