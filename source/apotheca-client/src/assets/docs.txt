@@ -1,0 +1,23 @@
+BASIC APPLICATION STRUCTURE
+
+app
+    _models
+        model1
+        model2
+    _services
+        service1
+        service2
+    _shared
+        components
+            sharedcomponent1
+        modules
+            sharedmodule1
+    home
+    anotherpage
+        anotherpage-specific-components
+
+NG CLI COMMANDS
+
+ng serve --open
+ng test
+ng generate component hero-detail

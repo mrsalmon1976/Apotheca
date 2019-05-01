@@ -1,0 +1,21 @@
+Below is the C# code to create a test user, as well as an example MongoDB document for user with email "t" and password "t"
+
+            User u = new User();
+            u.Email = "t";
+            u.Id = Guid.NewGuid();
+            u.FirstName = "Test";
+            u.LastName = "Turname";
+            u.Salt = new Security.PasswordProvider().GenerateSalt();
+            u.Password = new Security.PasswordProvider().HashPassword("t", u.Salt);
+            _usersCollection.InsertOne(u);
+
+
+{
+    "_id" : NUUID("b8054dd6-93cb-4c72-a1a3-2ea920c04124"),
+    "FirstName" : "Test",
+    "LastName" : "Turname",
+    "Email" : "t",
+    "Password" : "27bML6kcu0qF8WEIeuH/AFWGqeLTCoXs7b0lvr0W6iU=",
+    "Salt" : { "$binary" : "3f37JfEFS5Bj52cFp9P+JQ==", "$type" : "00" },
+    "Token" : null
+}

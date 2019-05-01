@@ -1,0 +1,36 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <a id="apotheca-title" href="/"><img src="assets/img/logo_sitkasmall_24.png" width="161" height="35" alt="apotheca" /></a>
+        <!-- stores menu start-->
+        <button aria-haspopup="true" *ngIf="isLoggedIn()" class="mat-button" mat-button [matMenuTriggerFor]="menuNavbarStore">
+            <span class="mat-button-wrapper"> Stores 
+                <mat-icon class="mat-icon material-icons mat-icon-no-color" role="img" aria-hidden="true">arrow_drop_down</mat-icon>
+            </span>
+            <div class="mat-button-ripple mat-ripple" matripple="">
+            </div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <mat-menu #menuNavbarStore="matMenu">
+            <button mat-menu-item (click)="logout()">My Store</button>
+        </mat-menu>
+        <!-- stores menu end -->
+        <span class="toolbar-action-spacer"></span>
+        <!-- general menu when not logged in -->
+        <a *ngIf="isLoggedIn() === false" class="mat-button" mat-button="" tabindex="0" aria-disabled="false" href="/about">About</a>
+        <!-- user menu start-->
+        <button aria-haspopup="true" *ngIf="isLoggedIn()" class="mat-button" mat-button [matMenuTriggerFor]="menuNavbarLogin">
+            <span class="mat-button-wrapper"> 
+                <i class="material-icons">person_pin</i>
+                <mat-icon class="mat-icon material-icons mat-icon-no-color" role="img" aria-hidden="true">arrow_drop_down</mat-icon>
+            </span>
+            <div class="mat-button-ripple mat-ripple" matripple="">
+            </div><div 
+            class="mat-button-focus-overlay"></div>
+        </button>
+        <mat-menu #menuNavbarLogin="matMenu">
+            <button mat-menu-item (click)="logout()">Log out</button>
+        </mat-menu>
+        <!-- user menu end -->
+    </mat-toolbar-row>
+</mat-toolbar>
+<router-outlet></router-outlet>

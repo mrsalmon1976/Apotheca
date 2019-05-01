@@ -1,0 +1,11 @@
+{
+    "type": "chrome",
+    "request": "launch",
+    "name": "Test",
+    "sourceMaps": true,
+    "webRoot": "${workspaceRoot}/",
+    "url": "http://localhost:9876/debug.html",
+    "runtimeArgs": [
+        "--headless"
+    ]
+}
