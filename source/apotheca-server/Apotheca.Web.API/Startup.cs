@@ -83,6 +83,7 @@ namespace Apotheca.Web.API
 
             // application services
             services.AddScoped<IAuthService>((sp) => new AuthService(appSettings.Secret, sp.GetService<IUserRepository>(), sp.GetService<IPasswordProvider>()));
+            services.AddScoped<IUserService, UserService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

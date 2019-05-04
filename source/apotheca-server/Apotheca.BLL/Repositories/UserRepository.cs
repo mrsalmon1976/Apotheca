@@ -7,25 +7,21 @@ using System.Threading.Tasks;
 
 namespace Apotheca.BLL.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
         Task<User> GetUserByEmail(string email);
     }
 
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
-        private IMongoDatabase _mongoDb;
-        private IMongoCollection<User> _usersCollection;
-
-        public UserRepository(IMongoDatabase mongoDb)
+        public UserRepository(IMongoDatabase mongoDb) : base(mongoDb, "Users")
         {
-            _mongoDb = mongoDb;
-            _usersCollection = _mongoDb.GetCollection<User>("Users");
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _usersCollection.Find<User>(x => x.Email == email).FirstOrDefaultAsync();
+            return await this.Collection.Find<User>(x => x.Email == email).FirstOrDefaultAsync();
         }
+
     }
 }
