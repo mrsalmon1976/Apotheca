@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Apotheca.Web.API.ViewModels
+namespace Apotheca.Web.API.ViewModels.Account
 {
-    public class UserViewModel
+    public class UserLoginViewModel
     {
         [Required]
         public string Email { get; set; }

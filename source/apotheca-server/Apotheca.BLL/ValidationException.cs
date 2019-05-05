@@ -12,6 +12,11 @@ namespace Apotheca.BLL
             this.Errors = errors;
         }
 
+        public ValidationException(string error) : base("Validation errors occurred")
+        {
+            this.Errors = new string[] { error };
+        }
+
         public IEnumerable<string> Errors { get; set; }
     }
 }

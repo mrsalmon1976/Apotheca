@@ -3,6 +3,7 @@ using Apotheca.BLL.Services;
 using Apotheca.Web.API;
 using Apotheca.Web.API.Controllers;
 using Apotheca.Web.API.ViewModels;
+using Apotheca.Web.API.ViewModels.Account;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,7 @@ namespace Test.Apotheca.Web.API.Controllers
         {
             _accountController.ModelState.AddModelError("Email", "error");
 
-            var result = _accountController.Login(new UserViewModel()) as BadRequestObjectResult;
+            var result = _accountController.Login(new UserLoginViewModel()) as BadRequestObjectResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(400, result.StatusCode);
 
@@ -44,7 +45,7 @@ namespace Test.Apotheca.Web.API.Controllers
         [Test]
         public void Login_AuthenticationFails_ReturnsValidationProblem()
         {
-            UserViewModel userViewModel = CreateUserViewModel();
+            UserLoginViewModel userViewModel = CreateUserLoginViewModel();
             Task<User> userTask = Task.FromResult<User>(null);
             _authService.Authenticate(Arg.Any<string>(), Arg.Any<string>()).Returns(userTask);
 
@@ -58,7 +59,7 @@ namespace Test.Apotheca.Web.API.Controllers
         [Test]
         public void Login_AuthenticationSucceeds_ReturnsValidationProblem()
         {
-            UserViewModel userViewModel = CreateUserViewModel();
+            UserLoginViewModel userViewModel = CreateUserLoginViewModel();
             User user = new User();
             user.Email = userViewModel.Email;
             user.Password = userViewModel.Password;
@@ -74,16 +75,16 @@ namespace Test.Apotheca.Web.API.Controllers
             _authService.Received(1).Authenticate(user.Email, user.Password);
 
             // the result should have been a user view model with the token from above, the email from above, and the password removed
-            UserViewModel returnValue = result.Value as UserViewModel;
+            UserLoginViewModel returnValue = result.Value as UserLoginViewModel;
             Assert.IsNotNull(returnValue);
             Assert.AreEqual(user.Email, returnValue.Email);
             Assert.AreEqual(user.Token, returnValue.Token);
             Assert.IsNull(returnValue.Password);
         }
 
-        private static UserViewModel CreateUserViewModel(string email = "test@test.com", string password = "testpassword")
+        private static UserLoginViewModel CreateUserLoginViewModel(string email = "test@test.com", string password = "testpassword")
         {
-            UserViewModel userViewModel = new UserViewModel();
+            UserLoginViewModel userViewModel = new UserLoginViewModel();
             userViewModel.Email = email;
             userViewModel.Password = password;
             return userViewModel;

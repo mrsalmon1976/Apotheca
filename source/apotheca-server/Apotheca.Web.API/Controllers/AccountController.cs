@@ -6,6 +6,8 @@ using Apotheca.BLL.Models;
 using Apotheca.BLL.Services;
 using Apotheca.Web.API.Config;
 using Apotheca.Web.API.ViewModels;
+using Apotheca.Web.API.ViewModels.Account;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,16 +22,18 @@ namespace Apotheca.Web.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
-        public AccountController(IAuthService authService)
+        public AccountController(IAuthService authService, IUserService userService)
         {
             this._authService = authService;
+            this._userService = userService;
         }
 
         // POST api/<controller>
         [HttpPost]
         [Route("login")]
-        public IActionResult Login([FromBody]UserViewModel user)
+        public IActionResult Login([FromBody]UserLoginViewModel user)
         {
             if (ModelState.IsValid)
             {
@@ -43,6 +47,25 @@ namespace Apotheca.Web.API.Controllers
                 }
 
                 return Unauthorized("No user found matching the supplied email address/password");
+            }
+            else
+            {
+                return this.ValidationProblem(this.ModelState);
+            }
+
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public IActionResult Register([FromBody]RegisterViewModel registerViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = Mapper.Map<User>(registerViewModel);
+                _userService.CreateUser(user);
+                return Ok();
+
+                //return Unauthorized("No user found matching the supplied email address/password");
             }
             else
             {

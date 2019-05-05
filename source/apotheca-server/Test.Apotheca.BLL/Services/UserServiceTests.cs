@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Test.Apotheca.BLL.Services
 {
@@ -53,6 +54,29 @@ namespace Test.Apotheca.BLL.Services
         }
 
         [Test]
+        public void CreateUser_EmailAddressExists_ThrowsValidationException()
+        {
+            User user = new User();
+            user.Email = "test@test.com";
+
+            Task<User> userExistsTask = Task.FromResult<User>(new User());
+            _userRepo.GetUserByEmail(user.Email).Returns(userExistsTask);
+
+            try
+            {
+                _userService.CreateUser(user);
+            }
+            catch (ValidationException vex)
+            {
+                Assert.AreEqual(1, vex.Errors.Count());
+                Assert.AreEqual("A user with this email address already exists", vex.Errors.First());
+            }
+
+            _passwordProvider.DidNotReceive().GenerateSalt();
+            _userRepo.DidNotReceive().Insert(Arg.Any<User>());
+        }
+
+        [Test]
         public void CreateUser_ValidUser_ReturnsUpdatedUser()
         {
             User user = CreateValidUser();
@@ -80,11 +104,13 @@ namespace Test.Apotheca.BLL.Services
 
         private User CreateValidUser()
         {
-            User user = new User();
-            user.Email = "test@test.com";
-            user.FirstName = "John";
-            user.LastName = "Smith";
-            user.Password = "123456789";
+            User user = new User()
+            {
+                Email = "test@test.com",
+                FirstName = "John",
+                LastName = "Smith",
+                Password = "123456789"
+            };
             return user;
         }
     }

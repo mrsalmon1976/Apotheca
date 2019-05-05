@@ -178,11 +178,13 @@ namespace Test.Apotheca.BLL.Validators
 
         private User CreateValidUser()
         {
-            User user = new User();
-            user.Email = "test@test.com";
-            user.FirstName = "John";
-            user.LastName = "Smith";
-            user.Password = "123456789";
+            User user = new User()
+            {
+                Email = "test@test.com",
+                FirstName = "John",
+                LastName = "Smith",
+                Password = "123456789"
+            };
             return user;
         }
 

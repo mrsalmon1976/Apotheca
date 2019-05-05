@@ -5,6 +5,7 @@ using Apotheca.BLL.Validators;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Apotheca.BLL.Services
 {
@@ -30,16 +31,25 @@ namespace Apotheca.BLL.Services
         {
             _userValidator.Validate(user);
 
+            // make sure the user doesn't already exist
+            User userCheck = Task.Run<User>(() => _userRepo.GetUserByEmail(user.Email)).Result;
+            if (userCheck != null)
+            {
+                throw new ValidationException("A user with this email address already exists");
+            }
+
             // create a copy of the user (so we don't affect the supplied object), but hash the password
             byte[] salt = _passwordProvider.GenerateSalt();
-            User u = new User();
-            u.Id = Guid.NewGuid();
-            u.Email = user.Email;
-            u.FirstName = user.FirstName;
-            u.LastName = user.LastName;
-            u.Salt = salt;
-            u.Password = _passwordProvider.HashPassword(user.Password, salt);
-            _userRepo.Insert(user);
+            User u = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Salt = salt,
+                Password = _passwordProvider.HashPassword(user.Password, salt),
+            };
+            _userRepo.Insert(u);
 
             return u;
         }

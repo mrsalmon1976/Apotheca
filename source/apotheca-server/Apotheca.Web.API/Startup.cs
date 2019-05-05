@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Apotheca.BLL.Repositories;
 using Apotheca.BLL.Security;
+using Apotheca.BLL.Validators;
 
 namespace Apotheca.Web.API
 {
@@ -81,6 +82,10 @@ namespace Apotheca.Web.API
             // repositories
             services.AddScoped<IUserRepository, UserRepository>();
 
+            // validators
+            services.AddScoped<IEmailValidator, EmailValidator>();
+            services.AddScoped<IUserValidator, UserValidator>();
+
             // application services
             services.AddScoped<IAuthService>((sp) => new AuthService(appSettings.Secret, sp.GetService<IUserRepository>(), sp.GetService<IPasswordProvider>()));
             services.AddScoped<IUserService, UserService>();
@@ -92,6 +97,8 @@ namespace Apotheca.Web.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            AppMap.Configure();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
