@@ -22,12 +22,14 @@ namespace Test.Apotheca.Web.API.Controllers
     {
         private AccountController _accountController;
         private IAuthService _authService;
+        private IUserService _userService;
 
         [SetUp]
         public void Setup()
         {
             _authService = Substitute.For<IAuthService>();
-            _accountController = new AccountController(_authService);
+            _userService = Substitute.For<IUserService>();
+            _accountController = new AccountController(_authService, _userService);
         }
 
         [Test]
