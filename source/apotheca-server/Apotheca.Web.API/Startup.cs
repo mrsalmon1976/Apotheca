@@ -20,6 +20,8 @@ using MongoDB.Driver;
 using Apotheca.BLL.Repositories;
 using Apotheca.BLL.Security;
 using Apotheca.BLL.Validators;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson;
 
 namespace Apotheca.Web.API
 {
@@ -78,8 +80,15 @@ namespace Apotheca.Web.API
             IMongoClient mongoClient = new MongoClient("mongodb://apotheca:apotheca123@localhost/apotheca");
             services.AddSingleton<IMongoClient>(mongoClient);
             services.AddScoped<IMongoDatabase>((sp) => mongoClient.GetDatabase("apotheca"));
+            // serialize enums as strings by default
+            var pack = new ConventionPack 
+            {
+                new EnumRepresentationConvention(BsonType.String)
+            };
+            ConventionRegistry.Register("EnumStringConvention", pack, t => true);
 
             // repositories
+            services.AddScoped<IStoreRepository, StoreRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 
             // validators

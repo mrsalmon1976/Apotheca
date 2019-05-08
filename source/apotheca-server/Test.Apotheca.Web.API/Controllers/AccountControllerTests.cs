@@ -56,16 +56,45 @@ namespace Test.Apotheca.Web.API.Controllers
             Assert.AreEqual(401, result.StatusCode);
 
             _authService.Received(1).Authenticate(userViewModel.Email, userViewModel.Password);
+
+            string error = result.Value as string;
+            Assert.AreEqual(error, "No user found matching the supplied email address/password");
+
         }
 
         [Test]
-        public void Login_AuthenticationSucceeds_ReturnsValidationProblem()
+        public void Login_AuthenticationSucceedsButRegistrationNotCompleted_ReturnsUnauthorized()
         {
             UserLoginViewModel userViewModel = CreateUserLoginViewModel();
             User user = new User();
             user.Email = userViewModel.Email;
             user.Password = userViewModel.Password;
             user.Token = Guid.NewGuid().ToString();
+            user.RegistrationCompleted = null;
+            Task<User> userTask = Task.FromResult<User>(user);
+            _authService.Authenticate(userViewModel.Email, userViewModel.Password).Returns(userTask);
+
+            var result = _accountController.Login(userViewModel) as UnauthorizedObjectResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(401, result.StatusCode);
+
+            // we should have received an auth call
+            _authService.Received(1).Authenticate(user.Email, user.Password);
+
+            string error = result.Value as string;
+            Assert.AreEqual(error, "Registration has not been completed for this account");
+
+        }
+
+        [Test]
+        public void Login_AuthenticationSucceedsAndRegistered_ReturnsOk()
+        {
+            UserLoginViewModel userViewModel = CreateUserLoginViewModel();
+            User user = new User();
+            user.Email = userViewModel.Email;
+            user.Password = userViewModel.Password;
+            user.Token = Guid.NewGuid().ToString();
+            user.RegistrationCompleted = DateTime.Now;
             Task<User> userTask = Task.FromResult<User>(user);
             _authService.Authenticate(userViewModel.Email, userViewModel.Password).Returns(userTask);
 

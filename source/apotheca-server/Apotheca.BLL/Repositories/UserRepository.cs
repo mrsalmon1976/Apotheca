@@ -9,7 +9,7 @@ namespace Apotheca.BLL.Repositories
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<User> GetUserByEmail(string email);
+        Task<User> GetByEmail(string email);
     }
 
     public class UserRepository : Repository<User>, IUserRepository
@@ -18,7 +18,7 @@ namespace Apotheca.BLL.Repositories
         {
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
             return await this.Collection.Find<User>(x => x.Email == email).FirstOrDefaultAsync();
         }

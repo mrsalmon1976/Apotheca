@@ -16,6 +16,9 @@ namespace Apotheca.Web.API
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Salt, opt => opt.Ignore())
                 .ForMember(dest => dest.Token, opt => opt.Ignore())
+                .ForMember(dest => dest.Stores, opt => opt.Ignore())
+                .ForMember(dest => dest.Created, opt => opt.Ignore())
+                .ForMember(dest => dest.RegistrationCompleted, opt => opt.Ignore())
             );
 
             Mapper.Configuration.AssertConfigurationIsValid();

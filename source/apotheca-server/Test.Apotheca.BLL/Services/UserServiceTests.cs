@@ -20,6 +20,7 @@ namespace Test.Apotheca.BLL.Services
         private IUserService _userService;
 
         private IUserRepository _userRepo;
+        private IStoreRepository _storeRepo;
         private IUserValidator _userValidator;
         private IPasswordProvider _passwordProvider;
 
@@ -27,10 +28,11 @@ namespace Test.Apotheca.BLL.Services
         public void UserServiceTests_SetUp()
         {
             _userRepo = Substitute.For<IUserRepository>();
+            _storeRepo = Substitute.For<IStoreRepository>();
             _userValidator = Substitute.For<IUserValidator>();
             _passwordProvider = Substitute.For<IPasswordProvider>();
 
-            _userService = new UserService(_userRepo, _userValidator, _passwordProvider);
+            _userService = new UserService(_userRepo, _storeRepo, _userValidator, _passwordProvider);
         }
 
         [Test]
@@ -60,7 +62,7 @@ namespace Test.Apotheca.BLL.Services
             user.Email = "test@test.com";
 
             Task<User> userExistsTask = Task.FromResult<User>(new User());
-            _userRepo.GetUserByEmail(user.Email).Returns(userExistsTask);
+            _userRepo.GetByEmail(user.Email).Returns(userExistsTask);
 
             try
             {
@@ -99,6 +101,36 @@ namespace Test.Apotheca.BLL.Services
             Assert.AreEqual(user.LastName, result.LastName);
             Assert.AreEqual(salt, result.Salt);
             Assert.AreEqual(hashedPassword, result.Password);
+
+        }
+
+        [Test]
+        public void CreateUser_ValidUser_CreatesAndLinksPersonalStore()
+        {
+            User user = CreateValidUser();
+            Store savedStore = null;
+
+            // set up an interceptor to make sure
+            _storeRepo.When(x => x.Insert(Arg.Any<Store>())).Do((c) => 
+            {
+                savedStore = c.Arg<Store>();
+            });
+
+            User savedUser = _userService.CreateUser(user);
+
+            _userRepo.Received(1).Insert(Arg.Any<User>());
+            _storeRepo.Received(1).Insert(Arg.Any<Store>());
+
+            // assert the values of the saved store
+            Assert.IsNotNull(savedStore);
+            Assert.AreEqual(Constants.MyStoreName, savedStore.Name);
+            Assert.AreEqual(1, savedStore.Subscribers.Count);
+            Assert.AreEqual(savedUser.Id, savedStore.Subscribers[0].UserId);
+            Assert.AreEqual(StoreRole.Admin, savedStore.Subscribers[0].Role);
+
+            // make sure that the store info saved against the user is correct
+            Assert.AreEqual(1, savedUser.Stores.Count);
+            Assert.AreEqual(savedStore.Id, savedUser.Stores[0]);
 
         }
 

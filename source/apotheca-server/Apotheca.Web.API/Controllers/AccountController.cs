@@ -40,6 +40,12 @@ namespace Apotheca.Web.API.Controllers
                 var authenticatedUser = Task.Run<User>(() => _authService.Authenticate(user.Email, user.Password)).Result;
                 if (authenticatedUser != null)
                 {
+                    // if registration has not been completed, reject
+                    if (!authenticatedUser.RegistrationCompleted.HasValue)
+                    {
+                        return Unauthorized("Registration has not been completed for this account");
+                    }
+
                     // remove the password and send back
                     user.Password = null;
                     user.Token = authenticatedUser.Token;

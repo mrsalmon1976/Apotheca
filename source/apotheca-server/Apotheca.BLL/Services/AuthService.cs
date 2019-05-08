@@ -35,7 +35,7 @@ namespace Apotheca.BLL.Services
 
         public async Task<User> Authenticate(string email, string password)
         {
-            var user = await _userRepo.GetUserByEmail(email);
+            var user = await _userRepo.GetByEmail(email);
 
             // return null if user not found
             if (user == null)

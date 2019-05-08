@@ -17,12 +17,14 @@ namespace Apotheca.BLL.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepo;
+        private readonly IStoreRepository _storeRepo;
         private readonly IUserValidator _userValidator;
         private readonly IPasswordProvider _passwordProvider;
 
-        public UserService(IUserRepository userRepo, IUserValidator userValidator, IPasswordProvider passwordProvider)
+        public UserService(IUserRepository userRepo, IStoreRepository storeRepo, IUserValidator userValidator, IPasswordProvider passwordProvider)
         {
             this._userRepo = userRepo;
+            this._storeRepo = storeRepo;
             this._userValidator = userValidator;
             this._passwordProvider = passwordProvider;
         }
@@ -32,7 +34,7 @@ namespace Apotheca.BLL.Services
             _userValidator.Validate(user);
 
             // make sure the user doesn't already exist
-            User userCheck = Task.Run<User>(() => _userRepo.GetUserByEmail(user.Email)).Result;
+            User userCheck = Task.Run<User>(() => _userRepo.GetByEmail(user.Email)).Result;
             if (userCheck != null)
             {
                 throw new ValidationException("A user with this email address already exists");
@@ -42,14 +44,23 @@ namespace Apotheca.BLL.Services
             byte[] salt = _passwordProvider.GenerateSalt();
             User u = new User()
             {
-                Id = Guid.NewGuid(),
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Salt = salt,
                 Password = _passwordProvider.HashPassword(user.Password, salt),
             };
+
+            // create a document store for the user
+            Store store = new Store();
+            store.Name = Constants.MyStoreName;
+            store.Subscribers.Add(new StoreSubscriber(u.Id, StoreRole.Admin));
+
+            // add a reference to the store back to the user for retrieval
+            u.Stores.Add(store.Id);
+
             _userRepo.Insert(u);
+            _storeRepo.Insert(store);
 
             return u;
         }
