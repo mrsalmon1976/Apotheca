@@ -7,6 +7,7 @@ using Apotheca.BLL.Services;
 using Apotheca.Web.API.Config;
 using Apotheca.Web.API.ViewModels;
 using Apotheca.Web.API.ViewModels.Account;
+using Apotheca.Web.API.ViewModels.Common;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,11 +34,11 @@ namespace Apotheca.Web.API.Controllers
         // POST api/<controller>
         [HttpPost]
         [Route("login")]
-        public IActionResult Login([FromBody]UserLoginViewModel user)
+        public IActionResult Login([FromBody]LoginViewModel login)
         {
             if (ModelState.IsValid)
             {
-                var authenticatedUser = Task.Run<User>(() => _authService.Authenticate(user.Email, user.Password)).Result;
+                var authenticatedUser = Task.Run<User>(() => _authService.Authenticate(login.Email, login.Password)).Result;
                 if (authenticatedUser != null)
                 {
                     // if registration has not been completed, reject
@@ -46,9 +47,8 @@ namespace Apotheca.Web.API.Controllers
                         return Unauthorized("Registration has not been completed for this account");
                     }
 
-                    // remove the password and send back
-                    user.Password = null;
-                    user.Token = authenticatedUser.Token;
+                    // send back the user account
+                    UserViewModel user = Mapper.Map<User, UserViewModel>(authenticatedUser);
                     return Ok(user);
                 }
 

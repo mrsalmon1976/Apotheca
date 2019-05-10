@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Apotheca.Web.API.ViewModels.Account
 {
-    public class UserLoginViewModel
+    public class LoginViewModel
     {
         [Required]
         public string Email { get; set; }

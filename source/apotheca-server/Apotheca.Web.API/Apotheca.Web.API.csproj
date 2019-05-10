@@ -22,4 +22,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\Dashboard\" />
+  </ItemGroup>
+
 </Project>

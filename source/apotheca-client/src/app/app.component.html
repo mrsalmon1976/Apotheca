@@ -10,8 +10,8 @@
             </div>
             <div class="mat-button-focus-overlay"></div>
         </button>
-        <mat-menu #menuNavbarStore="matMenu">
-            <button mat-menu-item (click)="logout()">My Store</button>
+        <mat-menu #menuNavbarStore>
+            <button mat-menu-item *ngFor="let store of currentUser?.stores">{{store.name}}</button>
         </mat-menu>
         <!-- stores menu end -->
         <span class="toolbar-action-spacer"></span>

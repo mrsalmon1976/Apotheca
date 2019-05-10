@@ -4,6 +4,7 @@ using Apotheca.Web.API;
 using Apotheca.Web.API.Controllers;
 using Apotheca.Web.API.ViewModels;
 using Apotheca.Web.API.ViewModels.Account;
+using Apotheca.Web.API.ViewModels.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ namespace Test.Apotheca.Web.API.Controllers
         {
             _accountController.ModelState.AddModelError("Email", "error");
 
-            var result = _accountController.Login(new UserLoginViewModel()) as BadRequestObjectResult;
+            var result = _accountController.Login(new LoginViewModel()) as BadRequestObjectResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(400, result.StatusCode);
 
@@ -47,7 +48,7 @@ namespace Test.Apotheca.Web.API.Controllers
         [Test]
         public void Login_AuthenticationFails_ReturnsValidationProblem()
         {
-            UserLoginViewModel userViewModel = CreateUserLoginViewModel();
+            LoginViewModel userViewModel = CreateUserLoginViewModel();
             Task<User> userTask = Task.FromResult<User>(null);
             _authService.Authenticate(Arg.Any<string>(), Arg.Any<string>()).Returns(userTask);
 
@@ -65,7 +66,7 @@ namespace Test.Apotheca.Web.API.Controllers
         [Test]
         public void Login_AuthenticationSucceedsButRegistrationNotCompleted_ReturnsUnauthorized()
         {
-            UserLoginViewModel userViewModel = CreateUserLoginViewModel();
+            LoginViewModel userViewModel = CreateUserLoginViewModel();
             User user = new User();
             user.Email = userViewModel.Email;
             user.Password = userViewModel.Password;
@@ -89,7 +90,10 @@ namespace Test.Apotheca.Web.API.Controllers
         [Test]
         public void Login_AuthenticationSucceedsAndRegistered_ReturnsOk()
         {
-            UserLoginViewModel userViewModel = CreateUserLoginViewModel();
+            AppMap.Reset();
+            AppMap.Configure();
+
+            LoginViewModel userViewModel = CreateUserLoginViewModel();
             User user = new User();
             user.Email = userViewModel.Email;
             user.Password = userViewModel.Password;
@@ -106,16 +110,15 @@ namespace Test.Apotheca.Web.API.Controllers
             _authService.Received(1).Authenticate(user.Email, user.Password);
 
             // the result should have been a user view model with the token from above, the email from above, and the password removed
-            UserLoginViewModel returnValue = result.Value as UserLoginViewModel;
+            UserViewModel returnValue = result.Value as UserViewModel;
             Assert.IsNotNull(returnValue);
             Assert.AreEqual(user.Email, returnValue.Email);
             Assert.AreEqual(user.Token, returnValue.Token);
-            Assert.IsNull(returnValue.Password);
         }
 
-        private static UserLoginViewModel CreateUserLoginViewModel(string email = "test@test.com", string password = "testpassword")
+        private static LoginViewModel CreateUserLoginViewModel(string email = "test@test.com", string password = "testpassword")
         {
-            UserLoginViewModel userViewModel = new UserLoginViewModel();
+            LoginViewModel userViewModel = new LoginViewModel();
             userViewModel.Email = email;
             userViewModel.Password = password;
             return userViewModel;

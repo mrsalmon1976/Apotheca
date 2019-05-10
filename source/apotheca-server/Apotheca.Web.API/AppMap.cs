@@ -1,5 +1,6 @@
 ﻿using Apotheca.BLL.Models;
 using Apotheca.Web.API.ViewModels.Account;
+using Apotheca.Web.API.ViewModels.Common;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -12,16 +13,25 @@ namespace Apotheca.Web.API
     {
         public static void Configure()
         {
-            Mapper.Initialize(cfg => cfg.CreateMap<RegisterViewModel, User>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Salt, opt => opt.Ignore())
-                .ForMember(dest => dest.Token, opt => opt.Ignore())
-                .ForMember(dest => dest.Stores, opt => opt.Ignore())
-                .ForMember(dest => dest.Created, opt => opt.Ignore())
-                .ForMember(dest => dest.RegistrationCompleted, opt => opt.Ignore())
-            );
+            Mapper.Initialize(cfg => {
+                cfg.CreateMap<RegisterViewModel, User>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.Salt, opt => opt.Ignore())
+                    .ForMember(dest => dest.Token, opt => opt.Ignore())
+                    .ForMember(dest => dest.Stores, opt => opt.Ignore())
+                    .ForMember(dest => dest.Created, opt => opt.Ignore())
+                    .ForMember(dest => dest.RegistrationCompleted, opt => opt.Ignore());
+
+                cfg.CreateMap<User, UserViewModel>()
+                    .ForMember(dest => dest.Stores, opt => opt.Ignore());
+            });
 
             Mapper.Configuration.AssertConfigurationIsValid();
+        }
+
+        public static void Reset()
+        {
+            Mapper.Reset();
         }
     }
 }
