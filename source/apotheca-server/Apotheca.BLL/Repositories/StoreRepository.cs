@@ -10,6 +10,8 @@ namespace Apotheca.BLL.Repositories
     public interface IStoreRepository : IRepository<Store>
     {
         Task<Store> GetById(Guid id);
+
+        Task<IEnumerable<Store>> GetByIds(IEnumerable<Guid> ids);
     }
 
     public class StoreRepository : Repository<Store>, IStoreRepository
@@ -21,6 +23,12 @@ namespace Apotheca.BLL.Repositories
         public async Task<Store> GetById(Guid id)
         {
             return await this.Collection.Find<Store>(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Store>> GetByIds(IEnumerable<Guid> ids)
+        {
+            var filter = Builders<Store>.Filter.In(x => x.Id, ids);
+            return await this.Collection.Find<Store>(filter).ToListAsync();
         }
 
     }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Services;
 using Apotheca.Web.API.Config;
+using Apotheca.Web.API.Services;
 using Apotheca.Web.API.ViewModels;
 using Apotheca.Web.API.ViewModels.Account;
 using Apotheca.Web.API.ViewModels.Common;
@@ -24,11 +25,13 @@ namespace Apotheca.Web.API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
+        private readonly IAccountViewModelService _accountViewModelService;
 
-        public AccountController(IAuthService authService, IUserService userService)
+        public AccountController(IAuthService authService, IUserService userService, IAccountViewModelService accountViewModelService)
         {
             this._authService = authService;
             this._userService = userService;
+            this._accountViewModelService = accountViewModelService;
         }
 
         // POST api/<controller>
@@ -48,8 +51,8 @@ namespace Apotheca.Web.API.Controllers
                     }
 
                     // send back the user account
-                    UserViewModel user = Mapper.Map<User, UserViewModel>(authenticatedUser);
-                    return Ok(user);
+                    UserViewModel userViewModel =_accountViewModelService.LoadUserWithStores(authenticatedUser);
+                    return Ok(userViewModel);
                 }
 
                 return Unauthorized("No user found matching the supplied email address/password");

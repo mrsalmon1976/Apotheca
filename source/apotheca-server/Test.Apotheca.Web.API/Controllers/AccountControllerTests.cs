@@ -2,6 +2,7 @@ using Apotheca.BLL.Models;
 using Apotheca.BLL.Services;
 using Apotheca.Web.API;
 using Apotheca.Web.API.Controllers;
+using Apotheca.Web.API.Services;
 using Apotheca.Web.API.ViewModels;
 using Apotheca.Web.API.ViewModels.Account;
 using Apotheca.Web.API.ViewModels.Common;
@@ -24,13 +25,15 @@ namespace Test.Apotheca.Web.API.Controllers
         private AccountController _accountController;
         private IAuthService _authService;
         private IUserService _userService;
+        private IAccountViewModelService _accountViewModelService;
 
         [SetUp]
         public void Setup()
         {
             _authService = Substitute.For<IAuthService>();
             _userService = Substitute.For<IUserService>();
-            _accountController = new AccountController(_authService, _userService);
+            _accountViewModelService = Substitute.For<IAccountViewModelService>();
+            _accountController = new AccountController(_authService, _userService, _accountViewModelService);
         }
 
         [Test]
@@ -67,11 +70,13 @@ namespace Test.Apotheca.Web.API.Controllers
         public void Login_AuthenticationSucceedsButRegistrationNotCompleted_ReturnsUnauthorized()
         {
             LoginViewModel userViewModel = CreateUserLoginViewModel();
-            User user = new User();
-            user.Email = userViewModel.Email;
-            user.Password = userViewModel.Password;
-            user.Token = Guid.NewGuid().ToString();
-            user.RegistrationCompleted = null;
+            User user = new User()
+            {
+                Email = userViewModel.Email,
+                Password = userViewModel.Password,
+                Token = Guid.NewGuid().ToString(),
+                RegistrationCompleted = null
+            };
             Task<User> userTask = Task.FromResult<User>(user);
             _authService.Authenticate(userViewModel.Email, userViewModel.Password).Returns(userTask);
 
@@ -93,16 +98,25 @@ namespace Test.Apotheca.Web.API.Controllers
             AppMap.Reset();
             AppMap.Configure();
 
-            LoginViewModel userViewModel = CreateUserLoginViewModel();
-            User user = new User();
-            user.Email = userViewModel.Email;
-            user.Password = userViewModel.Password;
-            user.Token = Guid.NewGuid().ToString();
-            user.RegistrationCompleted = DateTime.Now;
+            LoginViewModel loginViewModel = CreateUserLoginViewModel();
+            User user = new User()
+            {
+                Email = loginViewModel.Email,
+                Password = loginViewModel.Password,
+                Token = Guid.NewGuid().ToString(),
+                RegistrationCompleted = DateTime.Now
+            };
             Task<User> userTask = Task.FromResult<User>(user);
-            _authService.Authenticate(userViewModel.Email, userViewModel.Password).Returns(userTask);
+            _authService.Authenticate(loginViewModel.Email, loginViewModel.Password).Returns(userTask);
 
-            var result = _accountController.Login(userViewModel) as OkObjectResult;
+            UserViewModel userViewModel = new UserViewModel()
+            {
+                Id = user.Id
+            };
+            _accountViewModelService.LoadUserWithStores(user).Returns(userViewModel);
+
+            // execute 
+            var result = _accountController.Login(loginViewModel) as OkObjectResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(200, result.StatusCode);
 
@@ -112,15 +126,17 @@ namespace Test.Apotheca.Web.API.Controllers
             // the result should have been a user view model with the token from above, the email from above, and the password removed
             UserViewModel returnValue = result.Value as UserViewModel;
             Assert.IsNotNull(returnValue);
-            Assert.AreEqual(user.Email, returnValue.Email);
-            Assert.AreEqual(user.Token, returnValue.Token);
+            Assert.AreEqual(user.Id, returnValue.Id);
+            _accountViewModelService.Received(1).LoadUserWithStores(user);
         }
 
         private static LoginViewModel CreateUserLoginViewModel(string email = "test@test.com", string password = "testpassword")
         {
-            LoginViewModel userViewModel = new LoginViewModel();
-            userViewModel.Email = email;
-            userViewModel.Password = password;
+            LoginViewModel userViewModel = new LoginViewModel()
+            {
+                Email = email,
+                Password = password,
+            };
             return userViewModel;
         }
 

@@ -14,6 +14,7 @@ namespace Apotheca.Web.API
         public static void Configure()
         {
             Mapper.Initialize(cfg => {
+
                 cfg.CreateMap<RegisterViewModel, User>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Salt, opt => opt.Ignore())
@@ -21,6 +22,8 @@ namespace Apotheca.Web.API
                     .ForMember(dest => dest.Stores, opt => opt.Ignore())
                     .ForMember(dest => dest.Created, opt => opt.Ignore())
                     .ForMember(dest => dest.RegistrationCompleted, opt => opt.Ignore());
+
+                cfg.CreateMap<Store, StoreViewModel>();
 
                 cfg.CreateMap<User, UserViewModel>()
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());

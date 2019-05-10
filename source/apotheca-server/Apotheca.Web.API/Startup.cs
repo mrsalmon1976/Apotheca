@@ -22,6 +22,7 @@ using Apotheca.BLL.Security;
 using Apotheca.BLL.Validators;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson;
+using Apotheca.Web.API.Services;
 
 namespace Apotheca.Web.API
 {
@@ -95,9 +96,12 @@ namespace Apotheca.Web.API
             services.AddScoped<IEmailValidator, EmailValidator>();
             services.AddScoped<IUserValidator, UserValidator>();
 
-            // application services
+            // domain services
             services.AddScoped<IAuthService>((sp) => new AuthService(appSettings.Secret, sp.GetService<IUserRepository>(), sp.GetService<IPasswordProvider>()));
             services.AddScoped<IUserService, UserService>();
+
+            // application services 
+            services.AddScoped<IAccountViewModelService, AccountViewModelService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

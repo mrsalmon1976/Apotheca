@@ -58,8 +58,10 @@ namespace Test.Apotheca.BLL.Services
         [Test]
         public void CreateUser_EmailAddressExists_ThrowsValidationException()
         {
-            User user = new User();
-            user.Email = "test@test.com";
+            User user = new User()
+            {
+                Email = "test@test.com"
+            };
 
             Task<User> userExistsTask = Task.FromResult<User>(new User());
             _userRepo.GetByEmail(user.Email).Returns(userExistsTask);
