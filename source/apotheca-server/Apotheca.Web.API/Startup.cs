@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+//using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
@@ -23,11 +23,17 @@ using Apotheca.BLL.Validators;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson;
 using Apotheca.Web.API.Services;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using NLog;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace Apotheca.Web.API
 {
     public class Startup
     {
+        private static ILogger _logger = LogManager.GetCurrentClassLogger();
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -114,7 +120,7 @@ namespace Apotheca.Web.API
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
             }
             else
             {
@@ -124,6 +130,15 @@ namespace Apotheca.Web.API
             app.UseCors("ApothecaCorsPolicy");
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseExceptionHandler(a => a.Run(async context =>
+            {
+                var feature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var exception = feature.Error;
+                _logger.Error(exception, exception?.Message);
+                var result = JsonConvert.SerializeObject(new { message = exception.Message, stackTrace = exception.StackTrace });
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(result);
+            }));
             app.UseMvc();
 
         }

@@ -7,6 +7,10 @@ import { MatCardModule, MatIconModule, MatToolbarModule, MatButtonModule, MatFor
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from './_helpers/error.interceptor';
+import { ErrorHandler} from '@angular/core';
+import { GlobalErrorHandler } from './_errors/global-error-handler';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
@@ -49,7 +53,17 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
       //InMemoryDataService, { dataEncapsulation: false }
     //)
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    },
+    {
+      provide: ErrorHandler, 
+      useClass: GlobalErrorHandler
+    } 
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

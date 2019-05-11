@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '../_services/authentication.service';
+import { ErrorUtils } from '../_helpers/error-utils';
 
 @Component({ templateUrl: 'login.component.html', styleUrls: ['./login.component.less'] })
 export class LoginComponent implements OnInit {
@@ -57,15 +58,7 @@ export class LoginComponent implements OnInit {
                     this.router.navigate([this.returnUrl]);
                 },
                 error => {
-                    if (error.error) {
-                        this.error = error.error;
-                    }
-                    else if (error.status) {
-                      this.error = `An error occurred on the server: ${error.status} ${error.statusText}`;
-                    }
-                    else {
-                      this.error = error;
-                    }
+                    this.error = ErrorUtils.getMessage(error);
                     this.loading = false;
                 }
             );
