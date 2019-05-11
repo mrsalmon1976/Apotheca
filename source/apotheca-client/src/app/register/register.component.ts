@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, FormControl, Validators  } from '@angular/forms
 import { ValidationUtils } from '../_helpers/validation-utils';
 import { UserService } from '../_services/user.service';
 import { first } from 'rxjs/operators';
-import {MatSnackBar} from '@angular/material';
+import { MatSnackBar } from '@angular/material';
+import { ErrorUtils } from '../_helpers/error-utils';
 
 @Component({
   selector: 'app-register',
@@ -66,17 +67,9 @@ export class RegisterComponent implements OnInit {
                   this.router.navigate(['/login']);
               },
               error => {
-                  if (error.error) {
-                      this.error = error.error;
-                  }
-                  else if (error.status) {
-                    this.error = `An error occurred on the server: ${error.status} ${error.statusText}`;
-                  }
-                  else {
-                    this.error = error;
-                  }
-                  this.loading = false;
-              }
+                this.error = ErrorUtils.getMessage(error);
+                this.loading = false;
+          }
           );
   }
 

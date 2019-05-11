@@ -37,11 +37,11 @@ namespace Apotheca.Web.API.Controllers
         // POST api/<controller>
         [HttpPost]
         [Route("login")]
-        public IActionResult Login([FromBody]LoginViewModel login)
+        public async Task<IActionResult> Login([FromBody]LoginViewModel login)
         {
             if (ModelState.IsValid)
             {
-                var authenticatedUser = Task.Run<User>(() => _authService.Authenticate(login.Email, login.Password)).Result;
+                var authenticatedUser = await _authService.Authenticate(login.Email, login.Password);
                 if (authenticatedUser != null)
                 {
                     // if registration has not been completed, reject
@@ -51,7 +51,7 @@ namespace Apotheca.Web.API.Controllers
                     }
 
                     // send back the user account
-                    UserViewModel userViewModel =_accountViewModelService.LoadUserWithStores(authenticatedUser);
+                    UserViewModel userViewModel = await _accountViewModelService.LoadUserWithStores(authenticatedUser);
                     return Ok(userViewModel);
                 }
 
@@ -66,12 +66,12 @@ namespace Apotheca.Web.API.Controllers
 
         [HttpPost]
         [Route("register")]
-        public IActionResult Register([FromBody]RegisterViewModel registerViewModel)
+        public async Task<IActionResult> Register([FromBody]RegisterViewModel registerViewModel)
         {
             if (ModelState.IsValid)
             {
                 User user = Mapper.Map<User>(registerViewModel);
-                _userService.CreateUser(user);
+                await _userService.CreateUser(user);
                 return Ok();
 
                 //return Unauthorized("No user found matching the supplied email address/password");

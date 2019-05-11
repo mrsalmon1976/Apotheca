@@ -11,7 +11,7 @@ namespace Apotheca.BLL.Services
 {
     public interface IUserService
     {
-        User CreateUser(User user);
+        Task<User> CreateUser(User user);
     }
 
     public class UserService : IUserService
@@ -29,12 +29,12 @@ namespace Apotheca.BLL.Services
             this._passwordProvider = passwordProvider;
         }
 
-        public User CreateUser(User user)
+        public async Task<User> CreateUser(User user)
         {
             _userValidator.Validate(user);
 
             // make sure the user doesn't already exist
-            User userCheck = Task.Run<User>(() => _userRepo.GetByEmail(user.Email)).Result;
+            User userCheck = await _userRepo.GetByEmail(user.Email);
             if (userCheck != null)
             {
                 throw new ValidationException("A user with this email address already exists");

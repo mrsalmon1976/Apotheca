@@ -29,7 +29,7 @@ namespace Test.Apotheca.Web.API.Services
         }
 
         [Test]
-        public void LoadUserWithStores_OnExecute_LoadsUserViewModelWithStores()
+        public async Task LoadUserWithStores_OnExecute_LoadsUserViewModelWithStores()
         {
             AppMap.Reset();
             AppMap.Configure();
@@ -48,10 +48,10 @@ namespace Test.Apotheca.Web.API.Services
             _storeRepo.GetByIds(Arg.Any<IEnumerable<Guid>>()).Returns(Task.FromResult<IEnumerable<Store>>(new Store[] { store1, store2 }));
 
             // execute
-            UserViewModel userViewModel = _accountViewModelService.LoadUserWithStores(user);
+            UserViewModel userViewModel = await _accountViewModelService.LoadUserWithStores(user);
 
             // assert
-            _storeRepo.Received(1).GetByIds(Arg.Any<IEnumerable<Guid>>());
+            await _storeRepo.Received(1).GetByIds(Arg.Any<IEnumerable<Guid>>());
             Assert.AreEqual(user.Id, userViewModel.Id);
             Assert.AreEqual(user.Email, userViewModel.Email);
             Assert.AreEqual(user.FirstName, userViewModel.FirstName);

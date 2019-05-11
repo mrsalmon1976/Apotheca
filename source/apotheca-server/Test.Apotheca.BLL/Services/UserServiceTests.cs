@@ -62,9 +62,7 @@ namespace Test.Apotheca.BLL.Services
             {
                 Email = "test@test.com"
             };
-
-            Task<User> userExistsTask = Task.FromResult<User>(new User());
-            _userRepo.GetByEmail(user.Email).Returns(userExistsTask);
+            _userRepo.GetByEmail(user.Email).Returns(new User());
 
             try
             {
@@ -81,7 +79,7 @@ namespace Test.Apotheca.BLL.Services
         }
 
         [Test]
-        public void CreateUser_ValidUser_ReturnsUpdatedUser()
+        public async Task CreateUser_ValidUser_ReturnsUpdatedUser()
         {
             User user = CreateValidUser();
             byte[] salt = new byte[256];
@@ -91,7 +89,7 @@ namespace Test.Apotheca.BLL.Services
             _passwordProvider.GenerateSalt().Returns(salt);
             _passwordProvider.HashPassword(user.Password, salt).Returns(hashedPassword);
 
-            User result = _userService.CreateUser(user);
+            User result = await _userService.CreateUser(user);
 
             _passwordProvider.Received(1).GenerateSalt();
             _passwordProvider.Received(1).HashPassword(user.Password, salt);
@@ -107,7 +105,7 @@ namespace Test.Apotheca.BLL.Services
         }
 
         [Test]
-        public void CreateUser_ValidUser_CreatesAndLinksPersonalStore()
+        public async Task CreateUser_ValidUser_CreatesAndLinksPersonalStore()
         {
             User user = CreateValidUser();
             Store savedStore = null;
@@ -118,7 +116,7 @@ namespace Test.Apotheca.BLL.Services
                 savedStore = c.Arg<Store>();
             });
 
-            User savedUser = _userService.CreateUser(user);
+            User savedUser = await _userService.CreateUser(user);
 
             _userRepo.Received(1).Insert(Arg.Any<User>());
             _storeRepo.Received(1).Insert(Arg.Any<Store>());

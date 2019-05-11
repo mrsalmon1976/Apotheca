@@ -13,7 +13,7 @@ namespace Apotheca.Web.API.Services
 
     public interface IAccountViewModelService
     {
-        UserViewModel LoadUserWithStores(User user);
+        Task<UserViewModel> LoadUserWithStores(User user);
     }
 
     public class AccountViewModelService : IAccountViewModelService
@@ -25,13 +25,13 @@ namespace Apotheca.Web.API.Services
             this._storeRepo = storeRepo;
         }
 
-        public UserViewModel LoadUserWithStores(User user)
+        public async Task<UserViewModel> LoadUserWithStores(User user)
         {
             // send back the user account
             UserViewModel userViewModel = Mapper.Map<User, UserViewModel>(user);
 
             // load the user stores
-            IEnumerable<Store> stores = Task.Run<IEnumerable<Store>>(() => _storeRepo.GetByIds(user.Stores)).Result;
+            IEnumerable<Store> stores = await _storeRepo.GetByIds(user.Stores);
             IEnumerable<StoreViewModel> storeViewModels = Mapper.Map<IEnumerable<Store>, IEnumerable<StoreViewModel>>(stores);
             userViewModel.Stores.AddRange(storeViewModels);
             return userViewModel;
