@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../_services/user.service';
 import { forkJoin, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { AuthenticationService } from '../_services/authentication.service';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { environment } from '../../environments/environment';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private authenticationService: AuthenticationService) { }
 
   ngOnInit() {
     //this.loadAll();

@@ -11,7 +11,14 @@
             <div class="mat-button-focus-overlay"></div>
         </button>
         <mat-menu #menuNavbarStore>
-            <button mat-menu-item *ngFor="let store of currentUser?.stores">{{store.name}}</button>
+            <button mat-menu-item *ngFor="let store of currentUser?.stores" (click)="loadStore(store)">
+                <mat-icon>folder</mat-icon>
+                <span>{{store.name}}</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>create_new_folder</mat-icon>
+                <span><i>Add new store...</i></span>
+            </button>
         </mat-menu>
         <!-- stores menu end -->
         <span class="toolbar-action-spacer"></span>

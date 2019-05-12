@@ -18,6 +18,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { PageNotFoundComponent } from './_errors/pagenotfound/pagenotfound.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { StoreComponent } from './store/store.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
     LogoutComponent,
     PageNotFoundComponent,
     RegisterComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    StoreComponent
   ],
   imports: [
     BrowserModule,
