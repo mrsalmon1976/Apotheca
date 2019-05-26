@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
   constructor(private userService: UserService, private authenticationService: AuthenticationService) { }
 
   ngOnInit() {
+    this.authenticationService.getTokenExpirationDate();
     //this.loadAll();
   }
 

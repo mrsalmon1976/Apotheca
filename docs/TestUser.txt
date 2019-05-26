@@ -17,5 +17,10 @@ Below is the C# code to create a test user, as well as an example MongoDB docume
     "Email" : "t",
     "Password" : "27bML6kcu0qF8WEIeuH/AFWGqeLTCoXs7b0lvr0W6iU=",
     "Salt" : { "$binary" : "3f37JfEFS5Bj52cFp9P+JQ==", "$type" : "00" },
-    "Token" : null
+    "Token" : null,
+    "Created" : ISODate("2019-05-08T08:51:13.891Z"),
+    "Stores" : [ 
+        NUUID("16412f2c-e81b-4656-b1e2-eba25b8d169d")
+    ],
+    "RegistrationCompleted" : ISODate("2019-05-08T08:51:13.891Z")
 }

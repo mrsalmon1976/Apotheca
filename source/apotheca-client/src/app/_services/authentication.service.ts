@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { User } from '../_models/user';
+import * as jwt_decode from 'jwt-decode';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -27,9 +28,24 @@ export class AuthenticationService {
         return "";
     }
 
+    getTokenExpirationDate() : Date {
+        if(!this.token) return null;
+        const decoded = jwt_decode(this.token);
+        if (decoded.exp === undefined) return null;
+        const date = new Date(0); 
+        date.setUTCSeconds(decoded.exp);
+        return date;    
+    }
+    
     isLoggedIn() {
         return (this.currentUserValue != null);
     }
+
+    isTokenExpired(): boolean {
+        const date = this.getTokenExpirationDate();
+        if(date === undefined) return false;
+        return !(date.valueOf() > new Date().valueOf());
+    }    
 
     login(email: string, password: string) {
       const url = `${environment.apiUrl}/account/login`;
