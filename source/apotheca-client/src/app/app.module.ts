@@ -56,6 +56,7 @@ import { PageNotFoundComponent } from './_errors/pagenotfound/pagenotfound.compo
 import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { StoreComponent } from './store/store.component';
+import { StoreDialogComponent } from './_components/shared/store-dialog/store-dialog.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { StoreComponent } from './store/store.component';
     PageNotFoundComponent,
     RegisterComponent,
     ForgotPasswordComponent,
-    StoreComponent
+    StoreComponent,
+    StoreDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -118,6 +120,9 @@ import { StoreComponent } from './store/store.component';
     //HttpClientInMemoryWebApiModule.forRoot(
       //InMemoryDataService, { dataEncapsulation: false }
     //)
+  ],
+  entryComponents: [
+    StoreDialogComponent
   ],
   providers: [
     {
