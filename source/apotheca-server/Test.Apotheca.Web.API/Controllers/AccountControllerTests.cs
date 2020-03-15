@@ -1,6 +1,7 @@
 using Apotheca.BLL.Models;
 using Apotheca.BLL.Services;
 using Apotheca.Web.API;
+using Apotheca.Web.API.Config;
 using Apotheca.Web.API.Controllers;
 using Apotheca.Web.API.Services;
 using Apotheca.Web.API.ViewModels;
@@ -23,6 +24,7 @@ namespace Test.Apotheca.Web.API.Controllers
     public class AccountControllerTests
     {
         private AccountController _accountController;
+        private IAppSettings _appSettings;
         private IAuthService _authService;
         private IUserService _userService;
         private IAccountViewModelService _accountViewModelService;
@@ -30,10 +32,11 @@ namespace Test.Apotheca.Web.API.Controllers
         [SetUp]
         public void Setup()
         {
+            _appSettings = Substitute.For<IAppSettings>();
             _authService = Substitute.For<IAuthService>();
             _userService = Substitute.For<IUserService>();
             _accountViewModelService = Substitute.For<IAccountViewModelService>();
-            _accountController = new AccountController(_authService, _userService, _accountViewModelService);
+            _accountController = new AccountController(_appSettings, _authService, _userService, _accountViewModelService);
         }
 
         [Test]
