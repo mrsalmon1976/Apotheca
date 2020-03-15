@@ -12,6 +12,7 @@ import { ErrorUtils } from '../_helpers/error-utils';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.less']
 })
+
 export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
@@ -59,6 +60,12 @@ export class RegisterComponent implements OnInit {
       }
 
       this.loading = true;
+
+      const user = {
+        username : this.f.email.value,
+        password : this.f.password.value
+      };
+
       this.userService.register(this.f.email.value, this.f.password.value, this.f.confirmPassword.value, this.f.firstName.value, this.f.lastName.value)
           .pipe(first())
           .subscribe(

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Amazon;
+using Amazon.CognitoIdentityProvider;
+using Amazon.CognitoIdentityProvider.Model;
 using Apotheca.BLL.Models;
+using Apotheca.BLL.Security;
 using Apotheca.BLL.Services;
 using Apotheca.Web.API.Config;
 using Apotheca.Web.API.Services;
@@ -23,12 +28,14 @@ namespace Apotheca.Web.API.Controllers
     [AllowAnonymous]
     public class AccountController : ControllerBase
     {
+        private readonly IAppSettings _appSettings;
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
         private readonly IAccountViewModelService _accountViewModelService;
 
-        public AccountController(IAuthService authService, IUserService userService, IAccountViewModelService accountViewModelService)
+        public AccountController(IAppSettings appSettings, IAuthService authService, IUserService userService, IAccountViewModelService accountViewModelService)
         {
+            this._appSettings = appSettings;
             this._authService = authService;
             this._userService = userService;
             this._accountViewModelService = accountViewModelService;
@@ -71,7 +78,30 @@ namespace Apotheca.Web.API.Controllers
             if (ModelState.IsValid)
             {
                 User user = Mapper.Map<User>(registerViewModel);
-                await _userService.CreateUser(user);
+                //await _userService.CreateUser(user);
+
+                RegionEndpoint region = RegionEndpoint.GetBySystemName(_appSettings.CognitoSettings.Region);
+                var cognito = new AmazonCognitoIdentityProviderClient(region);
+
+                var clientId = _appSettings.CognitoSettings.AppClientId;
+                var clientSecretId = _appSettings.CognitoSettings.AppClientSecret; 
+
+                var request = new SignUpRequest
+                {
+                    ClientId = clientId,
+                    SecretHash = CognitoHashCalculator.GetSecretHash(user.Email, clientId, clientSecretId),
+                    Username = user.Email,
+                    Password = user.Password,
+                };
+
+                var emailAttribute = new AttributeType
+                {
+                    Name = "email",
+                    Value = user.Email
+                };
+                request.UserAttributes.Add(emailAttribute);
+
+                var response = await cognito.SignUpAsync(request);
                 return Ok();
 
                 //return Unauthorized("No user found matching the supplied email address/password");
@@ -85,3 +115,4 @@ namespace Apotheca.Web.API.Controllers
 
     }
 }
+
