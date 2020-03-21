@@ -1,3 +1,4 @@
+/*
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StoreDialogComponent } from './store-dialog.component';
@@ -23,3 +24,4 @@ describe('StoreDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+*/

@@ -54,17 +54,13 @@ export class RegisterComponent implements OnInit {
       // stop here if form is invalid
       if (this.registerForm.invalid) {
           for (var i in this.registerForm.controls) {
-              this.registerForm.controls[i].markAsTouched();
+            // console.log(this.registerForm.controls[i].value + '..' + this.registerForm.controls[i].status);
+            this.registerForm.controls[i].markAsTouched();
           }
           return;
       }
 
       this.loading = true;
-
-      const user = {
-        username : this.f.email.value,
-        password : this.f.password.value
-      };
 
       this.userService.register(this.f.email.value, this.f.password.value, this.f.confirmPassword.value, this.f.firstName.value, this.f.lastName.value)
           .pipe(first())
