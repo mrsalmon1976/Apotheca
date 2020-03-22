@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Apotheca.BLL.Security
 {
-    public static class CognitoHashCalculator
+    public static class AmazonCognitoHashCalculator
     {
         public static string GetSecretHash(string username, string appClientId, string appSecretKey)
         {

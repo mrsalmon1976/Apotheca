@@ -87,6 +87,7 @@ namespace Apotheca.Web.API
 
             // providers
             services.AddScoped<IPasswordProvider, PasswordProvider>();
+            services.AddScoped<IAmazonCognitoProvider>((s) => new AmazonCognitoProvider(appSettings.CognitoSettings.Region, appSettings.CognitoSettings.AppClientId, appSettings.CognitoSettings.AppClientSecret));
 
             // database
             IMongoClient mongoClient = new MongoClient("mongodb://apotheca:apotheca123@localhost/apotheca");

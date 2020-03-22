@@ -1,4 +1,5 @@
 using Apotheca.BLL.Models;
+using Apotheca.BLL.Security;
 using Apotheca.BLL.Services;
 using Apotheca.Web.API;
 using Apotheca.Web.API.Config;
@@ -24,7 +25,7 @@ namespace Test.Apotheca.Web.API.Controllers
     public class AccountControllerTests
     {
         private AccountController _accountController;
-        private IAppSettings _appSettings;
+        private IAmazonCognitoProvider _cognitoProvider;
         private IAuthService _authService;
         private IUserService _userService;
         private IAccountViewModelService _accountViewModelService;
@@ -32,12 +33,14 @@ namespace Test.Apotheca.Web.API.Controllers
         [SetUp]
         public void Setup()
         {
-            _appSettings = Substitute.For<IAppSettings>();
+            _cognitoProvider = Substitute.For<IAmazonCognitoProvider>();
             _authService = Substitute.For<IAuthService>();
             _userService = Substitute.For<IUserService>();
             _accountViewModelService = Substitute.For<IAccountViewModelService>();
-            _accountController = new AccountController(_appSettings, _authService, _userService, _accountViewModelService);
+            _accountController = new AccountController(_cognitoProvider, _authService, _userService, _accountViewModelService);
         }
+
+        #region Login Tests
 
         [Test]
         public async Task Login_ModelValidationFails_ReturnsValidationProblem()
@@ -130,6 +133,46 @@ namespace Test.Apotheca.Web.API.Controllers
             Assert.AreEqual(user.Id, returnValue.Id);
             await _accountViewModelService.Received(1).LoadUserWithStores(user);
         }
+
+        #endregion
+
+        #region Register Tests
+
+        [Test]
+        public void Register_ModelValidationFails_ReturnsValidationProblem()
+        {
+            AppMap.Reset();
+            AppMap.Configure();
+
+            _accountController.ModelState.AddModelError("Email", "error");
+            RegisterViewModel registerViewModel = new RegisterViewModel();
+
+            BadRequestObjectResult actionResult = _accountController.Register(registerViewModel).Result as BadRequestObjectResult;
+            Assert.IsNotNull(actionResult);
+
+            ValidationProblemDetails problemDetails = actionResult.Value as ValidationProblemDetails;
+            Assert.IsNotNull(problemDetails);
+            Assert.AreEqual(1, problemDetails.Errors.Count);
+        }
+
+        [Test]
+        public void Register_ModelValidates_AuthenticatesWithAwsAndReturnsOkResult()
+        {
+            AppMap.Reset();
+            AppMap.Configure();
+
+            RegisterViewModel registerViewModel = new RegisterViewModel();
+            registerViewModel.Email = "test@apotheca.com";
+            registerViewModel.Password = Guid.NewGuid().ToString();
+
+            OkResult actionResult = _accountController.Register(registerViewModel).Result as OkResult;
+            Assert.IsNotNull(actionResult);
+
+            _cognitoProvider.Received(1).RegisterAsync(registerViewModel.Email, registerViewModel.Password);
+
+        }
+
+        #endregion
 
         private static LoginViewModel CreateUserLoginViewModel(string email = "test@test.com", string password = "testpassword")
         {
