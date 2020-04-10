@@ -1,6 +1,5 @@
 ﻿using Apotheca.BLL.Models;
 using Apotheca.BLL.Repositories;
-using Apotheca.BLL.Services;
 using Apotheca.Web.API.ViewModels.Common;
 using AutoMapper;
 using System;

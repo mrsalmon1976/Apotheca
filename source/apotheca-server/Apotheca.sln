@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apotheca.Web.API", "Apotheca.Web.API\Apotheca.Web.API.csproj", "{CEF3E7F4-A674-427C-B417-02B47FF36EB5}"
 EndProject
@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apotheca.BLL", "Apotheca.BL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Apotheca.Web.API", "Test.Apotheca.Web.API\Test.Apotheca.Web.API.csproj", "{FFD6E2A2-297A-4266-906E-A3E3D5ACF504}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Apotheca.BLL", "Test.Apotheca.BLL\Test.Apotheca.BLL.csproj", "{3F62C4E2-DBE7-4349-942B-59F844ABF2BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Apotheca.BLL", "Test.Apotheca.BLL\Test.Apotheca.BLL.csproj", "{3F62C4E2-DBE7-4349-942B-59F844ABF2BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apotheca.Auth", "Apotheca.Auth\Apotheca.Auth.csproj", "{E581D67D-C442-4C56-BF5A-277E65873726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3F62C4E2-DBE7-4349-942B-59F844ABF2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F62C4E2-DBE7-4349-942B-59F844ABF2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F62C4E2-DBE7-4349-942B-59F844ABF2BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E581D67D-C442-4C56-BF5A-277E65873726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E581D67D-C442-4C56-BF5A-277E65873726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E581D67D-C442-4C56-BF5A-277E65873726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E581D67D-C442-4C56-BF5A-277E65873726}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

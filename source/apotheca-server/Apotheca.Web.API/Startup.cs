@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Apotheca.BLL.Services;
 using Apotheca.Web.API.Config;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +24,10 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using NLog;
 using Microsoft.AspNetCore.Diagnostics;
+using Amazon;
+using Amazon.CognitoIdentityProvider;
+using Amazon.Extensions.CognitoAuthentication;
+using Apotheca.Auth;
 
 namespace Apotheca.Web.API
 {
@@ -51,43 +52,46 @@ namespace Apotheca.Web.API
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // configure strongly typed settings objects
             var congnitoSettingsSection = Configuration.GetSection("AWS");
             var cognitoSettings = congnitoSettingsSection.Get<CognitoSettings>();
 
+            // configure application settings
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
             appSettings.CognitoSettings = cognitoSettings;
-
-            // configure jwt authentication
-            //var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            //services.AddAuthentication(x =>
-            //{
-            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //.AddJwtBearer(x =>
-            //{
-            //    x.RequireHttpsMetadata = false;
-            //    x.SaveToken = true;
-            //    x.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuerSigningKey = true,
-            //        IssuerSigningKey = new SymmetricSecurityKey(key),
-            //        ValidateIssuer = false,
-            //        ValidateAudience = false
-            //    };
-            //});
-            services.AddCognitoIdentity();
-
-            // settings
             services.AddSingleton<IAppSettings>(appSettings);
+
+
+            RegionEndpoint regionEndPoint = RegionEndpoint.GetBySystemName(appSettings.CognitoSettings.Region);
+            var cognitoIdentityProvider = new AmazonCognitoIdentityProviderClient(regionEndPoint);
+            services.AddSingleton<IAmazonCognitoIdentityProvider>(cognitoIdentityProvider);
+
+            CognitoUserPool cognitoUserPool = new CognitoUserPool(appSettings.CognitoSettings.UserPoolId, appSettings.CognitoSettings.AppClientId, cognitoIdentityProvider, appSettings.CognitoSettings.AppClientSecret);
+            services.AddSingleton<CognitoUserPool>(cognitoUserPool);
+
+            // set up JWT auth
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.Audience = appSettings.CognitoSettings.AppClientId;
+                    options.Authority = $"https://cognito-idp.{appSettings.CognitoSettings.Region}.amazonaws.com/{appSettings.CognitoSettings.UserPoolId}";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true
+                    };
+                });
+
+            services.AddCognitoIdentity();
 
             // providers
             services.AddScoped<IPasswordProvider, PasswordProvider>();
-            services.AddScoped<IAmazonCognitoProvider>((s) => new AmazonCognitoProvider(appSettings.CognitoSettings.Region, appSettings.CognitoSettings.AppClientId, appSettings.CognitoSettings.AppClientSecret));
+            services.AddScoped<IAmazonCognitoProvider>((s) => new AmazonCognitoProvider(appSettings.CognitoSettings.Region, appSettings.CognitoSettings.UserPoolId, appSettings.CognitoSettings.AppClientId, appSettings.CognitoSettings.AppClientSecret));
 
             // database
             IMongoClient mongoClient = new MongoClient("mongodb://apotheca:apotheca123@localhost/apotheca");
@@ -109,13 +113,21 @@ namespace Apotheca.Web.API
             services.AddScoped<IUserValidator, UserValidator>();
 
             // domain services
-            services.AddScoped<IAuthService>((sp) => new AuthService(appSettings.Secret, sp.GetService<IUserRepository>(), sp.GetService<IPasswordProvider>()));
-            services.AddScoped<IUserService, UserService>();
+            // services.AddScoped<IUserService, UserService>();
 
             // application services 
             services.AddScoped<IAccountViewModelService, AccountViewModelService>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.ConfigureApplicationCookie(options => {
+                //options.AccessDeniedPath = "/Account/Login";
+                //options.LoginPath = "/Account/Denied";
+                //options.Cookie.HttpOnly = true;
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.Events.OnRedirectToLogin = context => {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
 
         }
 
@@ -148,5 +160,6 @@ namespace Apotheca.Web.API
             app.UseMvc();
 
         }
+
     }
 }

@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Apotheca.BLL\Apotheca.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

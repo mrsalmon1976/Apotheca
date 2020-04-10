@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Apotheca.BLL.Security
+namespace Apotheca.Auth
 {
     public static class AmazonCognitoHashCalculator
     {

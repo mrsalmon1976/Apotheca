@@ -52,6 +52,7 @@ export class AuthenticationService {
       console.debug(`Request in login method: ${url}`);
       return this.http.post<any>(url, { email, password })
           .pipe(map(user => {
+              //debugger;
               // login successful if there's a jwt token in the response
               if (user && user.token) {
                   // store user details and jwt token in local storage to keep user logged in between page refreshes

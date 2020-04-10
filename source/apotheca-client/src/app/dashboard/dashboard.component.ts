@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.authenticationService.getTokenExpirationDate();
-    //this.loadAll();
+    this.loadAll();
   }
 
   addStore() {
@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadUserAsync() : Observable<any> {
+    //debugger;
     return this.userService.getUser('test');
   }
 

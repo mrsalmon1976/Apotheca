@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Apotheca.Auth\Apotheca.Auth.csproj" />
     <ProjectReference Include="..\Apotheca.BLL\Apotheca.BLL.csproj" />
   </ItemGroup>
 

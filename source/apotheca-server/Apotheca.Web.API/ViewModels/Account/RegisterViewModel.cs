@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Apotheca.BLL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Apotheca.Web.API.ViewModels.Account
         public string Email { get; set; }
 
         [Required]
-        [MinLength(8)]
+        [MinLength(Constants.MinimumPasswordLength)]
         public string Password { get; set; }
 
         [Required]

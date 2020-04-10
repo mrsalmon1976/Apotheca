@@ -1,0 +1,6 @@
+GET https://localhost:44380/api/dashboard/userdetails/63d4e568-a4af-4370-b5e7-033b6fa7d9ff HTTP/1.1
+User-Agent: Fiddler
+Host: localhost:44380
+Content-Type: application/json
+Authorization: Bearer <exampletokenhere>
+

@@ -1,0 +1,10 @@
+POST https://localhost:44380/api/Account/login HTTP/1.1
+User-Agent: Fiddler
+Host: localhost:44380
+Content-Type: application/json
+Content-Length: 65
+
+{
+  "Email" : "mrsalmon@gmail.com",
+  "Password": "examplepassword"
+}
